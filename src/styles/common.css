@@ -9,8 +9,8 @@ html{
 
 }
 html,body,div,p,span,ul,li,strong,span{
-  margin: 0;
-  padding: 0;
+  /*margin: 0;*/
+  /*padding: 0;*/
   list-style: none;
   box-sizing: border-box;
 }
