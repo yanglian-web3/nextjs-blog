@@ -8,6 +8,7 @@ import IconEmail from "../icons/icon-email";
 import IconUser from "../icons/icon-user";
 import IconPhone from "../icons/icon-phone";
 import IconLogout from "../icons/icon-logout";
+import IconTrangle from "../icons/icon-trangle";
 
 
 function BlogHead({ userInfo }: {userInfo:UserInfo}) {
@@ -60,6 +61,9 @@ function BlogHead({ userInfo }: {userInfo:UserInfo}) {
                               <IconLogout width={20} height={20}/>
                               <p className="pl-5 text-xl">退出登录</p>
                           </div>
+                          <span  className="icon-trangle">
+                              <IconTrangle width={30} height={30} color="#ffffff"/>
+                          </span>
                       </div>
 
                   </div> : <div>
