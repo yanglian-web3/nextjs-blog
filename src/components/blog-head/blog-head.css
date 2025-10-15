@@ -12,6 +12,7 @@
     height: 60px;
     border-radius: 50%;
     overflow: hidden;
+    cursor: pointer;
 }
 .blog-head-container .user-head-container .user-head-img{
     width: 100%;

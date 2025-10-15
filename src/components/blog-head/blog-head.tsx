@@ -22,7 +22,7 @@ function BlogHead({ userInfo }: {userInfo:UserInfo}) {
     }
 
 
-  return <div className={"blog-head-container row-between"}>
+  return <div className={"blog-head-container flex"}>
       <input placeholder="Search" className={"blog-head-input"}/>
       <div className={"head-right-container"}>
           {
