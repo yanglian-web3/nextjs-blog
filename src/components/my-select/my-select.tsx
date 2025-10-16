@@ -166,33 +166,31 @@ const MySelect: React.FC<MySelectProps> = ({
         setListIsShow(false);
     };
 
-    return (
+    return window ? <div
+        id={id}
+        ref={containerRef}
+        className={`my-select-container row-center select-${selectSize} my-select-container-${listColorMode}`}
+        style={{ width: selectWidth, height: `${heightValues[selectSize as keyof typeof heightValues]}px` }}
+        onClick={buttonClick}
+    >
         <div
-            id={id}
-            ref={containerRef}
-            className={`my-select-container row-center select-${selectSize} my-select-container-${listColorMode}`}
-            style={{ width: selectWidth, height: `${heightValues[selectSize as keyof typeof heightValues]}px` }}
-            onClick={buttonClick}
+            className={`select-current-label-container ${
+                listIsShow ? 'select-current-label-container-list-show' : ''
+            } row-${buttonHorizontalMode || 'between'}`}
         >
-            <div
-                className={`select-current-label-container ${
-                    listIsShow ? 'select-current-label-container-list-show' : ''
-                } row-${buttonHorizontalMode || 'between'}`}
-            >
-                <span className="select-current-label">{currentInfo[renderProp.label]}</span>
-            </div>
-            <MySelectList
-                list={list || []}
-                listHeight={listHeight}
-                selectMode={selectMode}
-                currentValue={currentInfo[renderProp.value]}
-                listIsShow={listIsShow}
-                prop={renderProp}
-                onChooseOption={chooseOption}
-                onLeave={() => setListIsShow(false)}
-            />
+            <span className="select-current-label">{currentInfo[renderProp.label]}</span>
         </div>
-    );
+        <MySelectList
+            list={list || []}
+            listHeight={listHeight}
+            selectMode={selectMode}
+            currentValue={currentInfo[renderProp.value]}
+            listIsShow={listIsShow}
+            prop={renderProp}
+            onChooseOption={chooseOption}
+            onLeave={() => setListIsShow(false)}
+        />
+    </div> : null
 };
 
 export default MySelect;
