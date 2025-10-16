@@ -3,6 +3,8 @@
 import BlogListItem from "./blog-list-item";
 import {BlogItemType} from "../../types/blog";
 import {useEffect, useRef, useState} from "react";
+import Pagination from "../pagination/pagination";
+import {PaginationOptions} from "../../types/pagination";
 
 export default function BlogListContent({ initList}: { initList: BlogItemType[]}) {
 
@@ -11,6 +13,15 @@ export default function BlogListContent({ initList}: { initList: BlogItemType[]}
     const [published, setPublished] = useState(blogList.filter((item) => item.status === 1).length)
     const [currentStatus, setCurrentStatus] = useState(0)
     const [blogListTitleWidth, setBlogListTitleWidth] = useState(1200)
+    const renderPagination:Partial<PaginationOptions> = {
+        current: 1,
+        pageSize: 10,
+        pageCount: 5,
+        total: 100,
+        showQuickJumper: true,
+        showSizeChanger: true,
+        pageSizeOptions: [10, 20, 30, 40]
+    }
 
     const blogContentContainer = useRef<HTMLDivElement | null>(null);
     /**
@@ -26,6 +37,14 @@ export default function BlogListContent({ initList}: { initList: BlogItemType[]}
      */
     const getBlogList = (type: number) => {
         setBlogList(initList)
+    }
+    /**
+     * 翻页改变
+     * @param paginationInfo
+     */
+    const paginationChange = (paginationInfo) => {
+        // 翻页时，清空选中数据
+        setBlogList([])
     }
 
     useEffect(() => {
@@ -62,6 +81,9 @@ export default function BlogListContent({ initList}: { initList: BlogItemType[]}
                         })
                     }
                 </div>
+            </div>
+            <div className="pagination-container flex justify-end">
+                <Pagination  options={renderPagination} onChange={(paginationInfo:PaginationOptions) => paginationChange(paginationInfo)}/>
             </div>
 
         </>

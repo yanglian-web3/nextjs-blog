@@ -1,0 +1,21 @@
+.list-show-enter {
+    opacity: 0;
+    max-height: 0;
+}
+
+.list-show-enter-active {
+    opacity: 1;
+    max-height: var(--max-height);
+    transition: opacity 300ms, max-height 300ms;
+}
+
+.list-show-exit {
+    opacity: 1;
+    max-height: var(--max-height);
+}
+
+.list-show-exit-active {
+    opacity: 0;
+    max-height: 0;
+    transition: opacity 300ms, max-height 300ms;
+}
