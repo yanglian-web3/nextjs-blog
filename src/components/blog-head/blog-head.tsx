@@ -10,6 +10,7 @@ import IconPhone from "../icons/icon-phone";
 import IconLogout from "../icons/icon-logout";
 import IconTrangle from "../icons/icon-trangle";
 import IconPlus from "../icons/icon-plus";
+import Link from 'next/link'
 
 
 function BlogHead({ userInfo }: {userInfo:UserInfo}) {
@@ -40,7 +41,7 @@ function BlogHead({ userInfo }: {userInfo:UserInfo}) {
           <div className={"head-right-container"}>
               {
                   userInfo ? <div className="flex justify-end items-center">
-                      <div className="user-info-container relative">
+                      <div className="user-info-container relative z-10">
                           <div className="user-head-container cursor-pointer">
                               <img className={"user-head-img"} src={userInfo.headImg ||  ""} alt=""/>
                           </div>
@@ -69,10 +70,12 @@ function BlogHead({ userInfo }: {userInfo:UserInfo}) {
                           </div>
 
                       </div>
-                      <div className="create-container ml-10 flex items-center py-2 px-6 rounded-full cursor-pointer">
-                          <IconPlus width={20} height={20} color="#ffffff"/>
-                          <span className="text-xl text-white ml-1">创作</span>
-                      </div>
+                      <Link href={`/add-edit`}>
+                          <div className="create-container ml-10 flex items-center py-2 px-6 rounded-full cursor-pointer">
+                              <IconPlus width={20} height={20} color="#ffffff"/>
+                              <span className="text-xl text-white ml-1">创作</span>
+                          </div>
+                      </Link>
                   </div>: <div>
                       <button className={"login-btn"} onClick={login}>登录</button>
                   </div>

@@ -23,7 +23,9 @@ export default function BlogListItem({ item }: { item: BlogItemType}){
         <div className="blog-list-title-right flex justify-end items-center">
             <span className="blog-list-title-right-item w-24 flex justify-center">{ item.evaluation }</span>
             <div className="item-right flex justify-end items-center w-40">
-                <span className="item-button text-blue py-2 cursor-pointer">编辑</span>
+                <Link href={`/add-edit?id=${item.id}`}>
+                    <span className="item-button text-blue py-2 cursor-pointer">编辑</span>
+                </Link>
                 <span className="item-button text-red-600 py-2 cursor-pointer ml-6">删除</span>
             </div>
         </div>
