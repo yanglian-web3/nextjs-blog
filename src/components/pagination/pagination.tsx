@@ -28,8 +28,9 @@ const Pagination: React.FC<PaginationProps> = ({ options, onChange }) => {
     // 更新选项
     useEffect(() => {
         const newPaginationOptions = { ...defaultPaginationOptions, ...options };
+        // console.log("use effect new_Pagination_Options=", newPaginationOptions)
         setRenderOptions(newPaginationOptions);
-    }, [options]);
+    }, []);
 
     // 计算总页数
     const pageNum = useMemo(() => {
@@ -102,7 +103,7 @@ const Pagination: React.FC<PaginationProps> = ({ options, onChange }) => {
         if (renderOptions.showQuickJumper) {
             setInputValue(index.toString());
         }
-
+        console.log("newOptions=", newOptions)
         // 触发回调
         onChange?.(newOptions);
     };

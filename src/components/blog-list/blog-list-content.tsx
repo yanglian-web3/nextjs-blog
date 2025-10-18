@@ -50,7 +50,7 @@ export default function BlogListContent({ initList}: { initList: BlogItemType[]}
     useEffect(() => {
         console.log("blogContentContainer width=", blogContentContainer.current?.clientWidth)
         setBlogListTitleWidth(blogContentContainer.current?.clientWidth || 1200)
-    }, blogList)
+    }, [blogList.length])
 
     return (
         <>
