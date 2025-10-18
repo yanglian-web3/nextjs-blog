@@ -164,7 +164,7 @@ const MySelect: React.FC<MySelectProps> = ({
         setListIsShow(false);
     };
 
-    return window ? <div
+    return typeof window !== 'undefined' ? <div
         id={id}
         ref={containerRef}
         className={`my-select-container flex justify-center items-center select-${selectSize}`}
