@@ -82,7 +82,7 @@ export default function BlogListContent({ initList}: { initList: BlogItemType[]}
                     }
                 </div>
             </div>
-            <div className="pagination-container flex justify-end">
+            <div className="pagination-out-container flex justify-end">
                 <Pagination  options={renderPagination} onChange={(paginationInfo:PaginationOptions) => paginationChange(paginationInfo)}/>
             </div>
 
