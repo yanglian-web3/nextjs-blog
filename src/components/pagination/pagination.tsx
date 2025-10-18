@@ -180,12 +180,10 @@ const Pagination: React.FC<PaginationProps> = ({ options, onChange }) => {
                 <div className="page-block-item">
                     {/* 模拟vue的provide reject */}
                     <FormSizeContext.Provider value="small">
-                        <FormColorModeContext.Provider value="yellow">
-                            <MySelect list={pageOptionList}
-                                      modelValue={renderOptions.pageSize}
-                                      pageContainer={paginationContainer}
-                                      onChange={(value) => handleChooseOption(Number(value))} />
-                        </FormColorModeContext.Provider>
+                        <MySelect list={pageOptionList}
+                                  modelValue={renderOptions.pageSize}
+                                  pageContainer={paginationContainer}
+                                  onChange={(value) => handleChooseOption(Number(value))} />
                     </FormSizeContext.Provider>
 
                 </div>

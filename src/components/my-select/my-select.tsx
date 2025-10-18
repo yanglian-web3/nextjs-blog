@@ -27,7 +27,6 @@ interface MySelectProps {
 
 // 创建 Context 替代 Vue 的 inject
 const FormSizeContext = React.createContext<string>("middle");
-const FormColorModeContext = React.createContext<string>("yellow");
 
 const MySelect: React.FC<MySelectProps> = ({
                                                pageContainer,
@@ -54,7 +53,6 @@ const MySelect: React.FC<MySelectProps> = ({
 
     // 模拟 Vue 的 inject
     const formSize = useContext(FormSizeContext);
-    const formColorMode = useContext(FormColorModeContext);
 
     // 计算 renderProp
     const renderProp = useMemo(() => {
@@ -73,7 +71,7 @@ const MySelect: React.FC<MySelectProps> = ({
     // 计算 selectWidth
     const selectWidth = useMemo(() => {
         if (!width) {
-            return "150px";
+            return "120px";
         }
         return typeof width === "number" ? `${width}px` : width;
     }, [width]);
@@ -83,17 +81,11 @@ const MySelect: React.FC<MySelectProps> = ({
         return size || formSize;
     }, [size, formSize]);
 
-    // 计算 listColorMode
-    const listColorMode = useMemo(() => {
-        return colorMode || formColorMode;
-    }, [colorMode, formColorMode]);
-
     // 高度值映射
     const heightValues = {
-        large: 113,
-        middle: 83,
-        small: 60,
-        mini: 33
+        large: 83,
+        middle: 53,
+        small: 30,
     };
 
     // 监听 list 变化
@@ -175,7 +167,7 @@ const MySelect: React.FC<MySelectProps> = ({
     return window ? <div
         id={id}
         ref={containerRef}
-        className={`my-select-container flex justify-center items-center select-${selectSize} my-select-container-${listColorMode}`}
+        className={`my-select-container flex justify-center items-center select-${selectSize}`}
         style={{ width: selectWidth, height: `${heightValues[selectSize as keyof typeof heightValues]}px` }}
         onClick={buttonClick}
     >
@@ -200,4 +192,4 @@ const MySelect: React.FC<MySelectProps> = ({
 };
 
 export default MySelect;
-export { FormSizeContext, FormColorModeContext };
+export { FormSizeContext };

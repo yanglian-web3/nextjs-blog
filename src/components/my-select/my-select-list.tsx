@@ -90,7 +90,6 @@ const MySelectList: React.FC<MySelectListProps> = ({
                   onClick={() => chooseOption(item)}
               >
                 <span className="label">{item[prop.label]}</span>
-                <span className="select-item-hover" />
               </li>
           ))}
         </ul>

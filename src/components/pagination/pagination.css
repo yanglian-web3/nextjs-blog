@@ -9,7 +9,7 @@
 }
 
 .pagination-container {
-  font-size: 19px;
+  font-size: 14px;
   user-select: none;
   font-weight: 600;
   color: #5A3924;
@@ -23,11 +23,10 @@
 .pagination-container .pages li {
   list-style: none;
   cursor: pointer;
-  width: 59px;
-  height: 59px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  background: linear-gradient(180deg, #DCD5C3 0%, #E8E5D0 100%);
-  box-shadow: inset 0px 3px 3px 0px rgba(255, 255, 255, 0.25), inset 0px -3px 5px 0px #CECAC4;
+  background: #f3f3f3;
 }
 
 .pagination-container .pages .page-value-button {
@@ -35,13 +34,14 @@
 }
 
 .pagination-container .pages .page-value-button:hover {
-  background: linear-gradient(180deg, rgba(255, 184, 1, 0.6) 0%, rgba(255, 184, 1, 0.6) 100%);
-  box-shadow: inset 0px 3px 3px 0px rgba(255, 255, 255, 0.25), inset 0px -3px 5px 0px rgba(255, 169, 2, 0.6);
+  background: #fc5531;
+  color: #ffffff;
+  opacity: 0.8;
 }
 
 .pagination-container .pages .page-button.page-value-button.active-button {
-  background: linear-gradient(180deg, #FFB801 0%, #FFDB01 100%);
-  box-shadow: inset 0px 3px 3px 0px rgba(255, 255, 255, 0.25), inset 0px -3px 5px 0px #FFA902;
+  background: #fc5531;
+  color: #ffffff;
 }
 
 .pagination-container .pages .page-button + .page-button {
@@ -87,16 +87,16 @@
 }
 
 .pagination-container .jumper input {
-  width: 85px;
-  height: 59px;
+  width: 50px;
+  height: 30px;
   background: #FFFFFF;
   border-radius: 100px;
-  border: 3px solid #5A3924;
+  border: 1px solid #5A3924;
   margin: 0 5px;
-  font-size: 19px;
+  font-size: 14px;
   user-select: none;
   font-weight: 600;
-  padding: 5px 20px;
+  padding: 5px 10px;
 }
 
 .pagination-container .page-block-item + .page-block-item {
