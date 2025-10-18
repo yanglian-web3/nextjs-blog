@@ -138,16 +138,22 @@ const MySelect: React.FC<MySelectProps> = ({
 
     // 获取列表位置模式
     const getListPositionMode = (): MySelectListMode => {
+        console.log("listMode=", listMode)
         if (listMode) {
             return listMode;
         }
         if (!pageContainer) {
             return "down";
         }
-        const positionInfo = pageContainer.getBoundingClientRect();
+        console.log("pageContainer=",pageContainer)
+        const positionInfo = pageContainer.current?.getBoundingClientRect();
         const pageClientHeight = document.body.clientHeight;
         const optionsHeight = (list?.length || 0) * 30;
         const optionHeight = optionsHeight + 70;
+        console.log("positionInfo=", positionInfo)
+        console.log("pageClientHeight=", pageClientHeight)
+        console.log("optionsHeight=", optionsHeight)
+        console.log("optionHeight=", optionHeight)
         return positionInfo.bottom + optionHeight > pageClientHeight ? "up" : "down";
     };
 
@@ -162,21 +168,21 @@ const MySelect: React.FC<MySelectProps> = ({
     const chooseOption = (item: any) => {
         const value = labelIsValue ? item : item[renderProp.value || "value"];
         onUpdateModelValue?.(value);
-        onChange?.(value, item);
+        onChange && onChange(value, item);
         setListIsShow(false);
     };
 
     return window ? <div
         id={id}
         ref={containerRef}
-        className={`my-select-container row-center select-${selectSize} my-select-container-${listColorMode}`}
+        className={`my-select-container flex justify-center items-center select-${selectSize} my-select-container-${listColorMode}`}
         style={{ width: selectWidth, height: `${heightValues[selectSize as keyof typeof heightValues]}px` }}
         onClick={buttonClick}
     >
         <div
-            className={`select-current-label-container ${
+            className={`select-current-label-container flex ${
                 listIsShow ? 'select-current-label-container-list-show' : ''
-            } row-${buttonHorizontalMode || 'between'}`}
+            } items-center justify-${buttonHorizontalMode || 'between'}`}
         >
             <span className="select-current-label">{currentInfo[renderProp.label]}</span>
         </div>

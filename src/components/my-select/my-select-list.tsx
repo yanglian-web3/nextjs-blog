@@ -66,7 +66,7 @@ const MySelectList: React.FC<MySelectListProps> = ({
   const isSelected = (item: MySelectObjectItem) => {
     return ['string', 'number'].includes(typeof currentValue) &&
         currentValue &&
-        item[prop.value] === currentValue;
+        item[prop.value!] === currentValue;
   };
 
   if (!listIsShow) {

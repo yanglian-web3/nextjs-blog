@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import './pagination.css'; // 改为导入转换后的CSS文件
 import { PaginationOptions } from '../../types/pagination';
 import { MySelectItem } from '../../types/my-select';
-import MySelect from '../my-select/my-select';
+import MySelect, { FormSizeContext, FormColorModeContext } from '../my-select/my-select';
 
 interface PaginationProps {
     options: Partial<PaginationOptions>;
@@ -23,7 +23,7 @@ const defaultPaginationOptions: PaginationOptions = {
 const Pagination: React.FC<PaginationProps> = ({ options, onChange }) => {
     const [renderOptions, setRenderOptions] = useState<PaginationOptions>({ ...defaultPaginationOptions });
     const [inputValue, setInputValue] = useState<string>('');
-    const qqPaginationContainer = useRef<HTMLDivElement | null>(null);
+    const paginationContainer = useRef<HTMLDivElement | null>(null);
 
     // 更新选项
     useEffect(() => {
@@ -126,6 +126,7 @@ const Pagination: React.FC<PaginationProps> = ({ options, onChange }) => {
 
     // 选择每页条数
     const handleChooseOption = (value: number) => {
+        // console.log("_handle_choose_option value=", value)
         const newOptions = {
             ...renderOptions,
             pageSize: value,
@@ -151,7 +152,7 @@ const Pagination: React.FC<PaginationProps> = ({ options, onChange }) => {
     };
 
     return (
-        <div className="pagination-container flex items-center" ref={qqPaginationContainer}>
+        <div className="pagination-container flex items-center" ref={paginationContainer}>
             {typeof renderOptions.showTotal === 'function' && (
                 <div className="flex items-center total-text page-block-item">{totalText}</div>
             )}
@@ -177,8 +178,16 @@ const Pagination: React.FC<PaginationProps> = ({ options, onChange }) => {
             {/* 注意：MySelect 组件需要另外实现或替换为现有的 React 组件 */}
             {renderOptions.showSizeChanger && (
                 <div className="page-block-item">
-                    {/* 这里需要替换成你的 React Select 组件 */}
-                    <MySelect list={pageOptionList} modelValue={renderOptions.pageSize} onChange={(e) => handleChooseOption(Number(e.target.value))} />
+                    {/* 模拟vue的provide reject */}
+                    <FormSizeContext.Provider value="small">
+                        <FormColorModeContext.Provider value="yellow">
+                            <MySelect list={pageOptionList}
+                                      modelValue={renderOptions.pageSize}
+                                      pageContainer={paginationContainer}
+                                      onChange={(value) => handleChooseOption(Number(value))} />
+                        </FormColorModeContext.Provider>
+                    </FormSizeContext.Provider>
+
                 </div>
             )}
 
