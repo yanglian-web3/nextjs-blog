@@ -12,7 +12,7 @@
     max-width: 1200px;
 }
 .blog-content-container{
-    height: calc(100vh - 100px - 60px - 60px - 100px);
+    height: calc(100vh - 70px - 60px - 60px - 100px);
 }
 .blog-list-title-container{
     /*max-width: 1200px;*/

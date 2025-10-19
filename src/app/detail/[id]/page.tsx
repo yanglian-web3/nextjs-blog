@@ -282,7 +282,7 @@ const value = initialMarkdown
     return <div className="blog-detail-container bg-gray-200 flex flex-col">
         <BlogDetailHead userInfo={userInfo}/>
         <div className="blog-detail-title mt-3 flex justify-center ">
-           <div className="bg-white blog-title-inner p-6 rounded-t-sm">
+           <div className="bg-white blog-title-inner px-6 py-3 rounded-t-sm">
                <h1 className="font-bold text-4xl">{title}</h1>
            </div>
         </div>
