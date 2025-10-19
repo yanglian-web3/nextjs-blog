@@ -1,15 +1,15 @@
 "use client"
 
 import {useEffect, useRef} from "react";
-import { useEditorInstance } from '../../hooks/use-editor-instance'
 import "./blog-editor-tools.css"
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../store/index";
 import { updateEditorToolsHeight } from "../../store/editor-tools-slice";
+import {useEditorContext} from "../../context/editor-context";
 
 export default function BlogEditorTools(){
     const dispatch = useDispatch<AppDispatch>()
-    const { editor } = useEditorInstance()
+    const { editor } = useEditorContext()
     const editorToolsRef = useRef<HTMLDivElement | null>(null) // 创建一个ref对象
 
 // 监听 ref 变化，获取高度
@@ -71,7 +71,7 @@ export default function BlogEditorTools(){
                 ref={editorToolsRef}
     >
         <button
-            onClick={toggleBold}
+            onClick={() => editor.chain().focus().toggleBold().run()}
             className={`p-2 rounded ${
                 editor?.isActive('bold') ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
             }`}

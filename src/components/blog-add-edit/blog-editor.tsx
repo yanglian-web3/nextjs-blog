@@ -9,13 +9,16 @@ import {useEffect, useState} from 'react'
 import { useDispatch} from "react-redux";
 import { AppDispatch } from "../../store/index";
 import { updateContent } from "../../store/blog-edit-slice";
-import { useEditorInstance } from '../../hooks/use-editor-instance'
+import { useEditorContext } from '../../context/editor-context'
+
+import "./blog-editor.css"
+
 
 const lowlight = createLowlight(common)
 
 export default function BlogEditor() {
     const dispatch = useDispatch<AppDispatch>()
-    const { updateEditor } = useEditorInstance()
+    const { setEditor } = useEditorContext()
     const [isClient, setIsClient] = useState(false)
     // / 确保只在客户端初始化编辑器
     useEffect(() => {
@@ -38,7 +41,7 @@ export default function BlogEditor() {
         // 编辑器创建完成时的回调
         onCreate: ({ editor }) => {
             console.log('编辑器已创建:', editor)
-            updateEditor(editor)
+            setEditor(editor)
         },
         onUpdate: ({ editor }) => {
             const html = editor.getHTML()
@@ -47,7 +50,7 @@ export default function BlogEditor() {
         // 编辑器销毁时的回调（可选）
         onDestroy: () => {
             console.log('编辑器已销毁')
-            updateEditor(null)
+            setEditor(null)
         },
         immediatelyRender: false, // 明确设置为 false
     }, [isClient]) // 依赖 isClient
@@ -62,6 +65,6 @@ export default function BlogEditor() {
 
     return  <EditorContent
         editor={editor}
-        className="editor-content p-6 bg-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500 flex-1"
+        className="editor-content bg-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500 flex-1"
     />
 }

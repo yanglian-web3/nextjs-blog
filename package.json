@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.9.1",
+    "@tailwindcss/typography": "^0.5.19",
+    "@tiptap/core": "^3.7.2",
     "@tiptap/extension-bold": "^3.7.2",
     "@tiptap/extension-character-count": "^3.7.2",
     "@tiptap/extension-code-block-lowlight": "^3.7.2",
@@ -19,6 +21,7 @@
     "@tiptap/extension-paragraph": "^3.7.2",
     "@tiptap/extension-placeholder": "^3.7.2",
     "@tiptap/extension-text": "^3.7.2",
+    "@tiptap/pm": "^3.7.2",
     "@tiptap/react": "^3.7.2",
     "@tiptap/starter-kit": "^3.7.2",
     "lowlight": "^3.3.0",
