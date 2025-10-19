@@ -10,7 +10,7 @@ export default function BlogListItem({ item }: { item: BlogItemType}){
         console.log("item=", item)
     }
     return <div className="blog-list-item flex justify-between border-b border-gray-100 py-5">
-        <Link href={`/detail/${item.id}`}>
+        <Link href={`/detail/${item.id}`} target="_blank" rel="noopener noreferrer">
             <div className="item-left flex items-center cursor-pointer" onClick={goDetail}>
 
                 <img src={item.cover} alt="cover" className="w-30 h-15 mr-4"/>

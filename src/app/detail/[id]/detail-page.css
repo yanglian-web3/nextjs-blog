@@ -1,0 +1,14 @@
+.blog-detail-container{
+    min-height: 100vh;
+    align-items: stretch;
+}
+.blog-detail-title{
+}
+.blog-title-inner{
+    max-width: 1200px;
+    flex:1;
+}
+.blog-detail-title h1{
+    align-self: center;
+    line-height: 1.2em;
+}

@@ -1,0 +1,6 @@
+.blog-detail-preview-container{
+    flex:1;
+}
+.blog-detail-preview-inner-container{
+    max-width: 1200px;
+}
