@@ -1,5 +1,5 @@
 import BlogListHead from "../components/blog-list/blog-list-head/blog-list-head";
-import "../styles/index.css"
+import "./index.css"
 import {BlogItemType} from "../types/blog";
 import BlogListContent from "../components/blog-list/blog-list-content";
 import {UserInfo} from "../types/user";

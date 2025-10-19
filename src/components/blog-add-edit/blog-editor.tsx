@@ -54,83 +54,10 @@ export default function BlogEditor() {
         return <div>加载编辑器...</div>
     }
 
-    const handlePublish = async () => {
-        // 处理发布逻辑
-        console.log('发布文章:', { title, content })
-    }
 
-    return (
-        <div className="max-w-4xl mx-auto p-6">
-            {/* 工具栏 */}
-            <div className="flex flex-wrap gap-2 p-4 border border-gray-300 rounded-t-lg bg-gray-50">
-                <button
-                    onClick={() => editor.chain().focus().toggleBold().run()}
-                    className={`p-2 rounded ${
-                        editor.isActive('bold') ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
-                    }`}
-                >
-                    <strong>B</strong>
-                </button>
-                <button
-                    onClick={() => editor.chain().focus().toggleItalic().run()}
-                    className={`p-2 rounded ${
-                        editor.isActive('italic') ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
-                    }`}
-                >
-                    <em>I</em>
-                </button>
-                <button
-                    onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                    className={`p-2 rounded ${
-                        editor.isActive('heading', { level: 1 }) ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
-                    }`}
-                >
-                    H1
-                </button>
-                <button
-                    onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                    className={`p-2 rounded ${
-                        editor.isActive('heading', { level: 2 }) ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
-                    }`}
-                >
-                    H2
-                </button>
-                <button
-                    onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-                    className={`p-2 rounded ${
-                        editor.isActive('codeBlock') ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
-                    }`}
-                >
-                    代码
-                </button>
-                <button
-                    onClick={() => editor.chain().focus().toggleBulletList().run()}
-                    className={`p-2 rounded ${
-                        editor.isActive('bulletList') ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
-                    }`}
-                >
-                    列表
-                </button>
-            </div>
 
-            {/* 编辑器区域 */}
-            <EditorContent
-                editor={editor}
-                className="min-h-[500px] p-6 border border-gray-300 border-t-0 rounded-b-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
-
-            {/* 操作按钮 */}
-            <div className="flex gap-4 mt-6">
-                <button
-                    onClick={handlePublish}
-                    className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                >
-                    发布文章
-                </button>
-                <button className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                    保存草稿
-                </button>
-            </div>
-        </div>
-    )
+    return  <EditorContent
+        editor={editor}
+        className="min-h-[500px] p-6  focus:outline-none focus:ring-1 focus:ring-blue-500 flex-1"
+    />
 }

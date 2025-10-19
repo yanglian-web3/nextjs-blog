@@ -1,0 +1,17 @@
+.blog-edit-publish-buttons-container{
+    height: 100px;
+    box-shadow: inset 0 1px 0 rgba(0,0,0,0.1);
+}
+.blog-edit-publish-buttons-container .blog-edit-button{
+    height: 50px;
+    cursor: pointer;
+}
+.blog-edit-publish-buttons-container .blog-edit-button+.blog-edit-button{
+    margin-left: 20px;
+}
+.blog-edit-publish-buttons-container .blog-edit-publish-button{
+    background-color: #fc5531;
+}
+.blog-edit-publish-buttons-container .blog-edit-publish-button:hover{
+    opacity: 0.8;
+}

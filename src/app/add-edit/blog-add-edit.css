@@ -1,0 +1,4 @@
+.blog-editor-view-container{
+    height: calc(100vh - 100px - 100px);
+    border: solid 1px red;
+}
