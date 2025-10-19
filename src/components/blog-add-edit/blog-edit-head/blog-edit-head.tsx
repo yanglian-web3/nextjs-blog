@@ -3,17 +3,25 @@
 import "./blog-edit-head.css"
 import PropTypes from "prop-types"
 import {UserInfo} from "../../../types/user";
-import {useState} from "react";
 import HeadUser from "../../head-user/head-user";
 import IconClear from "../../icons/icon-clear";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../../store/index";
+import { updateTitle } from "../../../store/blog-edit-slice";
 
 
 
 function BlogEditHead({ userInfo }: {userInfo:UserInfo}) {
-    // console.log("userInfo=", userInfo)
-    const [title, setTitle] = useState('')
+    const dispatch = useDispatch<AppDispatch>()
+    const { title } = useSelector((state: RootState) => state.blogEdit)
 
-
+    /**
+     * 设置标题
+     * @param title
+     */
+    const setTitle = (title: string) => {
+        dispatch(updateTitle(title))
+    }
   return <div className="blog-head-edit-out-container">
       <div className="blog-head-edit-container flex justify-between items-center p-5">
           <div className="blog-search-container flex relative flex-1 pr-20">

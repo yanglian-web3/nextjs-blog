@@ -6,12 +6,14 @@ import StarterKit from '@tiptap/starter-kit'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import { common, createLowlight } from 'lowlight'
 import {useEffect, useState} from 'react'
+import { useDispatch} from "react-redux";
+import { AppDispatch } from "../../store/index";
+import { updateContent } from "../../store/blog-edit-slice";
 
 const lowlight = createLowlight(common)
 
 export default function BlogEditor() {
-
-    const [content, setContent] = useState('')
+    const dispatch = useDispatch<AppDispatch>()
 
     const [isClient, setIsClient] = useState(false)
 
@@ -35,7 +37,7 @@ export default function BlogEditor() {
     `,
         onUpdate: ({ editor }) => {
             const html = editor.getHTML()
-            setContent(html)
+            dispatch(updateContent(html))
         },
         immediatelyRender: false, // 明确设置为 false
     }, [isClient]) // 依赖 isClient
@@ -53,8 +55,6 @@ export default function BlogEditor() {
     if (!editor) {
         return <div>加载编辑器...</div>
     }
-
-
 
     return  <EditorContent
         editor={editor}
