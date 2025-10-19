@@ -47,13 +47,17 @@ const MySelect: React.FC<MySelectProps> = ({
     const [selectMode, setSelectMode] = useState<MySelectListMode>();
     const [listIsShow, setListIsShow] = useState(false);
     const [currentInfo, setCurrentInfo] = useState<any>({});
+    const [isClient, setIsClient] = useState(false);
     const id = useMemo(() => `my-select-container-${Math.random().toString(36).split(".")[1]}`, []);
 
     const containerRef = useRef<HTMLDivElement | null>(null);
 
     // 模拟 Vue 的 inject
     const formSize = useContext(FormSizeContext);
-
+// 在 useEffect 中设置客户端标志
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
     // 计算 renderProp
     const renderProp = useMemo(() => {
         if (!prop) {
@@ -164,7 +168,23 @@ const MySelect: React.FC<MySelectProps> = ({
         setListIsShow(false);
     };
 
-    return typeof window !== 'undefined' ? <div
+    // 服务端渲染时返回简单的占位符
+    if (!isClient) {
+        return (
+            <div
+                className={`my-select-container flex justify-center items-center select-${selectSize}`}
+                style={{
+                    width: selectWidth,
+                    height: `${heightValues[selectSize as keyof typeof heightValues]}px`
+                }}
+            >
+                <div className="select-current-label-container flex items-center justify-between">
+                    <span className="select-current-label">Loading...</span>
+                </div>
+            </div>
+        );
+    }
+    return <div
         id={id}
         ref={containerRef}
         className={`my-select-container flex justify-center items-center select-${selectSize}`}
@@ -188,7 +208,7 @@ const MySelect: React.FC<MySelectProps> = ({
             onChooseOption={chooseOption}
             onLeave={() => setListIsShow(false)}
         />
-    </div> : null
+    </div>
 };
 
 export default MySelect;

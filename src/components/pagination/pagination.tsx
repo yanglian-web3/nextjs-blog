@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import './pagination.css'; // 改为导入转换后的CSS文件
 import { PaginationOptions } from '../../types/pagination';
 import { MySelectItem } from '../../types/my-select';
-import MySelect, { FormSizeContext, FormColorModeContext } from '../my-select/my-select';
+import MySelect, { FormSizeContext } from '../my-select/my-select';
 
 interface PaginationProps {
     options: Partial<PaginationOptions>;
