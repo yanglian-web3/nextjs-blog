@@ -38,7 +38,7 @@ function BlogEditHead({ userInfo }: {userInfo:UserInfo}) {
                   <p className="text-gray-500 text-sm">{title.length}/100</p>
               </div>
           </div>
-         <HeadUser userInfo={userInfo}/>
+         <HeadUser userInfo={userInfo} mode="right"/>
       </div>
   </div>
 }

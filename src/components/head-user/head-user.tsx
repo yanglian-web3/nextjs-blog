@@ -6,7 +6,7 @@ import IconTrangle from "../icons/icon-trangle";
 import {UserInfo} from "../../types/user";
 import "./head-user.css"
 
-export default function HeadUser({ userInfo }: {userInfo:UserInfo}) {
+export default function HeadUser({ userInfo, mode = "center" }: {userInfo:UserInfo, mode?: "right" | "center"}) {
   /**
    * 退出登录
    */
@@ -14,11 +14,11 @@ export default function HeadUser({ userInfo }: {userInfo:UserInfo}) {
 
   }
 
-  return <div className="user-info-container relative z-10">
+  return <div className={`user-info-container relative z-10  user-info-container-${mode}`}>
       <div className="user-head-container cursor-pointer">
         <img className={"user-head-img"} src={userInfo.headImg ||  ""} alt=""/>
       </div>
-      <div className="user-drap-down-container absolute rounded-md">
+      <div className={`user-drap-down-container absolute rounded-md`}>
         <ul className={"user-info-list py-2 px-4"}>
           <li className="user-info-item flex items-center">
             <IconUser width={20} height={20}/>

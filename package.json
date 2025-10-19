@@ -18,6 +18,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-lowlight": "^3.1.0",
+    "react-markdown": "^10.1.0",
     "react-redux": "^9.2.0",
     "react-transition-group": "^4.4.5",
     "redux": "^5.0.1"

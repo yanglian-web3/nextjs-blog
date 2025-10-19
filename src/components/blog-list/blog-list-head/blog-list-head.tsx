@@ -23,7 +23,7 @@ function BlogListHead({ userInfo }: {userInfo:UserInfo}) {
           </div>
           <div className="flex justify-end items-center">
               <HeadUser userInfo={userInfo}/>
-              <Link href={`/add-edit`}>
+              <Link href={`/add-edit`} target="_blank" rel="noopener noreferrer">
                   <div className="create-container ml-10 flex items-center py-2 px-6 rounded-full cursor-pointer">
                       <IconPlus width={20} height={20} color="#ffffff"/>
                       <span className="text-xl text-white ml-1">创作</span>

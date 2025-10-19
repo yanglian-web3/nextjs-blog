@@ -15,17 +15,26 @@
 }
 .user-drap-down-container{
     background: #ffffff;
-    /*border-radius: 5px;*/
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     position: absolute;
     top: 60px;
+    transition: transform 0.3s ease;
+}
+.user-info-container-center .user-drap-down-container{
     left: 50%;
     transform: translateX(-50%) scale(0);
-    transition: transform 0.3s ease;
     transform-origin: 50% 0;
 }
-.user-info-container:hover .user-drap-down-container{
+.user-info-container-center:hover .user-drap-down-container{
     transform: translateX(-50%) scale(1);
+}
+.user-info-container-right .user-drap-down-container{
+    right:30px;
+    transform: scale(0);
+    transform-origin: 100% 0;
+}
+.user-info-container-right:hover .user-drap-down-container{
+    transform: scale(1);
 }
 .user-drap-down-container .user-info-list{
     border-bottom: solid 1px #aaaaaa;
@@ -39,7 +48,14 @@
 }
 .user-drap-down-container  .icon-trangle{
     position: absolute;
-    top: -10px;
+
+}
+.user-info-container-center .user-drap-down-container  .icon-trangle{
     left: 50%;
     transform: translateX(-50%);
+    top: -10px;
+}
+.user-info-container-right .user-drap-down-container  .icon-trangle{
+    right: -5px;
+    top: -15px;
 }
