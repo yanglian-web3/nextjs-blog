@@ -5,7 +5,7 @@ import {UserInfo} from "../../types/user";
 import {getUserInfo} from "../../utils/user";
 import BlogEditPublishButtons from "../../components/blog-add-edit/blog-edit-publish-buttons";
 import "./blog-add-edit.css"
-import BlogEditor from "../../components/blog-add-edit/blog-editor";
+import BlogEditor from "../../components/blog-editor/blog-editor";
 
 export const metadata: Metadata = {
     title: '写文章 - 我的博客',
