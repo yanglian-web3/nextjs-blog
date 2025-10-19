@@ -23,7 +23,7 @@ function BlogEditHead({ userInfo }: {userInfo:UserInfo}) {
         dispatch(updateTitle(title))
     }
   return <div className="blog-head-edit-out-container">
-      <div className="blog-head-edit-container flex justify-between items-center p-5">
+      <div className="blog-head-edit-container flex justify-between items-center py-5 px-10">
           <div className="blog-search-container flex relative flex-1 pr-20">
               <input placeholder="请输入文章标题"
                      value={title}

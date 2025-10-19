@@ -5,7 +5,7 @@ import {UserInfo} from "../../types/user";
 import {getUserInfo} from "../../utils/user";
 import BlogEditPublishButtons from "../../components/blog-add-edit/blog-edit-publish-buttons";
 import "./blog-add-edit.css"
-import BlogEditMiddle from "../../components/blog-add-edit/blog-edit-middle";
+import BlogEditor from "../../components/blog-add-edit/blog-editor";
 
 export const metadata: Metadata = {
     title: '写文章 - 我的博客',
@@ -26,7 +26,9 @@ export default async function AddEditPage() {
         <div className="blog-add-edit-container">
             <BlogEditHead userInfo={userInfo}/>
             {/*中间部分*/}
-            <BlogEditMiddle/>
+            <div className="blog-edit-middle-container">
+                <BlogEditor />
+            </div>
             {/* 操作按钮 */}
             <BlogEditPublishButtons/>
         </div>
