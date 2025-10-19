@@ -16,3 +16,6 @@ html,body,div,p,span,ul,li,strong,span{
   box-sizing: border-box;
   list-style: none;
 }
+.theme-bg{
+  background-color: #fc5531;
+}

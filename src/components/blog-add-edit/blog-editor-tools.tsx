@@ -67,54 +67,42 @@ export default function BlogEditorTools(){
         }
         editor.chain().focus().toggleBulletList().run()
     }
-    return <div className="blog-editor-tools-container flex flex-wrap gap-2 p-4 border border-gray-300 bg-gray-50"
+    return <div className="blog-editor-tools-container text-sm flex py-2 px-4 flex-wrap border border-gray-300 bg-gray-50"
                 ref={editorToolsRef}
     >
         <button
-            onClick={() => editor.chain().focus().toggleBold().run()}
-            className={`p-2 rounded ${
-                editor?.isActive('bold') ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
-            }`}
+            onClick={toggleBold}
+            className={`px-2 py-1 bg-white text-gray-700`}
         >
             <strong>B</strong>
         </button>
         <button
             onClick={toggleItalic}
-            className={`p-2 rounded ${
-                editor?.isActive('italic') ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
-            }`}
+            className={`px-2 py-1 bg-white text-gray-700`}
         >
             <em>I</em>
         </button>
         <button
             onClick={() => toggleHeading(1)}
-            className={`p-2 rounded ${
-                editor?.isActive('heading', { level: 1 }) ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
-            }`}
+            className={`px-2 py-1 bg-white text-gray-700`}
         >
             H1
         </button>
         <button
             onClick={() => toggleHeading(2)}
-            className={`p-2 rounded ${
-                editor?.isActive('heading', { level: 2 }) ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
-            }`}
+            className={`px-2 py-1 bg-white text-gray-700`}
         >
             H2
         </button>
         <button
             onClick={toggleCodeBlock}
-            className={`p-2 rounded ${
-                editor?.isActive('codeBlock') ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
-            }`}
+            className={`px-2 py-1 bg-white text-gray-700`}
         >
             代码
         </button>
         <button
             onClick={toggleBulletList}
-            className={`p-2 rounded ${
-                editor?.isActive('bulletList') ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
-            }`}
+            className={`px-2 py-1 bg-white text-gray-700`}
         >
             列表
         </button>
