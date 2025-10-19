@@ -1,0 +1,45 @@
+.head-right-container{
+    position: relative;
+}
+.user-head-container{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+}
+.user-head-container .user-head-img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.user-drap-down-container{
+    background: #ffffff;
+    /*border-radius: 5px;*/
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+    transition: transform 0.3s ease;
+    transform-origin: 50% 0;
+}
+.user-info-container:hover .user-drap-down-container{
+    transform: translateX(-50%) scale(1);
+}
+.user-drap-down-container .user-info-list{
+    border-bottom: solid 1px #aaaaaa;
+}
+.user-drap-down-container .user-info-list .user-info-item{
+    padding: 10px 0;
+
+}
+.user-drap-down-container .user-logout-container{
+    padding: 30px 20px;
+}
+.user-drap-down-container  .icon-trangle{
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}

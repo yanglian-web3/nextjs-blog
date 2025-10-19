@@ -1,10 +1,12 @@
-import BlogHeadWrap from "../components/blog-head/blog-head-wrap";
+import BlogListHead from "../components/blog-list/blog-list-head/blog-list-head";
 import "../styles/index.css"
 import {BlogItemType} from "../types/blog";
 import BlogListContent from "../components/blog-list/blog-list-content";
+import {UserInfo} from "../types/user";
+import {getUserInfo} from "../utils/user";
 
 
-export default function Home() {
+export default async function Home() {
 
     const blogList:BlogItemType[] = [
         {
@@ -79,9 +81,18 @@ export default function Home() {
         },
     ]
 
+    // const userInfo = await getUserInfo()
+
+    const userInfo:UserInfo = {
+        name: "张三",
+        headImg: "https://picsum.photos/200/300",
+        email: "zhangsan@163.com",
+        phone: "13888888888"
+    }
+
   return (
     <div className={"page-container"}>
-        <BlogHeadWrap/>
+        <BlogListHead userInfo={userInfo}/>
         <BlogListContent initList={blogList}/>
     </div>
   );

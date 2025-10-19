@@ -10,7 +10,7 @@ import {useEffect, useState} from 'react'
 const lowlight = createLowlight(common)
 
 export default function BlogEditor() {
-    const [title, setTitle] = useState('')
+
     const [content, setContent] = useState('')
 
     const [isClient, setIsClient] = useState(false)
@@ -61,22 +61,6 @@ export default function BlogEditor() {
 
     return (
         <div className="max-w-4xl mx-auto p-6">
-            {/* 文章头部 */}
-            <div className="mb-8">
-                <input
-                    type="text"
-                    placeholder="文章标题..."
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="w-full text-4xl font-bold border-none outline-none mb-4 placeholder-gray-400"
-                />
-                <textarea
-                    placeholder="文章摘要..."
-                    className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                    rows={3}
-                />
-            </div>
-
             {/* 工具栏 */}
             <div className="flex flex-wrap gap-2 p-4 border border-gray-300 rounded-t-lg bg-gray-50">
                 <button
