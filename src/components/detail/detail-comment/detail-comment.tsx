@@ -11,7 +11,7 @@ export default function DetailComment({userInfo} : {userInfo: UserInfo}) {
     const [value, setValue] = useState("");
 
     return <div className={"detail-comment-container p-2"}>
-        <div className="comment-send-container flex">
+        <div className="comment-send-container flex mb-7">
             <div className="user-head-container cursor-pointer">
                 <img className={"user-head-img"} src={userInfo.headImg ||  ""} alt=""/>
             </div>

@@ -19,3 +19,9 @@ html,body,div,p,span,ul,li,strong,span{
 .theme-bg{
   background-color: #fc5531;
 }
+.theme-bg-opacity1{
+  background-color: rgba(252, 85, 49, 0.1);
+}
+.theme-color{
+  color: #fc5531;
+}

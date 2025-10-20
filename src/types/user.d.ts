@@ -3,4 +3,5 @@ export interface UserInfo {
     headImg: string;
     email: string;
     phone: string;
+    account: string;
 }
