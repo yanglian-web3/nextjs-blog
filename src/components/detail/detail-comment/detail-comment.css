@@ -1,3 +1,7 @@
 .detail-comment-container{
 
 }
+.comment-input-send-container .comment-input:focus{
+    outline: none;
+    border: none;
+}

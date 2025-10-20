@@ -1,67 +1,43 @@
 /* components/slide-drawer.css */
 .drawer-backdrop {
-    position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    animation: drawer-fade-in 0.3s ease-out;
 }
-
+.drawer-open{
+    z-index: 1000;;
+    animation: drawer-fade-in 0.3s ease-out forwards;
+}
+.drawer-close{
+    animation: drawer-fade-out 0.3s ease-out forwards;
+    z-index: -1;
+    pointer-events: none;
+}
 .drawer-positioner {
-    position: fixed;
     inset: 0;
     z-index: 1001;
-    display: flex;
-    justify-content: flex-end;
 }
 
 .drawer-content {
-    position: relative;
-    height: 100vh;
-    background: white;
     box-shadow: -2px 0 12px rgba(0, 0, 0, 0.15);
-    display: flex;
-    flex-direction: column;
-    animation: drawer-slide-in 0.3s ease-out;
 }
-
+.drawer-content-open{
+    animation: drawer-slide-in 0.3s ease-out forwards;
+}
+.drawer-content-close{
+    animation: drawer-slide-out 0.3s ease-out forwards;
+}
 .drawer-title {
-    padding: 20px;
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
     color: #303133;
     border-bottom: 1px solid #e8e8e8;
     flex-shrink: 0;
 }
 
-.drawer-body {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-}
-
 .drawer-close-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 32px;
-    height: 32px;
     border: none;
     background: transparent;
     border-radius: 4px;
-    font-size: 18px;
     color: #909399;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     transition: all 0.2s;
-}
-
-.drawer-close-btn:hover {
-    background: #f5f7fa;
-    color: #606266;
 }
 
 /* 动画效果 */
@@ -80,6 +56,24 @@
     }
     to {
         opacity: 1;
+    }
+}
+/* 动画效果 */
+@keyframes drawer-slide-out {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes drawer-fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
     }
 }
 

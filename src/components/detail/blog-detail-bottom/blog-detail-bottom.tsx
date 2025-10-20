@@ -37,8 +37,13 @@ export default function BlogDetailBottom({userInfo, blogCountInfo}: {userInfo: U
                 </div>
             </div>
         </div>
-        <SlideDrawer open={drawerOpen} onOpenChange={(open) => setDrawerOpen(open)}>
-            <DetailComment/>
+        <SlideDrawer title={
+            <>
+                <span>评论</span>
+                <span className={"ml-2 text-gray-500"}>{ blogCountInfo.commentCount}</span>
+            </>
+        } open={drawerOpen} onOpenChange={(open) => setDrawerOpen(open)}>
+            <DetailComment userInfo={userInfo}/>
         </SlideDrawer>
 
     </>

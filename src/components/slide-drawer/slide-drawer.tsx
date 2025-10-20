@@ -6,7 +6,7 @@ import IconPlus from "../icons/icon-plus";
 interface SlideDrawerProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    title?: string;
+    title?: string | ReactNode;
     children: ReactNode;
     width?: string;
 }
@@ -16,7 +16,7 @@ export default function SlideDrawer({
                                         onOpenChange,
                                         title,
                                         children,
-                                        width = "400px"
+                                        width = "500px"
                                     }: SlideDrawerProps) {
     const [isVisible, setIsVisible] = useState(false);
 
@@ -43,33 +43,33 @@ export default function SlideDrawer({
     return (
         <Dialog.Root open={open} onOpenChange={(e) => !e.open && handleClose()}>
             <Dialog.Backdrop
-                className={`drawer-backdrop ${isVisible ? 'drawer-open' : 'drawer-close'}`}
+                className={`drawer-backdrop fixed ${isVisible ? 'drawer-open' : 'drawer-close'}`}
                 onClick={handleBackdropClick}
             />
-            <Dialog.Positioner className="drawer-positioner">
+            <Dialog.Positioner className="drawer-positioner fixed flex justify-end">
                 <Dialog.Content
-                    className={`drawer-content ${isVisible ? 'drawer-open' : 'drawer-close'}`}
+                    className={`drawer-content relative h-screen bg-white flex flex-col ${isVisible ? 'drawer-content-open' : 'drawer-content-close'}`}
                     style={{ width }}
                 >
                     {/* 标题栏 */}
                     {title && (
-                        <Dialog.Title className="drawer-title">
+                        <Dialog.Title className="drawer-title p-5 text-xl font-semibold">
                             {title}
                         </Dialog.Title>
                     )}
 
                     {/* 内容区域 */}
-                    <div className="drawer-body">
+                    <div className="drawer-body flex-1 p-5 overflow-auto">
                         {children}
                     </div>
 
                     {/* 关闭按钮 */}
                     <Dialog.CloseTrigger
-                        className="drawer-close-btn"
+                        className="drawer-close-btn absolute top-5 right-5 w-8 h-8"
                         onClick={handleClose}
                     >
-                        <span className="rotate-45">
-                            <IconPlus/>
+                        <span className="rotate-45 text-sm cursor-pointer flex items-center justify-center">
+                            <IconPlus color={"#999999"} width={20} height={20}/>
                         </span>
                     </Dialog.CloseTrigger>
                 </Dialog.Content>
