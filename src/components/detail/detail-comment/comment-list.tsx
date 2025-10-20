@@ -14,6 +14,11 @@ export default function CommentList() {
         })
     }, [])
 
+    // 渲染评论列表
+    const renderCommentList = (item: CommentItem) => {
+
+    }
+
     return <div className={"comment-list-container"}>
         {
             list && list.map((item, index) => {

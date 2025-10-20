@@ -24,25 +24,27 @@ export default function CommentListItem({ info, sub, isSub = false}: { info: Com
         }
         return <span className={"user-name text-sm text-gray-400 whitespace-nowrap"}>{userName} {postTime}</span>
     }
-    return <div className={`comment-list-item-container mb-5 ${isSub ? "ml-13" : ""}`} key={commentId}>
-        <div className={"comment-list-item flex mb-5"}>
-            <div className={`comment-user-head-container cursor-pointer mr-4 flex-shrink-0 ${ isSub ? "w-8 h-8" : "w-10 h-10"}`}>
-                <img className={"comment-user-head-img"} src={avatar ||  ""} alt=""/>
-            </div>
-            <div className={"info-right-container"}>
-                <div className={"info-top-container flex justify-between items-center mb-2 w-full"}>
-                    <div className={"flex-1 w-0 whitespace-nowrap overflow-ellipsis overflow-hidden"}>
-                        {getInfoTopLeft()}
-                    </div>
-                    <div className={"info-apply-container flex items-center cursor-pointer flex-shrink-0 ml-5"}
-                         onClick={() => setReplay(!replay)}
-                    >
-                        <IconMsg color="#999999" width={16} height={16}/>
-                        <span className={"text-sm text-gray-400 ml-1"}>{ replay ? "收起" : "回复"}</span>
-                    </div>
+    return <>
+        <div className={`comment-list-item-container mb-5 ${isSub ? "ml-13" : ""}`} key={commentId}>
+            <div className={"comment-list-item flex mb-5"}>
+                <div className={`comment-user-head-container cursor-pointer mr-4 flex-shrink-0 ${ isSub ? "w-8 h-8" : "w-10 h-10"}`}>
+                    <img className={"comment-user-head-img"} src={avatar ||  ""} alt=""/>
                 </div>
-                <div>
-                    <p className={"comment-content text-sm"}>{content}</p>
+                <div className={"info-right-container w-full"}>
+                    <div className={"info-top-container flex justify-between items-center mb-2 w-full"}>
+                        <div className={"flex-1 w-0 whitespace-nowrap overflow-ellipsis overflow-hidden"}>
+                            {getInfoTopLeft()}
+                        </div>
+                        <div className={"info-apply-container flex items-center cursor-pointer flex-shrink-0 ml-5"}
+                             onClick={() => setReplay(!replay)}
+                        >
+                            <IconMsg color="#999999" width={16} height={16}/>
+                            <span className={"text-sm text-gray-400 ml-1"}>{ replay ? "收起" : "回复"}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <p className={"comment-content text-sm"}>{content}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -56,5 +58,5 @@ export default function CommentListItem({ info, sub, isSub = false}: { info: Com
                 return <CommentListItem info={item} isSub={ true}/>
             })
         }
-    </div>
+    </>
 }
