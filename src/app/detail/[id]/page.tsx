@@ -6,12 +6,78 @@ import {getUserInfo} from "../../../utils/user";
 import IconClockFill from "../../../components/icons/icon-clock-fill";
 import IconViewFill from "../../../components/icons/icon-view-fill";
 import "./detail-page.css"
+import {BlogCountInfo} from "../../../types/blog";
+import BlogDetailBottom from "../../../components/detail/blog-detail-bottom/blog-detail-bottom";
 
 const initialMarkdown = `
 
 ## 代码高亮示例
 
 ### JavaScript 代码
+\`\`\`javascript
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}
+### JavaScript 代码
+\`\`\`javascript
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}
+### JavaScript 代码
+\`\`\`javascript
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}
+### JavaScript 代码
+\`\`\`javascript
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}### JavaScript 代码
+\`\`\`javascript
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}### JavaScript 代码
+\`\`\`javascript
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}### JavaScript 代码
+\`\`\`javascript
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}### JavaScript 代码
+\`\`\`javascript
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}### JavaScript 代码
+\`\`\`javascript
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}
+### JavaScript 代码
+\`\`\`javascript
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}
+### JavaScript 代码
+\`\`\`javascript
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}
+### JavaScript 代码
+\`\`\`javascript
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}
+### JavaScript 代码
+\`\`\`javascript
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}
+### JavaScript 代码
+\`\`\`javascript
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}### JavaScript 代码
 \`\`\`javascript
 function greet(name) {
   return \`Hello, \${name}!\`;
@@ -27,6 +93,10 @@ const value = initialMarkdown
         headImg: "https://picsum.photos/200/300",
         email: "zhangsan@163.com",
         phone: "13888888888"
+    }
+    const blogCountInfo: BlogCountInfo = {
+        commentCount: 10,
+        readCount: 100
     }
     return <div className="blog-detail-container bg-gray-200 flex flex-col">
         <BlogDetailHead userInfo={userInfo}/>
@@ -47,6 +117,10 @@ const value = initialMarkdown
                </div>
            </div>
         </div>
-        <BlogDetailPreview value={value}/>
+        <div className="blog-detail-preview-and-bottom-container flex justify-center">
+            <BlogDetailPreview value={value}/>
+            {/*为了对齐，放在preview组件里面，放在外面可能会因浏览器其他插件影响，导致底部和中间不对齐*/}
+            <BlogDetailBottom userInfo={userInfo} blogCountInfo={blogCountInfo}/>
+        </div>
     </div>
 }

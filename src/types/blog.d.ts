@@ -9,3 +9,8 @@ export interface BlogItemType {
     cover: string,
     status: number;
 }
+
+export interface BlogCountInfo {
+    commentCount: number;
+    readCount: number
+}

@@ -1,0 +1,14 @@
+.blog-detail-bottom-container{
+
+}
+.blog-detail-bottom-container .user-head-container{
+    width: 40px;
+    height: 40px;
+}
+.blog-detail-bottom-container .user-head-container .user-head-img{
+
+}
+.blog-detail-bottom-inner-container{
+    max-width: 1200px;
+    flex: 1;
+}

@@ -6,14 +6,14 @@ import "./blog-detail-preview.css"
 
 export default function BlogDetailPreview({value}: {value: string}) {
 
-    return <div className="blog-detail-preview-container flex justify-center">
-       <div className="blog-detail-preview-inner-container bg-white flex-1">
-           <MDEditor
-               value={value}
-               preview="preview"
-               hideToolbar={true}
-               height="auto"
-           />
-       </div>
+    return <div className="blog-detail-preview-inner-container flex flex-1 flex-col">
+        <div className="bg-white flex-1 pb-16">
+            <MDEditor
+                value={value}
+                preview="preview"
+                hideToolbar={true}
+                height="auto"
+            />
+        </div>
     </div>
 }

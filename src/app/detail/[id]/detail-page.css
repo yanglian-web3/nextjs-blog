@@ -12,3 +12,6 @@
     align-self: center;
     line-height: 1.2em;
 }
+.blog-detail-preview-and-bottom-container{
+    flex:1;
+}
