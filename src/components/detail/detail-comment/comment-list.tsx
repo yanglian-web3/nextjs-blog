@@ -18,7 +18,6 @@ export default function CommentList() {
         {
             list && list.map((item, index) => {
                 const {info, sub} = item
-                const { commentId } =  info
                 return <CommentListItem info={info} sub={sub}/>
             })
         }

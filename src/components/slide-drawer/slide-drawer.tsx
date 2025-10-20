@@ -16,7 +16,7 @@ export default function SlideDrawer({
                                         onOpenChange,
                                         title,
                                         children,
-                                        width = "500px"
+                                        width = "600px"
                                     }: SlideDrawerProps) {
     const [isVisible, setIsVisible] = useState(false);
 
