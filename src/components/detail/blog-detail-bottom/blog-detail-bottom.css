@@ -12,3 +12,6 @@
     max-width: 1200px;
     flex: 1;
 }
+.blog-detail-bottom-inner-container .blog-detail-item+.blog-detail-item{
+    margin-left: 20px;
+}
