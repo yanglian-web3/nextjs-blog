@@ -26,6 +26,9 @@ export default function SlideDrawer({
         }
     }, [open]);
 
+    /**
+     * 关闭
+     */
     const handleClose = () => {
         setIsVisible(false);
         // 等待动画完成后再真正关闭
