@@ -10,7 +10,7 @@ import Link from 'next/link'
 import Login from "../../login";
 
 
-function BlogDetailHead({ userInfo }: {userInfo:UserInfo}) {
+function BlogDetailHead({ userInfo }: {userInfo?:UserInfo}) {
     // console.log("userInfo=", userInfo)
 
   return userInfo ? <div className="blog-head-out-container bg-white">

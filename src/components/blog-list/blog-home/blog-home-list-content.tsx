@@ -1,12 +1,12 @@
 "use client"
 
-import BlogListItem from "./blog-list-item";
-import {BlogItemType} from "../../types/blog";
+import BlogHomeListItem from "./blog-home-list-item";
+import {BlogItemType} from "../../../types/blog";
 import {useEffect, useRef, useState} from "react";
-import Pagination from "../pagination/pagination";
-import {PaginationOptions} from "../../types/pagination";
+import Pagination from "../../pagination/pagination";
+import {PaginationOptions} from "../../../types/pagination";
 
-export default function BlogListContent({ initList}: { initList: BlogItemType[]}) {
+export default function BlogMyListContent({ initList}: { initList: BlogItemType[]}) {
 
     const [blogList, setBlogList] = useState(initList)
     const [draft, setDraft] = useState(blogList.filter((item) => item.status === 2).length)
@@ -17,7 +17,7 @@ export default function BlogListContent({ initList}: { initList: BlogItemType[]}
         current: 1,
         pageSize: 10,
         pageCount: 5,
-        total: 100,
+        total: 0,
         showQuickJumper: true,
         showSizeChanger: true,
         pageSizeOptions: [10, 20, 30, 40]
@@ -77,7 +77,7 @@ export default function BlogListContent({ initList}: { initList: BlogItemType[]}
 
                     {
                         blogList.map((item) => {
-                            return <BlogListItem item={item} key={item.id}/>
+                            return <BlogHomeListItem item={item} key={item.id}/>
                         })
                     }
                 </div>

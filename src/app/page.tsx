@@ -1,7 +1,7 @@
 import BlogListHead from "../components/blog-list/blog-list-head/blog-list-head";
 import "./index.css"
 import {BlogItemType} from "../types/blog";
-import BlogListContent from "../components/blog-list/blog-list-content";
+import BlogMyListContent from "../components/blog-list/blog-my-list/blog-my-list-content";
 import {UserInfo} from "../types/user";
 import {getUserInfo} from "../utils/user";
 
@@ -83,19 +83,12 @@ export default async function Home() {
 
     // const userInfo = await getUserInfo()
 
-    const userInfo:UserInfo = {
-        name: "张三",
-        avatar: "https://picsum.photos/200/300",
-        email: "zhangsan@163.com",
-        phone: "13888888888",
-        account: "zhangsan",
-        id: 1
-    }
+    const userInfo:UserInfo | null = null
 
   return (
     <div className={"page-container"}>
         <BlogListHead userInfo={userInfo}/>
-        <BlogListContent initList={blogList}/>
+        <BlogMyListContent initList={blogList}/>
     </div>
   );
 }

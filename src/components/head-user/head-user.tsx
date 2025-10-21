@@ -6,7 +6,7 @@ import IconTrangle from "../icons/icon-trangle";
 import {UserInfo} from "../../types/user";
 import "./head-user.css"
 
-export default function HeadUser({ userInfo, mode = "center" }: {userInfo:UserInfo, mode?: "right" | "center"}) {
+export default function HeadUser({ userInfo, mode = "center" }: {userInfo?:UserInfo, mode?: "right" | "center"}) {
   /**
    * 退出登录
    */

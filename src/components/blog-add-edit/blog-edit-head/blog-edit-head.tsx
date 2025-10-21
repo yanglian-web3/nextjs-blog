@@ -11,7 +11,7 @@ import { updateTitle } from "../../../store/blog-edit-slice";
 
 
 
-function BlogEditHead({ userInfo }: {userInfo:UserInfo}) {
+function BlogEditHead({ userInfo }: {userInfo?:UserInfo}) {
     const dispatch = useDispatch<AppDispatch>()
     const { title } = useSelector((state: RootState) => state.blogEdit)
 

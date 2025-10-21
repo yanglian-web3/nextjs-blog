@@ -1,8 +1,8 @@
 
-import { BlogItemType } from "../../types/blog";
+import { BlogItemType } from "../../../types/blog";
 import Link from 'next/link'
 
-export default function BlogListItem({ item }: { item: BlogItemType}){
+export default function BlogMyListItem({ item }: { item: BlogItemType}){
     /**
      * 跳转到详情页
      */

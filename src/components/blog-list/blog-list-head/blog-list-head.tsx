@@ -10,10 +10,10 @@ import Link from 'next/link'
 import Login from "../../login";
 
 
-function BlogListHead({ userInfo }: {userInfo:UserInfo}) {
+function BlogListHead({ userInfo }: {userInfo?:UserInfo}) {
     // console.log("userInfo=", userInfo)
 
-  return userInfo ? <div className="blog-head-out-container">
+  return <div className="blog-head-out-container">
       <div className="blog-head-container flex justify-between items-center">
           <div className="blog-search-container relative flex">
               <input placeholder="搜索本站" className="blog-search-input blog-head-input border border-solid border-gray-200 pl-4 pr-10 py-1 w-100"/>
@@ -22,7 +22,7 @@ function BlogListHead({ userInfo }: {userInfo:UserInfo}) {
               </span>
           </div>
           <div className="flex justify-end items-center">
-              <HeadUser userInfo={userInfo}/>
+              { userInfo && userInfo.id && userInfo.account && userInfo.name ? <HeadUser userInfo={userInfo}/>  : <Login/>}
               <Link href={`/add-edit`} target="_blank" rel="noopener noreferrer">
                   <div className="create-container ml-10 flex items-center py-1 px-6 rounded-full cursor-pointer">
                       <IconPlus width={20} height={20} color="#ffffff"/>
@@ -31,7 +31,7 @@ function BlogListHead({ userInfo }: {userInfo:UserInfo}) {
               </Link>
           </div>
       </div>
-  </div> : <Login/>
+  </div>
 }
 
 BlogListHead.prototype = {
