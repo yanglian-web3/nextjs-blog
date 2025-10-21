@@ -16,7 +16,7 @@ export default function HeadUser({ userInfo, mode = "center" }: {userInfo:UserIn
 
   return <div className={`user-info-container relative z-10  user-info-container-${mode}`}>
       <div className="user-head-container cursor-pointer">
-        <img className={"user-head-img"} src={userInfo.headImg ||  ""} alt=""/>
+        <img className={"user-head-img"} src={userInfo.avatar ||  ""} alt=""/>
       </div>
       <div className={`user-drap-down-container absolute rounded-md`}>
         <ul className={"user-info-list py-2 px-4"}>

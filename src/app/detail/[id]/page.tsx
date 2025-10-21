@@ -90,9 +90,11 @@ const value = initialMarkdown
     // const userInfo = await getUserInfo()
     const userInfo:UserInfo = {
         name: "张三",
-        headImg: "https://picsum.photos/200/300",
+        avatar: "https://picsum.photos/200/300",
         email: "zhangsan@163.com",
-        phone: "13888888888"
+        phone: "13888888888",
+        account: "zhangsan",
+        id: 1
     }
     const blogCountInfo: BlogCountInfo = {
         commentCount: 10,

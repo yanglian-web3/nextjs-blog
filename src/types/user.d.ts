@@ -1,7 +1,8 @@
 export interface UserInfo {
     name: string;
-    headImg: string;
+    avatar: string;
     email: string;
     phone: string;
     account: string;
+    id: number;
 }

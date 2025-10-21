@@ -13,7 +13,7 @@ export default function DetailComment({userInfo} : {userInfo: UserInfo}) {
     return <div className={"detail-comment-container p-2"}>
         <div className="comment-send-container flex mb-7">
             <div className="user-head-container cursor-pointer">
-                <img className={"user-head-img"} src={userInfo.headImg ||  ""} alt=""/>
+                <img className={"user-head-img"} src={userInfo.avatar ||  ""} alt=""/>
             </div>
            <div className={"ml-4 flex-1 flex"}>
                <CommentInputSend/>

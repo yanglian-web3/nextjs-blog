@@ -21,7 +21,7 @@ export default function BlogListItem({ item }: { item: BlogItemType}){
             </div>
         </Link>
         <div className="blog-list-title-right flex justify-end items-center">
-            <span className="blog-list-title-right-item w-24 flex justify-center">{ item.evaluation }</span>
+            <span className="blog-list-title-right-item w-24 flex justify-center">{ item.commentNum }</span>
             <div className="item-right flex justify-end items-center w-40">
                 <Link href={`/add-edit?id=${item.id}`} target="_blank" rel="noopener noreferrer">
                     <span className="item-button text-blue py-2 cursor-pointer">编辑</span>

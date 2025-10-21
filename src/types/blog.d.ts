@@ -5,7 +5,7 @@ export interface BlogItemType {
     content: string;
     createdAt: string;
     updatedAt: string;
-    evaluation: number;
+    commentNum: number;
     cover: string,
     status: number;
 }

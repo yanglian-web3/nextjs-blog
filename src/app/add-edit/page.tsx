@@ -16,21 +16,21 @@ export default async function AddEditPage() {
     // const userInfo = await getUserInfo()
     const userInfo:UserInfo = {
         name: "张三",
-        headImg: "https://picsum.photos/200/300",
+        avatar: "https://picsum.photos/200/300",
         email: "zhangsan@163.com",
-        phone: "13888888888"
+        phone: "13888888888",
+        account: "zhangsan",
+        id: 1
     }
 
 
-    return (
-        <div className="blog-add-edit-container">
-            <BlogEditHead userInfo={userInfo}/>
-            {/*中间部分*/}
-            <div className="blog-edit-middle-container">
-                <BlogEditor />
-            </div>
-            {/* 操作按钮 */}
-            <BlogEditPublishButtons/>
+    return <div className="blog-add-edit-container">
+        <BlogEditHead userInfo={userInfo}/>
+        {/*中间部分*/}
+        <div className="blog-edit-middle-container">
+            <BlogEditor />
         </div>
-    )
+        {/* 操作按钮 */}
+        <BlogEditPublishButtons/>
+    </div>
 }
