@@ -1,5 +1,5 @@
 .rotate360{
-    animation: rotate360 1s linear infinite;
+    animation: rotate360 0.3s linear infinite;
 }
 @keyframes rotate360{
     from{

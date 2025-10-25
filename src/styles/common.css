@@ -25,6 +25,15 @@ html,body,div,p,span,ul,li,strong,span{
 .theme-color{
   color: #fc5531;
 }
+.theme-color-hover:hover{
+  color: #fc5531;
+}
+.theme-border-color{
+  border-color: #fc5531;
+}
+.theme-border-color-focus:focus{
+  border-color: #fc5531;
+}
 .position-center{
   left: 50%;
   top: 50%;
@@ -32,4 +41,7 @@ html,body,div,p,span,ul,li,strong,span{
 }
 .radius-circle{
   border-radius: 50%;
+}
+.input-placeholder::placeholder{
+  color: #aaa;
 }

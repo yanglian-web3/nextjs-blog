@@ -4,18 +4,15 @@ import { Dialog, Field } from "@ark-ui/react";
 import { useEffect, useState } from "react";
 import IconPlus from "../icons/icon-plus";
 import { ErrorField } from "../../types/form";
-import IconLoading from "../icons/icon-loading";
-import {validateForm, validateSingleField} from "../../utils/form-handle";
 
 interface LoginForm {
-    name: string;
-    email: string;
     account: string;
+    password: string;
 }
 
 interface LoginFormError {
-    name: ErrorField;
-    email: ErrorField;
+    account: ErrorField;
+    password: ErrorField;
 }
 interface Props {
     open: boolean;
@@ -23,14 +20,13 @@ interface Props {
     onOpenLogin: () => void;
 }
 
-export default function Registry({ open, onClose, onOpenLogin }: Props) {
+export default function ForgetPass({ open, onClose, onOpenLogin }: Props) {
     const [isOpen, setOpen] = useState(false);
     const [isSubmitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState<Partial<LoginFormError>>({});
     const [formData, setFormData] = useState<LoginForm>({
-        name: '',
-        email: '',
         account: '',
+        password: ''
     });
 
     useEffect(() => {
@@ -40,30 +36,52 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
         }
     }, [open]);
 
-    /**
-     * 验证规则
-     * @param name
-     * @param value
-     */
+    // 验证规则
     const validateField = (name: keyof LoginForm, value: string): string | null => {
         switch (name) {
-            case 'name':
-                if (!value.trim()) return '请输入姓名';
+            case 'account':
+                if (!value.trim()) return '请输入账号';
                 return null;
 
-            case 'email':
-                if (!value.trim()) return '请输入邮箱';
+            case 'password':
+                if (!value.trim()) return '请输入密码';
+                if (value.length < 6) return '密码至少6位字符';
+                if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(value)) return '密码必须包含字母和数字';
                 return null;
+
             default:
                 return null;
         }
     };
 
+    // 验证整个表单
+    const validateForm = (): boolean => {
+        const newErrors: Partial<LoginFormError> = {};
+        let isValid = true;
 
-    /**
-     * 处理输入变化
-     * @param field
-     */
+        // 验证每个字段
+        (Object.keys(formData) as Array<keyof LoginForm>).forEach(key => {
+            const error = validateField(key, formData[key]);
+            if (error) {
+                newErrors[key] = { message: error };
+                isValid = false;
+            }
+        });
+
+        setErrors(newErrors);
+        return isValid;
+    };
+
+    // 单个字段验证
+    const validateSingleField = (name: keyof LoginForm, value: string) => {
+        const error = validateField(name, value);
+        setErrors(prev => ({
+            ...prev,
+            [name]: error ? { message: error } : undefined
+        }));
+    };
+
+    // 处理输入变化
     const handleInputChange = (field: keyof LoginForm) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setFormData(prev => ({
@@ -72,35 +90,8 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
         }));
 
         // 实时验证（可选，也可以在提交时验证）
-        validateSingleField<LoginForm>({
-            name:field,
-            value,
-            validateField,
-            setErrors
-        });
+        validateSingleField(field, value);
     };
-    /**
-     * 邮箱输入框变化
-     */
-    const emailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // 根据邮箱生成账号。规则blog_[邮箱后缀]_[邮箱前缀]
-        const email = e.target.value;
-        const emailFront = email.split('.')[0];
-        const emailFrontSplitArr = emailFront.split('@');
-        const account = `blog_${emailFrontSplitArr[1]}_${emailFrontSplitArr[0]}`;
-            if(emailFrontSplitArr.length > 1 && emailFrontSplitArr[1]){
-            setFormData(prev => ({
-                ...prev,
-                account
-            }))
-        }else {
-            setFormData(prev => ({
-                ...prev,
-                account: ''
-            }))
-        }
-        handleInputChange('email')(e)
-    }
 
     /**
      * 表单提交
@@ -110,26 +101,22 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
         e.preventDefault();
         console.log("提交")
         // 提交前验证
-        if (!validateForm<LoginForm, LoginFormError>({
-            formData,
-            validateField,
-            setErrors
-        })) {
+        if (!validateForm()) {
             return;
         }
 
         setSubmitting(true);
         try {
-            console.log('提交注册数据:', formData);
-            // 这里调用实际的注册 API
+            console.log('提交找回密码数据:', formData);
+            // 这里调用实际的找回密码 API
             await new Promise(resolve => setTimeout(resolve, 1000)); // 模拟API调用
 
-            // 注册成功后的处理
-            console.log('注册成功');
+            // 找回密码成功后的处理
+            console.log('找回密码成功');
             handleClose();
 
         } catch (error) {
-            console.error('注册失败:', error);
+            console.error('找回密码失败:', error);
             // 设置服务器错误
             setErrors(prev => ({
                 ...prev
@@ -142,9 +129,8 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
     // 重置表单
     const resetForm = () => {
         setFormData({
-            name: '',
-            email: '',
             account: '',
+            password: ''
         });
         setErrors({});
     };
@@ -169,53 +155,47 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
             <Dialog.Positioner className="fixed inset-0 flex items-center justify-center p-4 z-[100]">
                 <Dialog.Content className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
                     <Dialog.Title className="text-lg font-semibold mb-2">
-                        <div className="flex items-center gap-2">注册</div>
+                        <div className="flex items-center gap-2">找回密码</div>
                     </Dialog.Title>
 
                     <Dialog.Description className="mb-4">
                         <div className="form">
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 {/* 邮箱字段 */}
-                                <Field.Root invalid={!!errors.name}>
+                                <Field.Root invalid={!!errors.account}>
                                     <Field.Label className="block text-sm font-medium text-gray-700 mb-1">
-                                        姓名
+                                        账号
                                     </Field.Label>
                                     <Field.Input
-                                        value={formData.name}
-                                        onChange={handleInputChange('name')}
-                                        placeholder="your name"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 theme-border-color-focus input-placeholder"
+                                        value={formData.account}
+                                        onChange={handleInputChange('account')}
+                                        placeholder="your account"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 theme-border-color-focus"
                                     />
                                     <div className="h-4">
                                         <Field.ErrorText className="text-red-500 text-xs mt-1">
-                                            {errors.name?.message}
+                                            {errors.account?.message}
                                         </Field.ErrorText>
                                     </div>
                                 </Field.Root>
 
-                                {/* 邮箱字段 */}
-                                <Field.Root invalid={!!errors.email}>
+                                {/* 密码字段 */}
+                                <Field.Root invalid={!!errors.password}>
                                     <Field.Label className="block text-sm font-medium text-gray-700 mb-1">
-                                        邮箱
+                                        密码
                                     </Field.Label>
                                     <Field.Input
-                                        type="email"
-                                        value={formData.email}
-                                        onChange={emailChange}
-                                        placeholder="请输入邮箱"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 theme-border-color-focus input-placeholder"
+                                        type="password"
+                                        value={formData.password}
+                                        onChange={handleInputChange('password')}
+                                        placeholder="请输入密码"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 theme-border-color-focus"
                                     />
                                     <div className="h-4">
                                         <Field.ErrorText className="text-red-500 text-xs mt-1">
-                                            {errors.email?.message}
+                                            {errors.password?.message}
                                         </Field.ErrorText>
                                     </div>
-                                </Field.Root>
-                                <Field.Root>
-                                    <Field.Label className="block text-sm font-medium text-gray-700 mb-1">
-                                        账号
-                                    </Field.Label>
-                                    <span className="w-full px-3 py-2">{formData.account}</span>
                                 </Field.Root>
 
                                 <div className="w-full pt-10">
@@ -224,21 +204,12 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
                                         disabled={isSubmitting}
                                         className={`px-6 py-2 text-white rounded-lg transition-colors w-full cursor-pointer ${
                                             isSubmitting
-                                                ? 'theme-bg'
+                                                ? 'bg-gray-400 cursor-not-allowed'
                                                 : 'theme-bg hover:opacity-90'
                                         }`}
                                     >
-                                        {isSubmitting ? <span className={"flex items-center justify-center gap-2"}>
-                                            <IconLoading color={"white"} />
-                                            注册中...
-                                        </span> : '注册'}
+                                        {isSubmitting ? '找回密码中...' : '找回密码'}
                                     </button>
-                                </div>
-                                <div className={"registry-favigater-pass-container flex justify-between"}>
-                                    <button type={"button"}
-                                            className={"cursor-pointer theme-color-hover text-sm"}
-                                            onClick={onOpenLogin}
-                                    >已有账号，去登录</button>
                                 </div>
                             </form>
                         </div>

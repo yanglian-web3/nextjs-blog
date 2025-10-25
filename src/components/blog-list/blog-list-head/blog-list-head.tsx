@@ -9,11 +9,15 @@ import IconPlus from "../../icons/icon-plus";
 import Link from 'next/link'
 import Login from "../../login/login";
 import {useState} from "react";
+import Registry from "../../registry/registry";
+import ForgetPass from "../../forget-pass/forget-pass";
 
 
 function BlogListHead({ userInfo }: {userInfo?:UserInfo}) {
 
     const [loginOpen, setLoginOpen] = useState(false)
+    const [registryOpen, setRegistryOpen] = useState(false)
+    const [forgetPassOpen, setForgetPassOpen] = useState(false)
 
     /**
      * 打开登录弹窗
@@ -24,9 +28,37 @@ function BlogListHead({ userInfo }: {userInfo?:UserInfo}) {
     /**
      * 关闭登录弹窗
      */
-    const onClose = () => {
+    const onLoginClose = () => {
+        console.log("关闭登录弹窗")
         setLoginOpen(false)
     }
+    /**
+     * 打开注册弹窗
+     */
+    const openRegistry = () => {
+        onLoginClose()
+        setRegistryOpen(true)
+    }
+    /**
+     * 关闭注册弹窗
+     */
+    const onRegistryClose = () => {
+        setRegistryOpen(false)
+    }
+    /**
+     * 打开忘记密码弹窗
+     */
+    const openForgetPass = () => {
+        onLoginClose()
+        setForgetPassOpen(true)
+    }
+    /**
+     * 关闭忘记密码弹窗
+     */
+    const onForgetPassClose = () => {
+        setForgetPassOpen(false)
+    }
+
 
 
     return <>
@@ -51,7 +83,13 @@ function BlogListHead({ userInfo }: {userInfo?:UserInfo}) {
                 </div>
             </div>
         </div>
-        <Login open={loginOpen} onClose={onClose}/>
+        <Login open={loginOpen} onClose={onLoginClose} onOpenRegistry={openRegistry} onOpenForgetPass={openForgetPass}/>
+        <Registry open={registryOpen} onClose={onRegistryClose} onOpenLogin={() => {
+            onRegistryClose()
+            openLogin()
+        }
+        }/>
+        <ForgetPass open={forgetPassOpen} onClose={onForgetPassClose}/>
     </>
 }
 

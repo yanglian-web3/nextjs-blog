@@ -6,29 +6,42 @@ import IconPlus from "../icons/icon-plus";
 import { ErrorField } from "../../types/form";
 
 interface LoginForm {
-    account: string;
+    email: string;
     password: string;
 }
 
 interface LoginFormError {
-    account: ErrorField;
+    email: ErrorField;
     password: ErrorField;
 }
+interface Props {
+    open: boolean;
+    onClose: () => void;
+    onOpenRegistry: () => void;
+    onOpenForgetPass: () => void;
+}
 
-export default function Login({ open, onClose }: { open: boolean; onClose: () => void }) {
+export default function Login({ open, onClose, onOpenRegistry, onOpenForgetPass }: Props) {
     const [isOpen, setOpen] = useState(false);
     const [isSubmitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState<Partial<LoginFormError>>({});
     const [formData, setFormData] = useState<LoginForm>({
-        account: '',
+        email: '',
         password: ''
     });
+
+    useEffect(() => {
+        setOpen(open);
+        if (open) {
+            resetForm(); // 打开时重置表单
+        }
+    }, [open]);
 
     // 验证规则
     const validateField = (name: keyof LoginForm, value: string): string | null => {
         switch (name) {
-            case 'account':
-                if (!value.trim()) return '请输入账号';
+            case 'email':
+                if (!value.trim()) return '请输入邮箱';
                 return null;
 
             case 'password':
@@ -69,7 +82,10 @@ export default function Login({ open, onClose }: { open: boolean; onClose: () =>
         }));
     };
 
-    // 处理输入变化
+    /**
+     * 处理输入变化
+     * @param field
+     */
     const handleInputChange = (field: keyof LoginForm) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setFormData(prev => ({
@@ -79,12 +95,15 @@ export default function Login({ open, onClose }: { open: boolean; onClose: () =>
 
         // 实时验证（可选，也可以在提交时验证）
         validateSingleField(field, value);
-    };
+    }
 
-    // 表单提交
+    /**
+     * 表单提交
+     * @param e
+     */
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
+        console.log("提交")
         // 提交前验证
         if (!validateForm()) {
             return;
@@ -114,115 +133,110 @@ export default function Login({ open, onClose }: { open: boolean; onClose: () =>
     // 重置表单
     const resetForm = () => {
         setFormData({
-            account: '',
+            email: '',
             password: ''
         });
         setErrors({});
     };
 
-    useEffect(() => {
-        if (open) {
-            setOpen(true);
-            resetForm(); // 打开时重置表单
-        }
-    }, [open]);
+
 
     /**
      * 关闭
      */
     const handleClose = () => {
-        setOpen(false);
         onClose();
         resetForm(); // 关闭时重置表单
     };
 
-    // 检查表单是否可提交
-    const isFormValid = () => {
-        return formData.account.trim() !== '' &&
-            formData.password.trim() !== '' &&
-            Object.keys(errors).length === 0;
-    };
 
-    return (
-        <Dialog.Root open={isOpen}>
-            <Dialog.Backdrop
-                className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
-                onClick={handleClose}
-            />
-            <Dialog.Positioner className="fixed inset-0 flex items-center justify-center p-4 z-[100]">
-                <Dialog.Content className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
-                    <Dialog.Title className="text-lg font-semibold mb-2">
-                        <div className="flex items-center gap-2">登录</div>
-                    </Dialog.Title>
+    return <Dialog.Root open={isOpen}>
+        <Dialog.Backdrop
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
+            onClick={handleClose}
+        />
+        <Dialog.Positioner className="fixed inset-0 flex items-center justify-center p-4 z-[100]">
+            <Dialog.Content className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
+                <Dialog.Title className="text-lg font-semibold mb-2">
+                    <div className="flex items-center gap-2">登录</div>
+                </Dialog.Title>
 
-                    <Dialog.Description className="mb-6">
-                        <div className="form">
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                {/* 邮箱字段 */}
-                                <Field.Root invalid={!!errors.account}>
-                                    <Field.Label className="block text-sm font-medium text-gray-700 mb-1">
-                                        账号
-                                    </Field.Label>
-                                    <Field.Input
-                                        value={formData.account}
-                                        onChange={handleInputChange('account')}
-                                        placeholder="your account"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    />
-                                   <div className="h-4">
-                                       <Field.ErrorText className="text-red-500 text-xs mt-1">
-                                           {errors.account?.message}
-                                       </Field.ErrorText>
-                                   </div>
-                                </Field.Root>
-
-                                {/* 密码字段 */}
-                                <Field.Root invalid={!!errors.password}>
-                                    <Field.Label className="block text-sm font-medium text-gray-700 mb-1">
-                                        密码
-                                    </Field.Label>
-                                    <Field.Input
-                                        type="password"
-                                        value={formData.password}
-                                        onChange={handleInputChange('password')}
-                                        placeholder="请输入密码"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    />
-                                    <div className="h-4">
-                                        <Field.ErrorText className="text-red-500 text-xs mt-1">
-                                            {errors.password?.message}
-                                        </Field.ErrorText>
-                                    </div>
-                                </Field.Root>
-
-                                <div className="flex justify-end pt-4">
-                                    <button
-                                        type="submit"
-                                        disabled={isSubmitting || !isFormValid()}
-                                        className={`px-6 py-2 text-white rounded-lg transition-colors ${
-                                            isSubmitting || !isFormValid()
-                                                ? 'bg-gray-400 cursor-not-allowed'
-                                                : 'theme-bg hover:opacity-90'
-                                        }`}
-                                    >
-                                        {isSubmitting ? '登录中...' : '登录'}
-                                    </button>
+                <Dialog.Description className="mb-4">
+                    <div className="form mt-4">
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            {/* 邮箱字段 */}
+                            <Field.Root invalid={!!errors.email}>
+                                <Field.Label className="block text-sm font-medium text-gray-700 mb-1">
+                                    邮箱
+                                </Field.Label>
+                                <Field.Input
+                                    value={formData.email}
+                                    placeholder="your email"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 theme-border-color-focus input-placeholder"
+                                />
+                                <div className="h-4">
+                                    <Field.ErrorText className="text-red-500 text-xs mt-1">
+                                        {errors.email?.message}
+                                    </Field.ErrorText>
                                 </div>
-                            </form>
-                        </div>
-                    </Dialog.Description>
+                            </Field.Root>
 
-                    {/* 关闭按钮 */}
-                    <Dialog.CloseTrigger
-                        className="close-btn absolute top-3 right-3 w-8 h-8"
-                        onClick={handleClose}
-                    >
+                            {/* 密码字段 */}
+                            <Field.Root invalid={!!errors.password}>
+                                <Field.Label className="block text-sm font-medium text-gray-700 mb-1 ">
+                                    密码
+                                </Field.Label>
+                                <Field.Input
+                                    type="password"
+                                    value={formData.password}
+                                    onChange={handleInputChange('password')}
+                                    placeholder="your password"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 theme-border-color-focus input-placeholder"
+                                />
+                                <div className="h-4">
+                                    <Field.ErrorText className="text-red-500 text-xs mt-1">
+                                        {errors.password?.message}
+                                    </Field.ErrorText>
+                                </div>
+                            </Field.Root>
+
+                            <div className="w-full pt-10">
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className={`px-6 py-2 text-white rounded-lg transition-colors w-full cursor-pointer ${
+                                        isSubmitting
+                                            ? 'bg-gray-400 cursor-not-allowed'
+                                            : 'theme-bg hover:opacity-90'
+                                    }`}
+                                >
+                                    {isSubmitting ? '登录中...' : '登录'}
+                                </button>
+                            </div>
+                            <div className={"registry-favigater-pass-container flex justify-between"}>
+                                <button type={"button"}
+                                        className={"cursor-pointer theme-color-hover text-sm"}
+                                        onClick={onOpenRegistry}
+                                >账号注册</button>
+                                <button type={"button"}
+                                        className={"cursor-pointer text-sm theme-color-hover"}
+                                        onClick={onOpenForgetPass}
+                                >忘记密码</button>
+                            </div>
+                        </form>
+                    </div>
+                </Dialog.Description>
+
+                {/* 关闭按钮 */}
+                <Dialog.CloseTrigger
+                    className="close-btn absolute top-3 right-3 w-8 h-8"
+                    onClick={handleClose}
+                >
             <span className="rotate-45 text-sm cursor-pointer flex items-center justify-center">
               <IconPlus color="#999999" width={26} height={26} />
             </span>
-                    </Dialog.CloseTrigger>
-                </Dialog.Content>
-            </Dialog.Positioner>
-        </Dialog.Root>
-    );
+                </Dialog.CloseTrigger>
+            </Dialog.Content>
+        </Dialog.Positioner>
+    </Dialog.Root>
 }
