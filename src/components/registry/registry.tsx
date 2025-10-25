@@ -54,6 +54,7 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
 
             case 'email':
                 if (!value.trim()) return '请输入邮箱';
+                if (!/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(value)) return '邮箱格式不正确';
                 return null;
             default:
                 return null;
