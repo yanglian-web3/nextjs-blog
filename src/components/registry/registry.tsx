@@ -1,4 +1,4 @@
-// "use client"
+"use client"
 
 import { Dialog, Field } from "@ark-ui/react";
 import { useEffect, useState } from "react";
@@ -6,6 +6,7 @@ import IconPlus from "../icons/icon-plus";
 import { ErrorField } from "../../types/form";
 import IconLoading from "../icons/icon-loading";
 import {validateForm, validateSingleField} from "../../utils/form-handle";
+import BlogInput from "../form/blog-input";
 
 interface LoginForm {
     name: string;
@@ -180,11 +181,17 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
                                     <Field.Label className="block text-sm font-medium text-gray-700 mb-1">
                                         姓名
                                     </Field.Label>
-                                    <Field.Input
+                                    <BlogInput
                                         value={formData.name}
-                                        onChange={handleInputChange('name')}
                                         placeholder="your name"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 theme-border-color-focus input-placeholder"
+                                        onChange={handleInputChange('name')}
+                                        onClear={() => {
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                name: ''
+                                            }))
+                                        }}
                                     />
                                     <div className="h-4">
                                         <Field.ErrorText className="text-red-500 text-xs mt-1">
@@ -198,12 +205,18 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
                                     <Field.Label className="block text-sm font-medium text-gray-700 mb-1">
                                         邮箱
                                     </Field.Label>
-                                    <Field.Input
+                                    <BlogInput
                                         type="email"
                                         value={formData.email}
-                                        onChange={emailChange}
-                                        placeholder="请输入邮箱"
+                                        placeholder="your email"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 theme-border-color-focus input-placeholder"
+                                        onChange={emailChange}
+                                        onClear={() => {
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                email: ''
+                                            }))
+                                        }}
                                     />
                                     <div className="h-4">
                                         <Field.ErrorText className="text-red-500 text-xs mt-1">

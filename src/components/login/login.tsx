@@ -1,9 +1,11 @@
-// "use client"
+"use client"
 
 import { Dialog, Field } from "@ark-ui/react";
 import { useEffect, useState } from "react";
 import IconPlus from "../icons/icon-plus";
 import { ErrorField } from "../../types/form";
+import BlogInput from "../form/blog-input";
+import {validateForm, validateSingleField} from "../../utils/form-handle";
 
 interface LoginForm {
     email: string;
@@ -55,46 +57,25 @@ export default function Login({ open, onClose, onOpenRegistry, onOpenForgetPass 
         }
     };
 
-    // 验证整个表单
-    const validateForm = (): boolean => {
-        const newErrors: Partial<LoginFormError> = {};
-        let isValid = true;
-
-        // 验证每个字段
-        (Object.keys(formData) as Array<keyof LoginForm>).forEach(key => {
-            const error = validateField(key, formData[key]);
-            if (error) {
-                newErrors[key] = { message: error };
-                isValid = false;
-            }
-        });
-
-        setErrors(newErrors);
-        return isValid;
-    };
-
-    // 单个字段验证
-    const validateSingleField = (name: keyof LoginForm, value: string) => {
-        const error = validateField(name, value);
-        setErrors(prev => ({
-            ...prev,
-            [name]: error ? { message: error } : undefined
-        }));
-    };
-
     /**
      * 处理输入变化
      * @param field
      */
     const handleInputChange = (field: keyof LoginForm) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
+        console.log("输入v=", value)
         setFormData(prev => ({
             ...prev,
             [field]: value
         }));
 
         // 实时验证（可选，也可以在提交时验证）
-        validateSingleField(field, value);
+        validateSingleField<LoginForm>({
+            name:field,
+            value,
+            validateField,
+            setErrors
+        });
     }
 
     /**
@@ -105,7 +86,11 @@ export default function Login({ open, onClose, onOpenRegistry, onOpenForgetPass 
         e.preventDefault();
         console.log("提交")
         // 提交前验证
-        if (!validateForm()) {
+        if (!validateForm<LoginForm, LoginFormError>({
+            formData,
+            validateField,
+            setErrors
+        })) {
             return;
         }
 
@@ -169,10 +154,16 @@ export default function Login({ open, onClose, onOpenRegistry, onOpenForgetPass 
                                 <Field.Label className="block text-sm font-medium text-gray-700 mb-1">
                                     邮箱
                                 </Field.Label>
-                                <Field.Input
-                                    value={formData.email}
-                                    placeholder="your email"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 theme-border-color-focus input-placeholder"
+                                <BlogInput   value={formData.email}
+                                             placeholder="your email"
+                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 theme-border-color-focus input-placeholder"
+                                             onChange={handleInputChange('email')}
+                                             onClear={() => {
+                                                 setFormData(prev => ({
+                                                     ...prev,
+                                                     email: ''
+                                                 }))
+                                             }}
                                 />
                                 <div className="h-4">
                                     <Field.ErrorText className="text-red-500 text-xs mt-1">
@@ -186,12 +177,17 @@ export default function Login({ open, onClose, onOpenRegistry, onOpenForgetPass 
                                 <Field.Label className="block text-sm font-medium text-gray-700 mb-1 ">
                                     密码
                                 </Field.Label>
-                                <Field.Input
-                                    type="password"
-                                    value={formData.password}
-                                    onChange={handleInputChange('password')}
-                                    placeholder="your password"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 theme-border-color-focus input-placeholder"
+                                <BlogInput    type="password"
+                                              value={formData.password}
+                                              onChange={handleInputChange('password')}
+                                              placeholder="your password"
+                                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 theme-border-color-focus input-placeholder"
+                                             onClear={() => {
+                                                 setFormData(prev => ({
+                                                     ...prev,
+                                                     password: ''
+                                                 }))
+                                             }}
                                 />
                                 <div className="h-4">
                                     <Field.ErrorText className="text-red-500 text-xs mt-1">
