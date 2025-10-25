@@ -1,0 +1,13 @@
+.page-loading-container{
+
+}
+.page-loading-icon-container{
+    background-color: rgba(255,255,255,0.7);
+    z-index: 999;
+}
+.page-loading-icon-container-show{
+    display: flex;
+}
+.page-loading-icon-container-hide{
+    display: none;
+}

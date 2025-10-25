@@ -25,3 +25,11 @@ html,body,div,p,span,ul,li,strong,span{
 .theme-color{
   color: #fc5531;
 }
+.position-center{
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%)
+}
+.radius-circle{
+  border-radius: 50%;
+}

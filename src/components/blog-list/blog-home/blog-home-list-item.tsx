@@ -1,34 +1,38 @@
 
-import { BlogItemType } from "../../../types/blog";
+import {BlogHomeItemType} from "../../../types/blog";
 import Link from 'next/link'
+import IconViewFill from "../../icons/icon-view-fill";
 
-export default function BlogListItem({ item }: { item: BlogItemType}){
+export default function BlogListItem({ item }: { item: BlogHomeItemType}){
     /**
      * 跳转到详情页
      */
     const goDetail = () => {
         console.log("item=", item)
     }
-    return <div className="blog-list-item flex justify-between border-b border-gray-100 py-5">
+    return <div className="blog-list-item border-b border-gray-100 py-5">
+        <Link href={`/${item.account}`} className={"user-info-container flex items-center cursor-pointer mb-2"} target="_blank" rel="noopener noreferrer">
+            <div className="w-8 h-8 overflow-hidden radius-circle">
+                <img className={"w-full h-full"} src={item.avatar ||  ""} alt=""/>
+            </div>
+            <p className={"ml-2 text-xs text-gray-500"}>{item.nickname}</p>
+        </Link>
         <Link href={`/detail/${item.id}`} target="_blank" rel="noopener noreferrer">
             <div className="item-left flex items-center cursor-pointer" onClick={goDetail}>
-
-                <img src={item.cover} alt="cover" className="w-30 h-15 mr-4"/>
-                <div className="item-info">
+                <div className="item-info flex-1 w-0">
                     <h3 className="item-title text-lg font-bold mb-2">{item.title}</h3>
-                    <p className="item-content text-gray-500">{item.createdAt}</p>
+                    <div className="item-content w-full text-sm text-gray-500 whitespace-nowrap overflow-hidden overflow-ellipsis mb-2">{item.summary}</div>
+                    <div className={"count-container flex items-center"}>
+                        <span className="icon-eye mr-2 flex items-center">
+                            <IconViewFill width={16} height={16} color={"#aaa"}/>
+                            <span className="text-sm ml-1 text-gray-400">阅读 {item.viewCount}</span>
+                        </span>
+                    </div>
                 </div>
+               <div className={"blog-item-cover-container w-40 h-20 ml-4 flex-shrink-0"}>
+                   <img src={item.cover} alt="cover" className="w-full h-full"/>
+               </div>
             </div>
         </Link>
-        <div className="blog-list-title-right flex justify-end items-center">
-            <span className="blog-list-title-right-item w-24 flex justify-center">{ item.commentNum }</span>
-            <div className="item-right flex justify-end items-center w-40">
-                <Link href={`/add-edit?id=${item.id}`} target="_blank" rel="noopener noreferrer">
-                    <span className="item-button text-blue py-2 cursor-pointer">编辑</span>
-                </Link>
-                <span className="item-button text-red-600 py-2 cursor-pointer ml-6">删除</span>
-            </div>
-        </div>
-
     </div>
 }

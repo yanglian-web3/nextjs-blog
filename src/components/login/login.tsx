@@ -6,12 +6,12 @@ import IconPlus from "../icons/icon-plus";
 import { ErrorField } from "../../types/form";
 
 interface LoginForm {
-    email: string;
+    account: string;
     password: string;
 }
 
 interface LoginFormError {
-    email: ErrorField;
+    account: ErrorField;
     password: ErrorField;
 }
 
@@ -20,20 +20,19 @@ export default function Login({ open, onClose }: { open: boolean; onClose: () =>
     const [isSubmitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState<Partial<LoginFormError>>({});
     const [formData, setFormData] = useState<LoginForm>({
-        email: '',
+        account: '',
         password: ''
     });
 
     // 验证规则
     const validateField = (name: keyof LoginForm, value: string): string | null => {
         switch (name) {
-            case 'email':
-                if (!value.trim()) return '邮箱是必填的';
-                if (!/\S+@\S+\.\S+/.test(value)) return '邮箱格式不正确';
+            case 'account':
+                if (!value.trim()) return '请输入账号';
                 return null;
 
             case 'password':
-                if (!value.trim()) return '密码是必填的';
+                if (!value.trim()) return '请输入密码';
                 if (value.length < 6) return '密码至少6位字符';
                 if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(value)) return '密码必须包含字母和数字';
                 return null;
@@ -105,8 +104,7 @@ export default function Login({ open, onClose }: { open: boolean; onClose: () =>
             console.error('登录失败:', error);
             // 设置服务器错误
             setErrors(prev => ({
-                ...prev,
-                submit: { message: '登录失败，请稍后重试' }
+                ...prev
             }));
         } finally {
             setSubmitting(false);
@@ -116,7 +114,7 @@ export default function Login({ open, onClose }: { open: boolean; onClose: () =>
     // 重置表单
     const resetForm = () => {
         setFormData({
-            email: '',
+            account: '',
             password: ''
         });
         setErrors({});
@@ -140,7 +138,7 @@ export default function Login({ open, onClose }: { open: boolean; onClose: () =>
 
     // 检查表单是否可提交
     const isFormValid = () => {
-        return formData.email.trim() !== '' &&
+        return formData.account.trim() !== '' &&
             formData.password.trim() !== '' &&
             Object.keys(errors).length === 0;
     };
@@ -161,20 +159,21 @@ export default function Login({ open, onClose }: { open: boolean; onClose: () =>
                         <div className="form">
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 {/* 邮箱字段 */}
-                                <Field.Root invalid={!!errors.email}>
+                                <Field.Root invalid={!!errors.account}>
                                     <Field.Label className="block text-sm font-medium text-gray-700 mb-1">
-                                        邮箱地址
+                                        账号
                                     </Field.Label>
                                     <Field.Input
-                                        type="email"
-                                        value={formData.email}
-                                        onChange={handleInputChange('email')}
-                                        placeholder="your@email.com"
+                                        value={formData.account}
+                                        onChange={handleInputChange('account')}
+                                        placeholder="your account"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     />
-                                    <Field.ErrorText className="text-red-500 text-xs mt-1">
-                                        {errors.email?.message}
-                                    </Field.ErrorText>
+                                   <div className="h-4">
+                                       <Field.ErrorText className="text-red-500 text-xs mt-1">
+                                           {errors.account?.message}
+                                       </Field.ErrorText>
+                                   </div>
                                 </Field.Root>
 
                                 {/* 密码字段 */}
@@ -189,17 +188,12 @@ export default function Login({ open, onClose }: { open: boolean; onClose: () =>
                                         placeholder="请输入密码"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     />
-                                    <Field.ErrorText className="text-red-500 text-xs mt-1">
-                                        {errors.password?.message}
-                                    </Field.ErrorText>
-                                </Field.Root>
-
-                                {/* 提交错误 */}
-                                {errors.submit && (
-                                    <div className="text-red-500 text-sm bg-red-50 p-2 rounded">
-                                        {errors.submit.message}
+                                    <div className="h-4">
+                                        <Field.ErrorText className="text-red-500 text-xs mt-1">
+                                            {errors.password?.message}
+                                        </Field.ErrorText>
                                     </div>
-                                )}
+                                </Field.Root>
 
                                 <div className="flex justify-end pt-4">
                                     <button
