@@ -2,11 +2,12 @@
 
 import { Dialog, Field } from "@ark-ui/react";
 import { useEffect, useState } from "react";
-import IconPlus from "../icons/icon-plus";
-import { ErrorField } from "../../types/form";
-import IconLoading from "../icons/icon-loading";
-import {validateEmail, validateForm, validatePassword, validateSingleField} from "../../utils/form-handle";
-import BlogInput from "../form/blog-input";
+import IconPlus from "../../icons/icon-plus";
+import { ErrorField } from "../../../types/form";
+import IconLoading from "../../icons/icon-loading";
+import {validateEmail, validateForm, validatePassword, validateSingleField} from "../../../utils/form-handle";
+import BlogInput from "../../form/blog-input";
+import {CryptoUtils} from "../../../utils/crypto";
 
 interface LoginForm {
     name: string;
@@ -129,7 +130,10 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
             console.log('提交注册数据:', formData);
             fetch("/api/auth/register",{
                 method: 'POST',
-                body: JSON.stringify(formData)
+                body: JSON.stringify({
+                    ...formData,
+                    password: CryptoUtils.md5(formData.password)
+                })
             }).then(res => res.json()).then(data => {
                 console.log('注册结果 data:', data)
                 if(data.code === 200){

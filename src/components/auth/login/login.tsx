@@ -2,10 +2,10 @@
 
 import { Dialog, Field } from "@ark-ui/react";
 import { useEffect, useState } from "react";
-import IconPlus from "../icons/icon-plus";
-import { ErrorField } from "../../types/form";
-import BlogInput from "../form/blog-input";
-import {validateEmail, validateForm, validatePassword, validateSingleField} from "../../utils/form-handle";
+import IconPlus from "../../icons/icon-plus";
+import { ErrorField } from "../../../types/form";
+import BlogInput from "../../form/blog-input";
+import {validateEmail, validateForm, validatePassword, validateSingleField} from "../../../utils/form-handle";
 
 interface LoginForm {
     email: string;

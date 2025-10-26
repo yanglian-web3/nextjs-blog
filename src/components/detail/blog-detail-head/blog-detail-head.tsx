@@ -7,7 +7,7 @@ import IconSearch from "../../icons/icon-search";
 import HeadUser from "../../head-user/head-user";
 import IconPlus from "../../icons/icon-plus";
 import Link from 'next/link'
-import Login from "../../login/login";
+import Login from "../../auth/login/login";
 
 
 function BlogDetailHead({ userInfo }: {userInfo?:UserInfo}) {
