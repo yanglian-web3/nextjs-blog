@@ -8,6 +8,7 @@ import IconLoading from "../../icons/icon-loading";
 import {validateEmail, validateForm, validatePassword, validateSingleField} from "../../../utils/form-handle";
 import BlogInput from "../../form/blog-input";
 import {CryptoUtils} from "../../../utils/crypto";
+import Toast from "../../toast/toast"
 
 interface LoginForm {
     name: string;
@@ -31,6 +32,9 @@ interface Props {
 export default function Registry({ open, onClose, onOpenLogin }: Props) {
     const [isOpen, setOpen] = useState(false);
     const [isSubmitting, setSubmitting] = useState(false);
+    const [toastOpen, setToastOpen] = useState(false);
+    const [toastType, setToastType] = useState("info")
+    const [registerMsg, setRegisterMsg] = useState('');
     const [errors, setErrors] = useState<Partial<LoginFormError>>({});
     const initFormData = {
         name: '',
@@ -124,35 +128,31 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
         })) {
             return;
         }
-
         setSubmitting(true);
-        try {
-            console.log('提交注册数据:', formData);
-            fetch("/api/auth/register",{
-                method: 'POST',
-                body: JSON.stringify({
-                    ...formData,
-                    password: CryptoUtils.md5(formData.password)
-                })
-            }).then(res => res.json()).then(data => {
-                console.log('注册结果 data:', data)
-                if(data.code === 200){
-                    console.log('注册成功');
-                    handleClose();
-                }else {
-                    console.error('注册失败');
-                }
+        console.log('提交注册数据:', formData);
+        fetch("/api/auth/register",{
+            method: 'POST',
+            body: JSON.stringify({
+                ...formData,
+                password: CryptoUtils.md5(formData.password)
             })
-
-        } catch (error) {
+        }).then(res => res.json()).then(data => {
+            console.log('注册结果 data:', data)
+            const { code, message } = data
+            setRegisterMsg(message)
+            setToastType(code === 200 ? "success" : "error")
+            setToastOpen(true)
+            if(code === 200){
+                handleClose();
+            }
+        }).catch( error => {
             console.error('注册失败:', error);
-            // 设置服务器错误
-            setErrors(prev => ({
-                ...prev
-            }));
-        } finally {
+            setToastType("error")
+            setRegisterMsg(error)
+            setToastOpen(true)
+        }).finally(() => {
             setSubmitting(false);
-        }
+        })
     };
 
     // 重置表单
@@ -172,7 +172,7 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
     };
 
 
-    return (
+    return <>
         <Dialog.Root open={isOpen}>
             <Dialog.Backdrop
                 className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
@@ -275,7 +275,7 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
                                         }`}
                                     >
                                         {isSubmitting ? <span className={"flex items-center justify-center gap-2"}>
-                                            <IconLoading color={"white"} />
+                                            <IconLoading color={"white"} width={20} height={20} />
                                             注册中...
                                         </span> : '注册'}
                                     </button>
@@ -302,5 +302,6 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
                 </Dialog.Content>
             </Dialog.Positioner>
         </Dialog.Root>
-    );
+        <Toast open={toastOpen} msg={registerMsg} type={toastType} onClose={() => setToastOpen(false)} />
+    </>
 }

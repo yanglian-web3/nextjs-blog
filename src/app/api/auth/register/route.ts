@@ -1,6 +1,9 @@
 // src/app/api/auth/register/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '../../../../lib/supabase'
+import {checkUserExists} from "./check-user-exists";
+
+
 
 export async function POST(request: NextRequest) {
     try {
@@ -12,10 +15,22 @@ export async function POST(request: NextRequest) {
         if (!email || !password || !account || !name) {
             return NextResponse.json(
                 {
-                    success: false,
+                    code: 500,
                     message: '邮箱、密码和账号均为必填项'
-                },
-                { status: 400 }
+                }
+            )
+        }
+
+// 使用示例
+        const result = await checkUserExists(email)
+        console.log('检查结果:', result)
+        if (result.userRecordExists || result.authUserExists) {
+            // 用户已存在，尝试恢复或报错
+            return NextResponse.json(
+                {
+                    code: 500,
+                    message: '用户已存在, 该邮箱或账号已被注册',
+                }
             )
         }
 
@@ -37,11 +52,9 @@ export async function POST(request: NextRequest) {
             console.error('Auth error:', authError)
             return NextResponse.json(
                 {
-                    success: false,
-                    message: '注册失败',
-                    error: authError.message
-                },
-                { status: 400 }
+                    code: 500,
+                    message: `注册失败,${authError.message}`,
+                }
             )
         }
 
@@ -74,19 +87,17 @@ export async function POST(request: NextRequest) {
 
                 return NextResponse.json(
                     {
-                        success: false,
-                        message: '用户资料创建失败',
-                        error: profileError.message
+                        code: 500,
+                        message: `用户资料创建失败,${profileError.message}`,
                     },
-                    { status: 400 }
                 )
             }
         }
 
         return NextResponse.json({
-            success: true,
-            message: authData.session ? '注册成功' : '注册成功，请检查邮箱验证',
-            user: {
+            code: 200,
+            message: authData.session ? '注册成功' : '注册成功，请到邮箱查看验证',
+            data: {
                 id: authData.user?.id,
                 email: authData.user?.email,
                 account: account
@@ -97,11 +108,9 @@ export async function POST(request: NextRequest) {
         console.error('Register API error:', error)
         return NextResponse.json(
             {
-                success: false,
-                message: '服务器内部错误',
-                error: error instanceof Error ? error.message : 'Unknown error'
-            },
-            { status: 500 }
+                code: 500,
+                message: `服务器内部错误:${error instanceof Error ? error.message : 'Unknown error'}`,
+            }
         )
     }
 }
