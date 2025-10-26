@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '../../../../lib/supabase'
 import {checkUserExists} from "./check-user-exists";
+import {CryptoUtils} from "../../../../utils/crypto";
 
 
 
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
         // 1. 注册用户到 Supabase Auth
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email,
-            password,
+            password: CryptoUtils.md5(password), // 二次md5
             options: {
                 data: {
                     account,
