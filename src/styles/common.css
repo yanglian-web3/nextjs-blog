@@ -45,3 +45,6 @@ html,body,div,p,span,ul,li,strong,span{
 .input-placeholder::placeholder{
   color: #aaa;
 }
+.w-max-1200{
+  max-width: 1200px;
+}

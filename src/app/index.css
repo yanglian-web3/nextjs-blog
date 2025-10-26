@@ -4,15 +4,11 @@
     /*margin: 0 auto;*/
 }
 
-.blog-count-container{
+.blog-home-title-container{
     height: 60px;
-    max-width: 1200px;
 }
-.blog-content-out-container{
-    max-width: 1200px;
-}
-.blog-content-container{
-    height: calc(100vh - 70px - 60px - 60px - 100px);
+.blog-home-content-container{
+    height: calc(100vh - 60px - 100px);
 }
 .blog-list-title-container{
     /*max-width: 1200px;*/

@@ -34,7 +34,7 @@ export default function BlogHomeListContent({ initList}: { initList: BlogHomeIte
 
     return (
         <>
-            <div className="blog-count-container flex justify-between items-center m-auto">
+            <div className="blog-home-title-container w-max-1200 flex justify-between items-center m-auto px-4">
                 <h2 className={"text-xl font-bold"}>博客精选</h2>
                 <button className="flex justify-center items-center cursor-pointer" onClick={getBlogList}>
                     <IconRefresh width={16} height={16} color={"#999999"}/>
@@ -42,8 +42,8 @@ export default function BlogHomeListContent({ initList}: { initList: BlogHomeIte
                 </button>
             </div>
             <PageLoading loading={loading}>
-                <div className="blog-content-out-container relative m-auto">
-                    <div className="blog-content-container overflow-auto overscroll-contain m-auto px-4 py-6" ref={blogContentContainer}>
+                <div className="w-max-1200 relative m-auto">
+                    <div className="blog-home-content-container overflow-auto overscroll-contain m-auto px-4 py-6" ref={blogContentContainer}>
 
                         {
                             blogList.map((item) => {
