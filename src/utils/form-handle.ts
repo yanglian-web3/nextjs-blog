@@ -44,3 +44,23 @@ export const validateSingleField = <T>(options:{
         [name]: error ? { message: error } : undefined
     }));
 };
+/**
+ * 验证密码
+ * @param password
+ */
+export const validatePassword = (password: string) => {
+    if (!password.trim()) return '请输入密码';
+    if (password.length < 6) return '密码至少6位字符';
+    if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(password)) return '密码必须包含字母和数字';
+    return null;
+};
+/**
+ * 验证邮箱
+ * @param email
+ */
+export const validateEmail = (email: string) => {
+    if (!email.trim()) return '请输入邮箱';
+    if (!/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(email))
+        return '邮箱格式不正确';
+    return null;
+};

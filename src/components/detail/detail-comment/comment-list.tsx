@@ -1,6 +1,6 @@
 import {CommentItem} from "../../../types/comment";
 import {useEffect, useState} from "react";
-import { getCommentList } from "../../../api/blog";
+import { getCommentList } from "../../../app/api/blog";
 import CommentListItem from "./comment-list-item";
 
 export default function CommentList() {

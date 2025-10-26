@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import IconPlus from "../icons/icon-plus";
 import { ErrorField } from "../../types/form";
 import BlogInput from "../form/blog-input";
-import {validateForm, validateSingleField} from "../../utils/form-handle";
+import {validateEmail, validateForm, validatePassword, validateSingleField} from "../../utils/form-handle";
 
 interface LoginForm {
     email: string;
@@ -39,20 +39,17 @@ export default function Login({ open, onClose, onOpenRegistry, onOpenForgetPass 
         }
     }, [open]);
 
-    // 验证规则
+    /**
+     * 验证规则
+     * @param name
+     * @param value
+     */
     const validateField = (name: keyof LoginForm, value: string): string | null => {
         switch (name) {
             case 'email':
-                if (!value.trim()) return '请输入邮箱';
-                if (!/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(value)) return '邮箱格式不正确';
-                return null;
-
+                return validateEmail( value);
             case 'password':
-                if (!value.trim()) return '请输入密码';
-                if (value.length < 6) return '密码至少6位字符';
-                if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(value)) return '密码必须包含字母和数字';
-                return null;
-
+                return validatePassword(value);
             default:
                 return null;
         }

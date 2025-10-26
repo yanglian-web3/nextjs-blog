@@ -5,18 +5,20 @@ import { useEffect, useState } from "react";
 import IconPlus from "../icons/icon-plus";
 import { ErrorField } from "../../types/form";
 import IconLoading from "../icons/icon-loading";
-import {validateForm, validateSingleField} from "../../utils/form-handle";
+import {validateEmail, validateForm, validatePassword, validateSingleField} from "../../utils/form-handle";
 import BlogInput from "../form/blog-input";
 
 interface LoginForm {
     name: string;
     email: string;
     account: string;
+    password: string;
 }
 
 interface LoginFormError {
     name: ErrorField;
     email: ErrorField;
+    password: ErrorField;
 }
 interface Props {
     open: boolean;
@@ -24,15 +26,18 @@ interface Props {
     onOpenLogin: () => void;
 }
 
+
 export default function Registry({ open, onClose, onOpenLogin }: Props) {
     const [isOpen, setOpen] = useState(false);
     const [isSubmitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState<Partial<LoginFormError>>({});
-    const [formData, setFormData] = useState<LoginForm>({
+    const initFormData = {
         name: '',
         email: '',
         account: '',
-    });
+        password: '',
+    } // 初始表单数据
+    const [formData, setFormData] = useState<LoginForm>({...initFormData});
 
     useEffect(() => {
         setOpen(open);
@@ -51,11 +56,10 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
             case 'name':
                 if (!value.trim()) return '请输入姓名';
                 return null;
-
             case 'email':
-                if (!value.trim()) return '请输入邮箱';
-                if (!/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(value)) return '邮箱格式不正确';
-                return null;
+                return validateEmail( value);
+            case 'password':
+                return validatePassword(value);
             default:
                 return null;
         }
@@ -123,12 +127,18 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
         setSubmitting(true);
         try {
             console.log('提交注册数据:', formData);
-            // 这里调用实际的注册 API
-            await new Promise(resolve => setTimeout(resolve, 1000)); // 模拟API调用
-
-            // 注册成功后的处理
-            console.log('注册成功');
-            handleClose();
+            fetch("/api/auth/register",{
+                method: 'POST',
+                body: JSON.stringify(formData)
+            }).then(res => res.json()).then(data => {
+                console.log('注册结果 data:', data)
+                if(data.code === 200){
+                    console.log('注册成功');
+                    handleClose();
+                }else {
+                    console.error('注册失败');
+                }
+            })
 
         } catch (error) {
             console.error('注册失败:', error);
@@ -143,11 +153,7 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
 
     // 重置表单
     const resetForm = () => {
-        setFormData({
-            name: '',
-            email: '',
-            account: '',
-        });
+        setFormData({...initFormData});
         setErrors({});
     };
 
@@ -230,6 +236,28 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
                                         账号
                                     </Field.Label>
                                     <span className="w-full px-3 py-2">{formData.account}</span>
+                                </Field.Root>
+                                <Field.Root invalid={!!errors.password}>
+                                    <Field.Label className="block text-sm font-medium text-gray-700 mb-1 ">
+                                        密码
+                                    </Field.Label>
+                                    <BlogInput    type="password"
+                                                  value={formData.password}
+                                                  onChange={handleInputChange('password')}
+                                                  placeholder="your password"
+                                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 theme-border-color-focus input-placeholder"
+                                                  onClear={() => {
+                                                      setFormData(prev => ({
+                                                          ...prev,
+                                                          password: ''
+                                                      }))
+                                                  }}
+                                    />
+                                    <div className="h-4">
+                                        <Field.ErrorText className="text-red-500 text-xs mt-1">
+                                            {errors.password?.message}
+                                        </Field.ErrorText>
+                                    </div>
                                 </Field.Root>
 
                                 <div className="w-full pt-10">

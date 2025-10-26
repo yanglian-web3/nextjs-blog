@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "gen-types": "npx supabase@latest gen types typescript --project-id valnsannemwwqlmmpomj > src/types/supabase.d.ts"
   },
   "dependencies": {
     "@ark-ui/react": "^5.26.2",
@@ -36,6 +37,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.5",
     "prop-types": "^15.8.1",
+    "supabase": "^2.53.6",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
