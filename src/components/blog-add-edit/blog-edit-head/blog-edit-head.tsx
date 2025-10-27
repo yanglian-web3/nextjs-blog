@@ -1,20 +1,29 @@
 "use client"
 
 import "./blog-edit-head.css"
-import PropTypes from "prop-types"
-import {UserInfo} from "../../../types/user";
 import HeadUser from "../../head-user/head-user";
 import IconClear from "../../icons/icon-clear";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../../../store/index";
 import { updateTitle } from "../../../store/blog-edit-slice";
+import {useEffect} from "react";
+import {getUserInfo} from "../../../utils/user";
+import {updateUserInfo} from "../../../store/user-slice";
 
 
 
-function BlogEditHead({ userInfo }: {userInfo?:UserInfo}) {
+function BlogEditHead() {
     const dispatch = useDispatch<AppDispatch>()
+    const { userInfo } = useSelector((state: RootState) => state.user)
+
     const { title } = useSelector((state: RootState) => state.blogEdit)
 
+    useEffect(() => {
+        getUserInfo().then(res => {
+            console.log("res=", res)
+            dispatch(updateUserInfo(res))
+        })
+    },[])
     /**
      * 设置标题
      * @param title
@@ -41,10 +50,6 @@ function BlogEditHead({ userInfo }: {userInfo?:UserInfo}) {
          <HeadUser userInfo={userInfo} mode="right"/>
       </div>
   </div>
-}
-
-BlogEditHead.prototype = {
-    userInfo: PropTypes.object.isRequired
 }
 
 export default BlogEditHead

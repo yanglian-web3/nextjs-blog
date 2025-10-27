@@ -8,6 +8,9 @@ import BlogInput from "../../form/blog-input";
 import {validateEmail, validateForm, validatePassword, validateSingleField} from "../../../utils/form-handle";
 import {CryptoUtils} from "../../../utils/crypto";
 import Toast from "../../toast/toast";
+import {useDispatch} from "react-redux";
+import {AppDispatch} from "../../../store/index";
+import { updateUserInfo, updateToken } from "../../../store/user-slice";
 
 interface LoginForm {
     email: string;
@@ -26,6 +29,8 @@ interface Props {
 }
 
 export default function Login({ open, onClose, onOpenRegistry, onOpenForgetPass }: Props) {
+    const dispatch = useDispatch<AppDispatch>()
+
     const [isOpen, setOpen] = useState(false);
     const [isSubmitting, setSubmitting] = useState(false);
     const [toastOpen, setToastOpen] = useState(false);
@@ -66,7 +71,7 @@ export default function Login({ open, onClose, onOpenRegistry, onOpenForgetPass 
      */
     const handleInputChange = (field: keyof LoginForm) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        console.log("输入v=", value)
+        // console.log("输入v=", value)
         setFormData(prev => ({
             ...prev,
             [field]: value
@@ -106,14 +111,17 @@ export default function Login({ open, onClose, onOpenRegistry, onOpenForgetPass 
                 password: CryptoUtils.md5(formData.password)
             })
         }).then(res => res.json())
-            .then(data => {
-                console.log('登录结果 data:', data)
+            .then(result => {
+                console.log('登录结果 result:', result)
                 // 登录成功后的处理
-                const { code, message } = data
+                const { code, message, data } = result
                 setRegisterMsg(message)
                 setToastType(code === 200 ? "success" : "error")
                 setToastOpen(true)
                 if(code === 200){
+                    const { session, user } = data
+                    dispatch(updateUserInfo(user))
+                    dispatch(updateToken(session))
                     handleClose();
                 }
                 delayCloseToast()

@@ -1,8 +1,6 @@
 // app/add-edit/page.tsx
 import { Metadata } from 'next'
 import BlogEditHead from "../../components/blog-add-edit/blog-edit-head/blog-edit-head";
-import {UserInfo} from "../../types/user";
-import {getUserInfo} from "../../utils/user";
 import BlogEditPublishButtons from "../../components/blog-add-edit/blog-edit-publish-buttons";
 import "./blog-add-edit.css"
 import BlogEditor from "../../components/blog-editor/blog-editor";
@@ -13,19 +11,8 @@ export const metadata: Metadata = {
 }
 
 export default async function AddEditPage() {
-    // const userInfo = await getUserInfo()
-    const userInfo:UserInfo = {
-        name: "张三",
-        avatar: "https://picsum.photos/200/300",
-        email: "zhangsan@163.com",
-        phone: "13888888888",
-        account: "zhangsan",
-        id: 1
-    }
-
-
     return <div className="blog-add-edit-container">
-        <BlogEditHead userInfo={userInfo}/>
+        <BlogEditHead/>
         {/*中间部分*/}
         <div className="blog-edit-middle-container">
             <BlogEditor />

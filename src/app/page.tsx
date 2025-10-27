@@ -2,8 +2,6 @@ import BlogListHead from "../components/blog-list/blog-list-head/blog-list-head"
 import "./index.css"
 import {BlogHomeItemType} from "../types/blog";
 import BlogHomeListContent from "../components/blog-list/blog-home/blog-home-list-content";
-import {UserInfo} from "../types/user";
-import {getUserInfo} from "../utils/user";
 
 
 export default async function Home() {
@@ -120,13 +118,9 @@ export default async function Home() {
         }
     ]
 
-    // const userInfo = await getUserInfo()
-
-    const userInfo:UserInfo | null = null
-
   return (
     <div className={"page-container"}>
-        <BlogListHead userInfo={userInfo}/>
+        <BlogListHead/>
         <BlogHomeListContent initList={blogList}/>
     </div>
   );

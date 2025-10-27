@@ -8,16 +8,29 @@ import HeadUser from "../../head-user/head-user";
 import IconPlus from "../../icons/icon-plus";
 import Link from 'next/link'
 import Login from "../../auth/login/login";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Registry from "../../auth/registry/registry";
 import ForgetPass from "../../forget-pass/forget-pass";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../../store/index";
+import {getUserInfo} from "../../../utils/user";
+import { updateUserInfo, updateToken } from "../../../store/user-slice";
 
 
-function BlogListHead({ userInfo }: {userInfo?:UserInfo}) {
+function BlogListHead() {
+    const dispatch = useDispatch<AppDispatch>()
+    const { userInfo } = useSelector((state: RootState) => state.user)
 
     const [loginOpen, setLoginOpen] = useState(false)
     const [registryOpen, setRegistryOpen] = useState(false)
     const [forgetPassOpen, setForgetPassOpen] = useState(false)
+
+    useEffect(() => {
+        getUserInfo().then(res => {
+            console.log("res=", res)
+            dispatch(updateUserInfo(res))
+        })
+    },[])
 
     /**
      * 打开登录弹窗
