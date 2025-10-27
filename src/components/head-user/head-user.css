@@ -36,15 +36,9 @@
 .user-info-container-right:hover .user-drap-down-container{
     transform: scale(1);
 }
-.user-drap-down-container .user-info-list{
-    border-bottom: solid 1px #aaaaaa;
-}
 .user-drap-down-container .user-info-list .user-info-item{
     padding: 10px 0;
 
-}
-.user-drap-down-container .user-logout-container{
-    padding: 30px 20px;
 }
 .user-drap-down-container  .icon-trangle{
     position: absolute;

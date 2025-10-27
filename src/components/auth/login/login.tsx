@@ -141,7 +141,7 @@ export default function Login({ open, onClose, onOpenRegistry, onOpenForgetPass 
     const delayCloseToast = () => {
         setTimeout(() => {
             setToastOpen(false)
-        }, 2000);
+        }, 1000);
     };
 
     /**

@@ -111,13 +111,11 @@ export async function POST(request: NextRequest) {
                     code: 200,
                     message: '登录成功',
                     data: {
-                        user: {
-                            ...userProfile,
-                            // 合并 Auth 的用户信息
-                            email: authData.user.email,
-                            email_confirmed: !!authData.user.email_confirmed_at,
-                            last_sign_in: authData.user.last_sign_in_at
-                        }
+                        ...userProfile,
+                        // 合并 Auth 的用户信息
+                        email: authData.user.email,
+                        email_confirmed: !!authData.user.email_confirmed_at,
+                        last_sign_in: authData.user.last_sign_in_at
                     }
                 })
 

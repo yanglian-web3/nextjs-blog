@@ -9,6 +9,8 @@ import "./head-user.css"
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../store/index";
 import {updateToken, updateUserInfo} from "../../store/user-slice";
+import Link from "next/link";
+import IconList from "../icons/icon-list";
 
 
 const nameColorClassNames = [
@@ -39,70 +41,74 @@ const getStableColorIndex = (name: string): number => {
 export default function HeadUser({ userInfo, mode = "center" }: {userInfo:UserInfo, mode?: "right" | "center"}) {
 
     const dispatch = useDispatch<AppDispatch>()
-  /**
-   * 退出登录
-   */
-  const logOut = () => {
-      // 清除用户信息和token信息
-      dispatch(updateUserInfo(null))
-      // 清除浏览器cookie
+    /**
+     * 退出登录
+     */
+    const logOut = () => {
+        // 清除用户信息和token信息
+        dispatch(updateUserInfo(null))
+        // 清除浏览器cookie
 
-      // 调用退出登录api
-      fetch("/api/auth/logout")
-  }
+        // 调用退出登录api
+        fetch("/api/auth/logout")
+    }
     /**
      * 渲染头部
      */
-  const getUserHead = () => {
-      const getNameHead = (name:string) => {
-          const colorIndex = getStableColorIndex(name)
-          const colorClass = nameColorClassNames[colorIndex]
-          return <strong className={`text-2xl bg-gray-100 rounded-full w-full h-full flex items-center justify-center ${colorClass}`}>
-              {name}
-          </strong>
-      }
-      if(!userInfo){
-          return getNameHead("?")
-      }
-      if(userInfo.avatar){
-          return <img src={userInfo.avatar} className="user-head-img"/>
-      }
-      if(userInfo.name){
-          return getNameHead(userInfo.name[0].toUpperCase())
-      }
-      return getNameHead("?")
-  }
-
-
-
-  return <div className={`user-info-container relative z-10  user-info-container-${mode}`}>
-      <div className="user-head-container cursor-pointer">
-        {
-            getUserHead()
+    const getUserHead = () => {
+        const getNameHead = (name:string) => {
+            const colorIndex = getStableColorIndex(name)
+            const colorClass = nameColorClassNames[colorIndex]
+            return <strong className={`text-2xl bg-gray-100 rounded-full w-full h-full flex items-center justify-center ${colorClass}`}>
+                {name}
+            </strong>
         }
-      </div>
-      {userInfo ? <div className={`user-drap-down-container absolute rounded-md`}>
-        <ul className={"user-info-list py-2 px-4"}>
-          <li className="user-info-item flex items-center">
-            <IconUser width={20} height={20}/>
-            <p className="pl-1 text-xl">{userInfo.name}</p>
-          </li>
-          <li className="user-info-item flex items-center">
-            <IconEmail width={20} height={20}/>
-            <p className="pl-1 text-xl">{userInfo.email}</p>
-          </li>
-          <li className="user-info-item flex items-center">
-            <IconPhone width={20} height={20}/>
-            <p className="pl-1 text-xl">{userInfo.phone}</p>
-          </li>
-        </ul>
-        <div className="user-logout-container cursor-pointer flex items-center" onClick={logOut}>
-          <IconLogout width={20} height={20}/>
-          <p className="pl-1 text-xl">退出登录</p>
-        </div>
-        <span  className="icon-trangle">
+        if(!userInfo){
+            return getNameHead("?")
+        }
+        if(userInfo.avatar){
+            return <img src={userInfo.avatar} className="user-head-img"/>
+        }
+        if(userInfo.name){
+            return getNameHead(userInfo.name[0].toUpperCase())
+        }
+        return getNameHead("?")
+    }
+
+
+
+    return <div className={`user-info-container relative z-10  user-info-container-${mode}`}>
+        <Link href={`/${userInfo.account}`} target={"_blank"} rel="noopener noreferrer">
+            <div className="user-head-container cursor-pointer" >{getUserHead()}</div>
+        </Link>
+        {userInfo ? <div className={`user-drap-down-container absolute rounded-md`}>
+            <ul className={"user-info-list py-2 px-4"}>
+                <li className="user-info-item flex items-center">
+                    <IconUser width={20} height={20}/>
+                    <p className="pl-1 text-xl">{userInfo.name}</p>
+                </li>
+                <li className="user-info-item flex items-center">
+                    <IconEmail width={20} height={20}/>
+                    <p className="pl-1 text-xl">{userInfo.email}</p>
+                </li>
+                <li className="user-info-item flex items-center">
+                    <IconPhone width={20} height={20}/>
+                    <p className="pl-1 text-xl">{userInfo.phone || "--"}</p>
+                </li>
+            </ul>
+            <Link href={`/${userInfo.account}`} target={"_blank"} rel="noopener noreferrer" className={"block border-t-1 border-gray-300"}>
+                <div className="px-3 py-2 cursor-pointer flex items-center">
+                    <IconList width={20} height={20}/>
+                    <p className="pl-1 text-xl">内容管理</p>
+                </div>
+            </Link>
+            <div className="user-logout-container border-t-1 border-gray-300 px-3 py-2 cursor-pointer flex items-center" onClick={logOut}>
+                <IconLogout width={20} height={20}/>
+                <p className="pl-1 text-xl">退出登录</p>
+            </div>
+            <span  className="icon-trangle">
                               <IconTrangle width={30} height={30} color="#ffffff"/>
                           </span>
-      </div> : null}
+        </div> : null}
     </div>
 }
