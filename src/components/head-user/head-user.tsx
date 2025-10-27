@@ -6,6 +6,9 @@ import IconLogout from "../icons/icon-logout";
 import IconTrangle from "../icons/icon-trangle";
 import {UserInfo} from "../../types/user";
 import "./head-user.css"
+import {useDispatch} from "react-redux";
+import {AppDispatch} from "../../store/index";
+import {updateToken, updateUserInfo} from "../../store/user-slice";
 
 
 const nameColorClassNames = [
@@ -35,12 +38,17 @@ const getStableColorIndex = (name: string): number => {
 
 export default function HeadUser({ userInfo, mode = "center" }: {userInfo:UserInfo, mode?: "right" | "center"}) {
 
-
+    const dispatch = useDispatch<AppDispatch>()
   /**
    * 退出登录
    */
   const logOut = () => {
+      // 清除用户信息和token信息
+      dispatch(updateUserInfo(null))
+      // 清除浏览器cookie
 
+      // 调用退出登录api
+      fetch("/api/auth/logout")
   }
     /**
      * 渲染头部
@@ -73,7 +81,7 @@ export default function HeadUser({ userInfo, mode = "center" }: {userInfo:UserIn
             getUserHead()
         }
       </div>
-      <div className={`user-drap-down-container absolute rounded-md`}>
+      {userInfo ? <div className={`user-drap-down-container absolute rounded-md`}>
         <ul className={"user-info-list py-2 px-4"}>
           <li className="user-info-item flex items-center">
             <IconUser width={20} height={20}/>
@@ -95,6 +103,6 @@ export default function HeadUser({ userInfo, mode = "center" }: {userInfo:UserIn
         <span  className="icon-trangle">
                               <IconTrangle width={30} height={30} color="#ffffff"/>
                           </span>
-      </div>
+      </div> : null}
     </div>
 }

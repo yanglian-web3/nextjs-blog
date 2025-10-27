@@ -2,12 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import {UserInfo} from "../types/user";
 
 interface UserState {
-    userInfo: Partial<UserInfo>,
+    userInfo: UserInfo | null,
     token: string
 }
 
 const initialState: UserState = {
-    userInfo: {},
+    userInfo: null,
     token: '',
 }
 
@@ -16,10 +16,10 @@ export const userSlice = createSlice({
     initialState,
     reducers: {
         updateUserInfo: {
-            reducer: (state, action: PayloadAction<UserInfo>) => {
+            reducer: (state, action: PayloadAction<UserInfo | null>) => {
                 state.userInfo = action.payload
             },
-            prepare: (userInfo: string) => ({
+            prepare: (userInfo: UserInfo | null) => ({
                 payload: userInfo
             })
         },

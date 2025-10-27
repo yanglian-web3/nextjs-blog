@@ -5,7 +5,9 @@ import {UserInfo} from "../types/user";
  */
 export async function getUserInfo() {
     return new Promise<UserInfo>(resolve => {
-        fetch("/api/auth/user")
+        fetch("/api/auth/user",{
+            credentials: 'include' // 重要：确保携带 Cookie
+        })
             .then(res => res.json())
             .then(res => {
                 console.log("请求用户信息 res=", res)
