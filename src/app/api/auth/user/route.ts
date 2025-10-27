@@ -1,6 +1,7 @@
 // src/app/api/auth/user/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import {checkHasLogin} from "../../../../utils/api/check-session";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -9,31 +10,12 @@ const supabase = createClient(
 
 export async function GET(request: NextRequest) {
     try {
-        // 直接从 Cookie 获取 session_token
-        const sessionToken = request.cookies.get('session_token')?.value
 
-        if (!sessionToken) {
+        const { result, session, message} = await checkHasLogin( request, supabase)
+        if(!result){
             return NextResponse.json({
                 code: 401,
-                message: '用户未登录'
-            })
-        }
-
-        // 1. 先查询会话信息
-        const { data: session, error: sessionError } = await supabase
-            .from('user_sessions')
-            .select('*')
-            .eq('session_token', sessionToken)
-            .gt('expires_at', new Date().toISOString())
-            .single()
-
-        console.log("session=", session)
-        console.log("sessionError=", sessionError)
-
-        if (sessionError || !session) {
-            return NextResponse.json({
-                code: 401,
-                message: '会话已过期'
+                message
             })
         }
 

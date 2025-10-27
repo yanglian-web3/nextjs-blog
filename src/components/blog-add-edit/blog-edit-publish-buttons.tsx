@@ -36,48 +36,50 @@ export default function BlogEditPublishButtons() {
             showAlert("文章标题不能为空", "warning", "缺少标题")
             return false
         }
+        // console.log("content=", content)
         if (!content.trim() || content === '<p></p>') {
             showAlert("文章内容不能为空", "warning", "缺少内容")
             return false
         }
         return true
     }
-    /**
-     * 保存草稿
-     */
-    const handleSaveDraft = () => {
-        if (!validateForm()) return
 
-        // 保存草稿逻辑
-        console.log('保存草稿:', { title, content })
-        showAlert("草稿保存成功", "info", "保存成功")
-    }
     /**
-     * 发布
+     * 保存
+     * @param status
      */
-    const handlePublish = async () => {
+    const handleSave = (status:number) => {
         if (!validateForm()) return
-
-        try {
-            // 发布逻辑
-            console.log('发布文章:', { title, content })
-            showAlert("文章发布成功", "info", "发布成功")
-        } catch (error) {
-            showAlert("发布失败，请重试", "error", "发布失败")
-        }
+        fetch('/api/blog/add-edit', {
+            credentials: 'include',
+            method: 'POST',
+            body: JSON.stringify({ title, content, status })
+        }).then(res => res.json())
+            .then(data => {
+                if(data.code === 200){
+                    // 保存草稿逻辑
+                    console.log('保存:', { title, content })
+                    showAlert("保存成功", "info", "保存成功")
+                } else {
+                    showAlert("保存失败，请重试", "error", "保存失败")
+                }
+            }).catch( () => {
+            showAlert("保存失败，请重试", "error", "保存失败")
+        })
     }
+
 
     return (
         <>
             <div className="blog-edit-publish-buttons-container flex justify-end items-center px-10 fixed w-screen bottom-0 bg-white border-t py-4 shadow-lg">
                 <button
-                    onClick={handleSaveDraft}
+                    onClick={() => handleSave(0)}
                     className="blog-edit-button blog-edit-drag-button px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors mr-4 text-gray-700"
                 >
                     保存草稿
                 </button>
                 <button
-                    onClick={handlePublish}
+                    onClick={() => handleSave(1)}
                     className="blog-edit-button blog-edit-publish-button px-6 py-2 text-white rounded-lg transition-colors bg-blue-500 hover:bg-blue-600 font-medium"
                 >
                     发布文章

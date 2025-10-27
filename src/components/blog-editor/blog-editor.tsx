@@ -94,12 +94,17 @@ export default function BlogEditor() {
     const dispatch = useDispatch<AppDispatch>()
     const { setEditor } = useEditorContext()
     const [isClient, setIsClient] = useState(false)
-    const [value, setValue] = useState(initialMarkdown)
+    const [value, setValue] = useState("")
 
     useEffect(() => {
         setIsClient(true)
+        handleChange(initialMarkdown)
     }, [])
 
+    /**
+     * 处理编辑器内容改变
+     * @param newValue
+     */
     const handleChange = (newValue: string = '') => {
         setValue(newValue)
         dispatch(updateContent(newValue))
