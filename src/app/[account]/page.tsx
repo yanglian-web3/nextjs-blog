@@ -87,7 +87,7 @@ export default async function MyBlogPage() {
 
     return (
         <div className={"page-container"}>
-            <BlogListHead userInfo={userInfo}/>
+            <BlogListHead/>
             <BlogMyListContent initList={blogList}/>
         </div>
     );

@@ -1,14 +1,18 @@
 "use client"
 
-import {UserInfo} from "../../../types/user";
 import IconMsg from "../../icons/icon-msg";
 import {BlogCountInfo} from "../../../types/blog";
 import "./blog-detail-bottom.css"
 import DetailComment from "../detail-comment/detail-comment";
 import {useState} from "react";
 import SlideDrawer from "../../slide-drawer/slide-drawer";
+import { useSelector} from "react-redux";
+import { RootState} from "../../../store/index";
+import UserHeadImage from "../../head-user/user-head-image";
 
-export default function BlogDetailBottom({userInfo, blogCountInfo}: {userInfo: UserInfo, blogCountInfo: BlogCountInfo}) {
+export default function BlogDetailBottom({blogCountInfo}: {blogCountInfo: BlogCountInfo}) {
+    const { userInfo } = useSelector((state: RootState) => state.user)
+
     const [drawerOpen, setDrawerOpen] = useState(false);
     /**
      * 打开评论
@@ -16,15 +20,12 @@ export default function BlogDetailBottom({userInfo, blogCountInfo}: {userInfo: U
     const openComment = () => {
         setDrawerOpen(true)
     }
-
     return <>
         <div className="blog-detail-bottom-container flex justify-center fixed bottom-0 left-0 w-screen index-10">
             <div className={"blog-detail-bottom-inner-container bg-white flex justify-between items-center px-10 py-4 border-t border-gray-100"}>
                 <div className="blog-detail-bottom-left flex items-center">
-                    <div className="user-head-container cursor-pointer">
-                        <img className={"user-head-img"} src={userInfo.avatar ||  ""} alt=""/>
-                    </div>
-                    <strong className={"user-name text-xl ml-2"}>{userInfo.name}</strong>
+                    <UserHeadImage name={userInfo?.name} src={userInfo?.avatar}/>
+                    <strong className={"user-name text-xl ml-2"}>{userInfo?.name}</strong>
                 </div>
                 <div className={"blog-detail-bottom-right flex justify-end items-center"}>
                     <div className={"blog-detail-item flex items-center cursor-pointer"} onClick={openComment}>
@@ -43,7 +44,7 @@ export default function BlogDetailBottom({userInfo, blogCountInfo}: {userInfo: U
                 <span className={"ml-2 text-gray-500"}>{ blogCountInfo.commentCount}</span>
             </>
         } open={drawerOpen} onOpenChange={(open) => setDrawerOpen(open)}>
-            <DetailComment userInfo={userInfo}/>
+            <DetailComment/>
         </SlideDrawer>
 
     </>

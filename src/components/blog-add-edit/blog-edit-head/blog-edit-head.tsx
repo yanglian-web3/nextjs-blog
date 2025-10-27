@@ -47,7 +47,7 @@ function BlogEditHead() {
                   <p className="text-gray-500 text-sm">{title.length}/100</p>
               </div>
           </div>
-         <HeadUser userInfo={userInfo} mode="right"/>
+         <HeadUser mode="right"/>
       </div>
   </div>
 }

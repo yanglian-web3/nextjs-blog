@@ -85,7 +85,7 @@ function BlogListHead() {
                 </div>
                 <div className="flex justify-end items-center">
                     { userInfo && userInfo.id && userInfo.account && userInfo.name ?
-                        <HeadUser userInfo={userInfo}/>  :
+                        <HeadUser/>  :
                         <button className={"login-btn bg-gray-200 w-12 h-12 text-center rounded-3xl cursor-pointer"} onClick={openLogin}>登录</button>}
                     <Link href={`/add-edit`} target="_blank" rel="noopener noreferrer">
                         <div className="create-container ml-10 flex items-center py-1 px-6 rounded-full cursor-pointer">
