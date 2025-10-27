@@ -36,9 +36,7 @@ export default function HeadUser({ mode = "center" }: { mode?: "right" | "center
 
     return <div className={`user-info-container relative z-10  user-info-container-${mode}`}>
         <Link href={`/${userInfo?.account}`} target={"_blank"} rel="noopener noreferrer">
-            <div className="user-head-container cursor-pointer" >
-                <UserHeadImage name={userInfo?.name} src={userInfo?.avatar} size={"lg"}/>
-            </div>
+            <UserHeadImage name={userInfo?.name} src={userInfo?.avatar} size={"lg"}/>
         </Link>
         {userInfo ? <div className={`user-drap-down-container absolute rounded-md`}>
             <ul className={"user-info-list py-2 px-4"}>
