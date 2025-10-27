@@ -119,9 +119,7 @@ export default function Login({ open, onClose, onOpenRegistry, onOpenForgetPass 
                 setToastType(code === 200 ? "success" : "error")
                 setToastOpen(true)
                 if(code === 200){
-                    const { session, user } = data
-                    dispatch(updateUserInfo(user))
-                    dispatch(updateToken(session))
+                    dispatch(updateUserInfo(data))
                     handleClose();
                 }
                 delayCloseToast()

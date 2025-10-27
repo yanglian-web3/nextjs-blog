@@ -13,7 +13,7 @@ export async function getUserInfo() {
                 console.log("请求用户信息 res=", res)
                 const { code ,data } = res
                 if(code === 200){
-                    resolve(data.user)
+                    resolve(data)
                 }
             })
     })

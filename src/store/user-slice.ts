@@ -23,16 +23,8 @@ export const userSlice = createSlice({
                 payload: userInfo
             })
         },
-        updateToken: {
-            reducer: (state, action: PayloadAction<string>) => {
-                state.token = action.payload
-            },
-            prepare: (token: string) => ({
-                payload: token
-            })
-        },
     },
 })
 
-export const { updateUserInfo, updateToken } = userSlice.actions
+export const { updateUserInfo } = userSlice.actions
 export default userSlice.reducer

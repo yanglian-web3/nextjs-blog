@@ -62,18 +62,17 @@ export async function GET(request: NextRequest) {
             })
             .eq('id', session.id)
 
-        return NextResponse.json({
+        const response = NextResponse.json({
             code: 200,
             message: '获取用户信息成功',
             data: {
-                user: {
-                    ...user,
-                    email_confirmed: !!user.email_confirmed_at,
-                    last_sign_in: user.last_sign_in_at
-                }
+                ...user,
+                email_confirmed: !!user.email_confirmed_at,
+                last_sign_in: user.last_sign_in_at
             }
         })
-
+        response.cookies.set('user_account', user.account)
+        return response
     } catch (error) {
         console.error('Get user API error:', error)
         return NextResponse.json({

@@ -14,7 +14,7 @@ import ForgetPass from "../../forget-pass/forget-pass";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../../../store/index";
 import {getUserInfo} from "../../../utils/user";
-import { updateUserInfo, updateToken } from "../../../store/user-slice";
+import { updateUserInfo } from "../../../store/user-slice";
 
 
 function BlogListHead() {

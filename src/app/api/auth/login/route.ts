@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
                     sameSite: 'lax',
                     maxAge: 24 * 60 * 60 // 24小时
                 })
-
+                response.cookies.set('user_account', userProfile.account)
                 return response
 
             } catch (sessionError) {
