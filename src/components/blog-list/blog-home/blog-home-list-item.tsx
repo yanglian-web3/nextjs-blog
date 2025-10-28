@@ -2,6 +2,7 @@
 import {BlogHomeItemType} from "../../../types/blog";
 import Link from 'next/link'
 import IconViewFill from "../../icons/icon-view-fill";
+import UserHeadImage from "../../head-user/user-head-image";
 
 export default function BlogListItem({ item }: { item: BlogHomeItemType}){
     /**
@@ -12,10 +13,8 @@ export default function BlogListItem({ item }: { item: BlogHomeItemType}){
     }
     return <div className="blog-list-item border-b border-gray-100 py-5">
         <Link href={`/${item.account}`} className={"user-info-container flex items-center cursor-pointer mb-2"} target="_blank" rel="noopener noreferrer">
-            <div className="w-8 h-8 overflow-hidden radius-circle">
-                <img className={"w-full h-full"} src={item.avatar ||  ""} alt=""/>
-            </div>
-            <p className={"ml-2 text-xs text-gray-500"}>{item.nickname}</p>
+            <UserHeadImage src={item.avatar} name={item.name} size="sm"/>
+            <p className={"ml-2 text-xs text-gray-500"}>{item.name}</p>
         </Link>
         <Link href={`/detail/${item.id}`} target="_blank" rel="noopener noreferrer">
             <div className="item-left flex items-center cursor-pointer" onClick={goDetail}>
@@ -29,9 +28,11 @@ export default function BlogListItem({ item }: { item: BlogHomeItemType}){
                         </span>
                     </div>
                 </div>
-               <div className={"blog-item-cover-container w-40 h-20 ml-4 flex-shrink-0"}>
-                   <img src={item.cover} alt="cover" className="w-full h-full"/>
-               </div>
+                {
+                    item.cover && <div className={"blog-item-cover-container w-40 h-20 ml-4 flex-shrink-0"}>
+                        <img src={item.cover} alt="cover" className="w-full h-full"/>
+                    </div>
+                }
             </div>
         </Link>
     </div>

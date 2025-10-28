@@ -31,7 +31,7 @@ const SIZE_CLASSES = {
     xl: 'w-16 h-16 text-3xl'
 }
 
-export default function Avatar({ name = '', src, size = 'md', className = '' }: AvatarProps) {
+export default function UserHeadImage({ name = '', src, size = 'md', className = '' }: AvatarProps) {
     // 根据名字生成稳定的随机颜色
     const textColor = useMemo(() => {
         if (!name) return TEXT_COLORS[0]

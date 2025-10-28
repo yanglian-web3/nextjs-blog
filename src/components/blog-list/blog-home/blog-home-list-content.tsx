@@ -5,11 +5,11 @@ import {BlogHomeItemType} from "../../../types/blog";
 import {useEffect, useRef, useState} from "react";
 import IconRefresh from "../../icons/icon-refresh";
 import {useLoading} from "../../../context/loading-context";
+import {getBlogListRandom} from "../../../utils/blog";
 
 export default function BlogHomeListContent({ initList}: { initList: BlogHomeItemType[]}) {
 
     const [blogList, setBlogList] = useState(initList)
-    const [blogListTitleWidth, setBlogListTitleWidth] = useState(1200)
     const { showLoading, hideLoading } = useLoading()
     const blogContentContainer = useRef<HTMLDivElement | null>(null);
 
@@ -18,18 +18,15 @@ export default function BlogHomeListContent({ initList}: { initList: BlogHomeIte
      */
     const getBlogList = () => {
         showLoading()
-        setBlogList(initList)
-        setTimeout(() => {
+        getBlogListRandom().then(data => {
+            setBlogList(data)
+        }).finally(() => {
             hideLoading()
-        }, 1000)
+        })
     }
     useEffect(() => {
-        getBlogList()
+        setBlogList(initList)
     },[])
-    useEffect(() => {
-        console.log("blogContentContainer width=", blogContentContainer.current?.clientWidth)
-        setBlogListTitleWidth(blogContentContainer.current?.clientWidth || 1200)
-    }, [blogList.length])
 
     return (
         <>

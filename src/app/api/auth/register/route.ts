@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
                     name,
                     email
                 },
-                emailRedirectTo: getRedirectUrl()
+                emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/email-validate-callback`
             }
         })
 
@@ -114,11 +114,4 @@ export async function POST(request: NextRequest) {
             }
         )
     }
-}
-
-const getRedirectUrl = () => {
-    if (process.env.NODE_ENV === 'development') {
-        return 'http://localhost:3000/auth/email-validate-callback'
-    }
-    return 'https://yourapp.com/auth/email-validate-callback'
 }
