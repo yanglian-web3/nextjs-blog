@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
             }
         })
 
-        console.log('随机精选博客数据:', formattedBlogs)
+        // console.log('博客数据:', formattedBlogs)
 
         return NextResponse.json({
             code: 200,

@@ -5,7 +5,6 @@ import {BlogItemType} from "../../../types/blog";
 import {useEffect, useRef, useState} from "react";
 import Pagination from "../../pagination/pagination";
 import {PaginationOptions} from "../../../types/pagination";
-import IconNoData from "../../icons/icon-no-data";
 import NoData from "../../no-data/no-data";
 
 export default function BlogMyListContent({ initList}: { initList: BlogItemType[]}) {
@@ -54,6 +53,7 @@ export default function BlogMyListContent({ initList}: { initList: BlogItemType[
         setBlogListTitleWidth(blogContentContainer.current?.clientWidth || 1200)
     }, [blogList.length])
 
+    console.log("blogList=", blogList)
     return (
         <>
             <div className="blog-count-container flex items-center m-auto">

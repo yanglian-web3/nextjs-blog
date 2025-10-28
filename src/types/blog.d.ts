@@ -1,3 +1,4 @@
+import {PaginationOptions} from "./pagination";
 
 export interface BlogItemCommonType {
     id: number;
@@ -10,6 +11,8 @@ export interface BlogItemType extends BlogItemCommonType{
     createdAt: string;
     updatedAt: string;
     commentNum: number;
+    account: string;
+    auth_user_id: string;
 }
 
 export interface BlogItemServeType extends BlogItemCommonType{
@@ -38,4 +41,15 @@ export interface BlogHomeItemType extends BlogItemCommonType {
     name: string;
     avatar: string;
     blogUrl: string;
+}
+
+export interface AccountBlogResult {
+    author: {
+        account: string;
+        name: string;
+        avatar: string;
+        isCurrentUser: boolean;
+    },
+    list:BlogItemType[],
+    pagination: PaginationOptions
 }

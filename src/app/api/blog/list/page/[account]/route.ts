@@ -1,0 +1,172 @@
+// src/app/api/blog/list/page/[account]/route.ts
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
+import { checkHasLogin } from '../../../../../../utils/api/check-session'
+import {UserInfo} from "../../../../../../types/user";
+import {BlogItemServeType} from "../../../../../../types/blog";
+
+const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
+export async function GET(
+    request: NextRequest,
+    { params }: { params: { account: string } }
+) {
+    try {
+        const account = params.account
+        console.log('=== 开始获取作者博客列表 ===', { account })
+
+        // 1. 获取查询参数
+        const { searchParams } = new URL(request.url)
+        const page = parseInt(searchParams.get('current') || '1')
+        const pageSize = parseInt(searchParams.get('pageSize') || '10')
+        const status = searchParams.get('status') // 可选：按状态筛选
+        const searchTitle = searchParams.get('title') // 可选：按标题筛选
+
+        console.log('查询参数:', { account, page, pageSize, status, searchTitle })
+
+        // 2. 首先根据 account 查找目标用户
+        const { data: targetUser, error: userError }:{data: UserInfo, error: any} = await supabase
+            .from('user')
+            .select('auth_user_id, account, name, avatar')
+            .eq('account', account)
+            .single()
+
+        if (userError || !targetUser) {
+            console.error('查找用户错误:', userError)
+            return NextResponse.json({
+                code: 404,
+                message: '用户不存在'
+            })
+        }
+
+        console.log('找到目标用户:', targetUser)
+
+        // 3. 检查当前登录状态和用户身份
+        const { result: isLoggedIn, session } = await checkHasLogin(request, supabase)
+
+        // 判断是否是查看自己的博客
+        const isOwnBlog = isLoggedIn && session && session.user_id === targetUser.auth_user_id
+        console.log('访问权限判断:', {
+            isLoggedIn,
+            currentUserId: session?.user_id,
+            targetUserId: targetUser.auth_user_id,
+            isOwnBlog
+        })
+
+        // 4. 计算分页
+        const from = (page - 1) * pageSize
+        const to = from + pageSize - 1
+
+        // 5. 构建查询
+        let query = supabase
+            .from('blog')
+            .select(`
+                id,
+                title,
+                content,
+                cover,
+                status,
+                created_at,
+                update_at,
+                user_id
+            `, { count: 'exact' })
+            .eq('user_id', targetUser.auth_user_id)
+
+        // 状态筛选逻辑：
+        // - 如果是查看自己的博客，可以按状态筛选，默认显示所有
+        // - 如果是查看他人的博客，只能看已发布的（status=1）
+        if (isOwnBlog) {
+            // 查看自己的博客，可以按状态筛选
+            const statusNum = status ? parseInt(status) : null
+            if (typeof statusNum === 'number') {
+                query = query.eq('status', statusNum)
+            }
+            // 如果没有指定状态，显示所有状态的博客
+        } else {
+            // 查看他人的博客，强制只显示已发布的
+            query = query.eq('status', 1)
+        }
+        // 6. 添加标题模糊查询
+        if (searchTitle && searchTitle.trim()) {
+            // 使用 ilike 进行不区分大小写的模糊查询
+            // % 表示任意字符，可以匹配标题中包含关键词的博客
+            query = query.ilike('title', `%${searchTitle.trim()}%`)
+            console.log('添加标题模糊查询:', searchTitle.trim())
+        }
+        // 7. 执行查询（按更新时间倒序）
+        const { data: blogs, error: blogError, count } = await query
+            .order('update_at', { ascending: false })
+            .range(from, to)
+
+        if (blogError) {
+            console.error('数据库查询错误:', blogError)
+            return NextResponse.json({
+                code: 500,
+                message: `获取博客列表失败: ${blogError.message}`
+            })
+        }
+
+        // 7. 处理数据格式
+        const formattedBlogs = (blogs || []).map((blog:BlogItemServeType) => {
+            const { created_at, id, update_at, status, content, cover, title } = blog
+            // 从内容中提取纯文本作为摘要
+            const contentText = content.replace(/<[^>]*>/g, '')
+
+
+            return {
+                id,
+                title,
+                content: contentText, // 返回摘要而不是完整内容
+                cover,
+                status,
+                createdAt: created_at,
+                updatedAt: update_at,
+                commentNum: 0 // 默认值，可以根据需要添加评论查询
+            }
+        })
+
+        // 8. 分页信息
+        const total = count || 0
+        const totalPages = Math.ceil(total / pageSize)
+
+        console.log('作者博客列表数据:', {
+            account,
+            isOwnBlog,
+            page,
+            pageSize,
+            total,
+            totalPages,
+            blogsCount: formattedBlogs.length
+        })
+
+        return NextResponse.json({
+            code: 200,
+            message: '获取博客列表成功',
+            data: {
+                author: {
+                    account: targetUser.account,
+                    name: targetUser.name,
+                    avatar: targetUser.avatar,
+                    isCurrentUser: isOwnBlog // 前端可以据此显示不同的UI
+                },
+                list: formattedBlogs,
+                pagination: {
+                    current: page,
+                    pageSize: pageSize,
+                    total: total,
+                    totalPages: totalPages
+                }
+            }
+        })
+
+    } catch (error) {
+        console.error('获取作者博客API错误:', error)
+        return NextResponse.json({
+            code: 500,
+            message: `服务器内部错误: ${error instanceof Error ? error.message : 'Unknown error'}`
+        })
+    }
+}

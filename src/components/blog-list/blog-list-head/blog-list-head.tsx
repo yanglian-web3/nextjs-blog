@@ -78,7 +78,7 @@ function BlogListHead() {
         <div className="blog-head-out-container">
             <div className="blog-head-container flex justify-between items-center">
                 <div className="blog-search-container relative flex">
-                    <input placeholder="搜索本站" className="blog-search-input blog-head-input border border-solid border-gray-200 pl-4 pr-10 py-1 w-100"/>
+                    <input placeholder="输入标题global-" className="blog-search-input blog-head-input border border-solid border-gray-200 pl-4 pr-10 py-1 w-100"/>
                     <span className="search-icon cursor-pointer absolute right-2">
                  <IconSearch/>
               </span>

@@ -12,8 +12,7 @@ export default function BlogMyListItem({ item }: { item: BlogItemType}){
     return <div className="blog-list-item flex justify-between border-b border-gray-100 py-5">
         <Link href={`/detail/${item.id}`} target="_blank" rel="noopener noreferrer">
             <div className="item-left flex items-center cursor-pointer" onClick={goDetail}>
-
-                <img src={item.cover} alt="cover" className="w-30 h-15 mr-4"/>
+                {item.cover ? <img src={item.cover} alt="cover" className="w-30 h-15 mr-4"/> : null}
                 <div className="item-info">
                     <h3 className="item-title text-lg font-bold mb-2">{item.title}</h3>
                     <p className="item-content text-gray-500">{item.createdAt}</p>
