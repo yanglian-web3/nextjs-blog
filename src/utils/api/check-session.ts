@@ -1,14 +1,18 @@
 import {NextRequest, NextResponse} from "next/server";
+import {cookies} from "next/headers";
 
 /**
  * 检查用户是否登录
  * @param request
  * @param supabase
+ * @param sessionToken
  */
-export const checkHasLogin = async (request: NextRequest, supabase) => {
+export const checkHasLogin = async (request: NextRequest, supabase, sessionToken?: string) => {
+    console.error("====================开始调用 checkhaslogin=========================================================================")
     // 直接从 Cookie 获取 session_token
-    const sessionToken = request.cookies.get('session_token')?.value
-
+    // const sessionToken = request.cookies.get('session_token')?.value
+    // console.log("checkHasLogin sessionToken=", sessionToken)
+    // console.log("checkHasLogin request.url=", request.url)
     if (!sessionToken) {
         return {
             result: false,
@@ -23,7 +27,7 @@ export const checkHasLogin = async (request: NextRequest, supabase) => {
         .gt('expires_at', new Date().toISOString())
         .single()
 
-    // console.log("session=", session)
+    console.log("session=", session)
     console.log("sessionError=", sessionError)
 
     if (sessionError || !session) {

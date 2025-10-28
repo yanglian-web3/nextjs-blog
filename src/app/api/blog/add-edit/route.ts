@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
         console.log('接收到的数据:', { id, title, content, cover, status })
 
         // 2. 检查登录状态
-        const { result, session, message } = await checkHasLogin(request, supabase)
+        const { result, session, message } = await checkHasLogin(request, supabase, request.cookies.get('session_token')?.value)
         console.log('登录检查结果:', { result, message })
         console.log('Session 对象:', session)
 

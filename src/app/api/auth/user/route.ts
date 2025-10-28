@@ -11,7 +11,7 @@ const supabase = createClient(
 export async function GET(request: NextRequest) {
     try {
 
-        const { result, session, message} = await checkHasLogin( request, supabase)
+        const { result, session, message} = await checkHasLogin( request, supabase, request.cookies.get('session_token')?.value)
         if(!result){
             return NextResponse.json({
                 code: 401,

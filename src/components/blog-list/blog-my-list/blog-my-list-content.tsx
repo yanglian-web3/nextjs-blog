@@ -6,23 +6,26 @@ import {useEffect, useRef, useState} from "react";
 import Pagination from "../../pagination/pagination";
 import {PaginationOptions} from "../../../types/pagination";
 import NoData from "../../no-data/no-data";
+import {getBlogListByAccount} from "../../../utils/blog";
+import {useParams} from "next/navigation";
 
-export default function BlogMyListContent({ initList}: { initList: BlogItemType[]}) {
-
+export default function BlogMyListContent({ initList, initPage}: { initList: BlogItemType[], initPage: Partial<PaginationOptions>}) {
+    const params = useParams()
     const [blogList, setBlogList] = useState(initList)
-    const [draft, setDraft] = useState(blogList.filter((item) => item.status === 2).length)
+    const [draft, setDraft] = useState(blogList.filter((item) => item.status === 0).length)
     const [published, setPublished] = useState(blogList.filter((item) => item.status === 1).length)
     const [currentStatus, setCurrentStatus] = useState(0)
     const [blogListTitleWidth, setBlogListTitleWidth] = useState(1200)
-    const renderPagination:Partial<PaginationOptions> = {
+    const [renderPagination, setRenderPagination] = useState<Partial<PaginationOptions>>({
         current: 1,
         pageSize: 10,
         pageCount: 5,
         total: 0,
         showQuickJumper: true,
         showSizeChanger: true,
-        pageSizeOptions: [10, 20, 30, 40]
-    }
+        pageSizeOptions: [10, 20, 30, 40],
+        ...initPage
+    })
 
     const blogContentContainer = useRef<HTMLDivElement | null>(null);
     /**
@@ -37,7 +40,15 @@ export default function BlogMyListContent({ initList}: { initList: BlogItemType[
      * 获取博客列表
      */
     const getBlogList = (type: number) => {
-        setBlogList(initList)
+        getBlogListByAccount(
+            params.account as string,
+            {current: renderPagination.current, pageSize: renderPagination.pageSize},
+            {status: type}
+        ).then((myBlogResult) => {
+            setRenderPagination(myBlogResult.pagination)
+            setBlogList(initList)
+        })
+
     }
     /**
      * 翻页改变
@@ -53,7 +64,7 @@ export default function BlogMyListContent({ initList}: { initList: BlogItemType[
         setBlogListTitleWidth(blogContentContainer.current?.clientWidth || 1200)
     }, [blogList.length])
 
-    console.log("blogList=", blogList)
+    // console.log("blogList=", blogList)
     return (
         <>
             <div className="blog-count-container flex items-center m-auto">

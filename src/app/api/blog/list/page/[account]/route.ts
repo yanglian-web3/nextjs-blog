@@ -15,7 +15,8 @@ export async function GET(
     { params }: { params: { account: string } }
 ) {
     try {
-        const account = params.account
+        const [resolvedParams] = await Promise.all([params])
+        const account = resolvedParams.account
         console.log('=== 开始获取作者博客列表 ===', { account })
 
         // 1. 获取查询参数
@@ -24,6 +25,8 @@ export async function GET(
         const pageSize = parseInt(searchParams.get('pageSize') || '10')
         const status = searchParams.get('status') // 可选：按状态筛选
         const searchTitle = searchParams.get('title') // 可选：按标题筛选
+        const requestHeaders = request.headers
+        const sessionToken = requestHeaders.get('session_token') || request.cookies.get('session_token')?.value
 
         console.log('查询参数:', { account, page, pageSize, status, searchTitle })
 
@@ -45,7 +48,7 @@ export async function GET(
         console.log('找到目标用户:', targetUser)
 
         // 3. 检查当前登录状态和用户身份
-        const { result: isLoggedIn, session } = await checkHasLogin(request, supabase)
+        const { result: isLoggedIn, session } = await checkHasLogin(request, supabase, sessionToken)
 
         // 判断是否是查看自己的博客
         const isOwnBlog = isLoggedIn && session && session.user_id === targetUser.auth_user_id
@@ -156,7 +159,7 @@ export async function GET(
                 pagination: {
                     current: page,
                     pageSize: pageSize,
-                    total: total,
+                    total,
                     totalPages: totalPages
                 }
             }

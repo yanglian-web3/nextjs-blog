@@ -1,4 +1,4 @@
-import {AccountBlogResult, BlogHomeItemType, BlogItemType} from "../types/blog";
+import {AccountBlogResult, BlogHomeItemType} from "../types/blog";
 import {PaginationOptions} from "../types/pagination";
 import qs from "qs"
 
@@ -27,16 +27,24 @@ export function getBlogListRandom() {
 
 /**
  * 根据account账户，分页以及搜索参数获取博客
- * @param account
- * @param pagination
- * @param searchParams
+ * @param options
  */
-export function getBlogListByAccount(account: string,
-                                     pagination: Partial<PaginationOptions>,
-                                     searchParams: {title?: string, status?: number} = {}) {
+export function getBlogListByAccount(options: {
+    account: string,
+    pagination: Partial<PaginationOptions>,
+    searchParams?: {title?: string, status?: number},
+    sessionToken?:string
+}) {
+    const {account, pagination, sessionToken,searchParams = {}} = options
+    const {current, pageSize} = pagination
     return  new Promise<AccountBlogResult>((resolve) => {
-        const query = qs.stringify(searchParams)
-        fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/list/page/${account}?${query}`)
+        const searchQuery = qs.stringify(searchParams)
+        fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/list/page/${account}?${searchQuery}&current=${current}&pageSize=${pageSize}`, {
+            credentials: 'include',
+            headers: {
+                'session_token': sessionToken || ''
+            }
+        })
             .then(res => res.json())
             .then(result => {
                 const { code ,data, message} = result
