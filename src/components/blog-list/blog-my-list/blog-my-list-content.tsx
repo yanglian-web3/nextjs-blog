@@ -5,6 +5,8 @@ import {BlogItemType} from "../../../types/blog";
 import {useEffect, useRef, useState} from "react";
 import Pagination from "../../pagination/pagination";
 import {PaginationOptions} from "../../../types/pagination";
+import IconNoData from "../../icons/icon-no-data";
+import NoData from "../../no-data/no-data";
 
 export default function BlogMyListContent({ initList}: { initList: BlogItemType[]}) {
 
@@ -76,9 +78,9 @@ export default function BlogMyListContent({ initList}: { initList: BlogItemType[
                 <div className="blog-content-container overflow-auto overscroll-contain m-auto px-4 py-6" ref={blogContentContainer}>
 
                     {
-                        blogList.map((item) => {
+                        blogList.length ? blogList.map((item) => {
                             return <BlogMyListItem item={item} key={item.id}/>
-                        })
+                        }) : <NoData/>
                     }
                 </div>
             </div>

@@ -6,6 +6,7 @@ import {useEffect, useRef, useState} from "react";
 import IconRefresh from "../../icons/icon-refresh";
 import {useLoading} from "../../../context/loading-context";
 import {getBlogListRandom} from "../../../utils/blog";
+import NoData from "../../no-data/no-data";
 
 export default function BlogHomeListContent({ initList}: { initList: BlogHomeItemType[]}) {
 
@@ -34,16 +35,16 @@ export default function BlogHomeListContent({ initList}: { initList: BlogHomeIte
                 <h2 className={"text-xl font-bold"}>博客精选</h2>
                 <button className="flex justify-center items-center cursor-pointer" onClick={getBlogList}>
                     <IconRefresh width={16} height={16} color={"#999999"}/>
-                    <span className={"ml-1"}>刷新</span>
+                    <span className={"ml-1"}>换一换</span>
                 </button>
             </div>
             <div className="w-max-1200 relative m-auto">
                 <div className="blog-home-content-container overflow-auto overscroll-contain m-auto px-4 py-6" ref={blogContentContainer}>
 
                     {
-                        blogList.map((item) => {
+                        blogList.length ? blogList.map((item) => {
                             return <BlogHomeListItem item={item} key={item.id}/>
-                        })
+                        }) : <NoData/>
                     }
                 </div>
             </div>
