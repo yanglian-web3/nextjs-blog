@@ -8,13 +8,15 @@ import {PaginationOptions} from "../../../types/pagination";
 import NoData from "../../no-data/no-data";
 import {getBlogListByAccount} from "../../../utils/blog";
 import {useParams} from "next/navigation";
+import {useLoading} from "../../../context/loading-context";
 
 export default function BlogMyListContent({ initList, initPage}: { initList: BlogItemType[], initPage: Partial<PaginationOptions>}) {
     const params = useParams()
+    const { showLoading, hideLoading } = useLoading()
     const [blogList, setBlogList] = useState(initList)
     const [draft, setDraft] = useState(blogList.filter((item) => item.status === 0).length)
     const [published, setPublished] = useState(blogList.filter((item) => item.status === 1).length)
-    const [currentStatus, setCurrentStatus] = useState(0)
+    const [currentStatus, setCurrentStatus] = useState(-1)
     const [blogListTitleWidth, setBlogListTitleWidth] = useState(1200)
     const [renderPagination, setRenderPagination] = useState<Partial<PaginationOptions>>({
         current: 1,
@@ -34,19 +36,22 @@ export default function BlogMyListContent({ initList, initPage}: { initList: Blo
      */
     const countChange  = (type: number) => {
         setCurrentStatus(type)
-        getBlogList(type)
+        getBlogList(type, renderPagination)
     }
     /**
      * 获取博客列表
      */
-    const getBlogList = (type: number) => {
-        getBlogListByAccount(
-            params.account as string,
-            {current: renderPagination.current, pageSize: renderPagination.pageSize},
-            {status: type}
-        ).then((myBlogResult) => {
+    const getBlogList = (type: number, paginationInfo: Partial<PaginationOptions>) => {
+        showLoading()
+        getBlogListByAccount({
+            account: params.account as string,
+            pagination:{current: paginationInfo.current, pageSize: paginationInfo.pageSize},
+            searchParams:{status: type === -1 ? undefined : type}
+        }).then((myBlogResult) => {
             setRenderPagination(myBlogResult.pagination)
-            setBlogList(initList)
+            setBlogList(myBlogResult.list)
+        }).finally(() => {
+            hideLoading()
         })
 
     }
@@ -56,7 +61,9 @@ export default function BlogMyListContent({ initList, initPage}: { initList: Blo
      */
     const paginationChange = (paginationInfo) => {
         // 翻页时，清空选中数据
-        setBlogList([])
+        console.log("paginationChange paginationInfo=",paginationInfo)
+        setRenderPagination(paginationInfo)
+        getBlogList(currentStatus, paginationInfo)
     }
 
     useEffect(() => {
@@ -68,14 +75,14 @@ export default function BlogMyListContent({ initList, initPage}: { initList: Blo
     return (
         <>
             <div className="blog-count-container flex items-center m-auto">
+                <div className="blog-status-item flex items-center mr-4 cursor-pointer" onClick={() => countChange(-1)}>
+                    <span className={ `blog-status-item-text ${currentStatus === -1 ? "font-bold text-gray-900" : "text-gray-500"}`}>全部({published +  draft})</span>
+                </div>
                 <div className="blog-status-item flex items-center mr-4 cursor-pointer" onClick={() => countChange(0)}>
-                    <span className={ `blog-status-item-text ${currentStatus === 0 ? "font-bold text-gray-900" : "text-gray-500"}`}>全部({published +  draft})</span>
+                    <span className={`blog-status-item-text ${currentStatus === 0 ? "font-bold text-gray-900" : "text-gray-500"}`}>已发布({published})</span>
                 </div>
                 <div className="blog-status-item flex items-center mr-4 cursor-pointer" onClick={() => countChange(1)}>
-                    <span className={`blog-status-item-text ${currentStatus === 1 ? "font-bold text-gray-900" : "text-gray-500"}`}>已发布({published})</span>
-                </div>
-                <div className="blog-status-item flex items-center mr-4 cursor-pointer" onClick={() => countChange(2)}>
-                    <span className={`blog-status-item-text ${currentStatus === 2 ? "font-bold text-gray-900" : "text-gray-500"}`}>草稿({draft})</span>
+                    <span className={`blog-status-item-text ${currentStatus === 1 ? "font-bold text-gray-900" : "text-gray-500"}`}>草稿({draft})</span>
                 </div>
             </div>
             <div className="blog-content-out-container relative m-auto">

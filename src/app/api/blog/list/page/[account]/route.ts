@@ -29,6 +29,8 @@ export async function GET(
         const sessionToken = requestHeaders.get('session_token') || request.cookies.get('session_token')?.value
 
         console.log('查询参数:', { account, page, pageSize, status, searchTitle })
+        console.log('requestHeaders.get(\'session_token\'):', requestHeaders.get('session_token'))
+        console.log('request.cookies.get(\'session_token\')?.value', request.cookies.get('session_token')?.value)
 
         // 2. 首先根据 account 查找目标用户
         const { data: targetUser, error: userError }:{data: UserInfo, error: any} = await supabase
