@@ -4,24 +4,23 @@ import BlogHomeListItem from "./blog-home-list-item";
 import {BlogHomeItemType} from "../../../types/blog";
 import {useEffect, useRef, useState} from "react";
 import IconRefresh from "../../icons/icon-refresh";
-import PageLoading from "../../page-loading/page-loading";
+import {useLoading} from "../../../context/loading-context";
 
 export default function BlogHomeListContent({ initList}: { initList: BlogHomeItemType[]}) {
 
     const [blogList, setBlogList] = useState(initList)
-    const [loading, setLoading] = useState(false)
     const [blogListTitleWidth, setBlogListTitleWidth] = useState(1200)
-
+    const { showLoading, hideLoading } = useLoading()
     const blogContentContainer = useRef<HTMLDivElement | null>(null);
 
     /**
      * 获取博客列表
      */
     const getBlogList = () => {
-        setLoading(true)
+        showLoading()
         setBlogList(initList)
         setTimeout(() => {
-            setLoading(false)
+            hideLoading()
         }, 1000)
     }
     useEffect(() => {
@@ -41,19 +40,16 @@ export default function BlogHomeListContent({ initList}: { initList: BlogHomeIte
                     <span className={"ml-1"}>刷新</span>
                 </button>
             </div>
-            <PageLoading loading={loading}>
-                <div className="w-max-1200 relative m-auto">
-                    <div className="blog-home-content-container overflow-auto overscroll-contain m-auto px-4 py-6" ref={blogContentContainer}>
+            <div className="w-max-1200 relative m-auto">
+                <div className="blog-home-content-container overflow-auto overscroll-contain m-auto px-4 py-6" ref={blogContentContainer}>
 
-                        {
-                            blogList.map((item) => {
-                                return <BlogHomeListItem item={item} key={item.id}/>
-                            })
-                        }
-                    </div>
+                    {
+                        blogList.map((item) => {
+                            return <BlogHomeListItem item={item} key={item.id}/>
+                        })
+                    }
                 </div>
-            </PageLoading>
-
+            </div>
         </>
     )
 }

@@ -48,3 +48,9 @@ html,body,div,p,span,ul,li,strong,span{
 .w-max-1200{
   max-width: 1200px;
 }
+.z-index-1000{
+  z-index: 1000;
+}
+.z-index-2000{
+  z-index: 2000;
+}

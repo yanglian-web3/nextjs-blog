@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 }
 
 export default async function AddEditPage() {
+
     return <div className="blog-add-edit-container">
         <BlogEditHead/>
         {/*中间部分*/}

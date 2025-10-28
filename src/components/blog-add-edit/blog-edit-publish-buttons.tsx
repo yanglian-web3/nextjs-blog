@@ -6,18 +6,24 @@ import { useSelector } from "react-redux"
 import { RootState } from "../../store/index"
 import { Dialog } from '@ark-ui/react'
 import IconWarning from "../icons/icon-warning";
+import {useLoading} from "../../context/loading-context";
+import {useRouter} from "next/navigation";
 
 type AlertType = 'warning' | 'error' | 'info'
 
 export default function BlogEditPublishButtons() {
+    const router = useRouter()
+    const { userInfo } = useSelector((state: RootState) => state.user)
     const { title, content } = useSelector((state: RootState) => state.blogEdit)
     const [alertOpen, setAlertOpen] = useState(false)
+    const [showDialogFooter, setShowDialogFooter] = useState(true)
     const [alertConfig, setAlertConfig] = useState({
         title: "",
         message: "",
         type: 'warning' as AlertType
     })
 
+    const { showLoading, hideLoading } = useLoading()
     /**
      * 显示警告弹窗
      * @param message
@@ -27,6 +33,12 @@ export default function BlogEditPublishButtons() {
     const showAlert = (message: string, type: AlertType = 'warning', title: string = '提示') => {
         setAlertConfig({ title, message, type })
         setAlertOpen(true)
+    }
+    /**
+     * 隐藏警告弹窗
+     */
+    const hideAlert = () => {
+        setAlertOpen(false)
     }
     /**
      * 校验
@@ -50,6 +62,7 @@ export default function BlogEditPublishButtons() {
      */
     const handleSave = (status:number) => {
         if (!validateForm()) return
+        showLoading()
         fetch('/api/blog/add-edit', {
             credentials: 'include',
             method: 'POST',
@@ -59,13 +72,24 @@ export default function BlogEditPublishButtons() {
                 if(data.code === 200){
                     // 保存草稿逻辑
                     console.log('保存:', { title, content })
+                    setShowDialogFooter(false)
                     showAlert("保存成功", "info", "保存成功")
+                    setTimeout(() => {
+                        hideAlert()
+                        // 跳转到个人主页
+                        router.push(`/${userInfo.account}`)
+                    }, 2000)
                 } else {
                     showAlert("保存失败，请重试", "error", "保存失败")
                 }
-            }).catch( () => {
-            showAlert("保存失败，请重试", "error", "保存失败")
-        })
+            })
+            .catch( (error) => {
+                console.error(error)
+                showAlert("保存失败，请重试", "error", "保存失败")
+            })
+            .finally(() => {
+                hideLoading()
+            })
     }
 
 
@@ -100,13 +124,15 @@ export default function BlogEditPublishButtons() {
                         <Dialog.Description className={`mb-6`}>
                             {alertConfig.message}
                         </Dialog.Description>
-                        <div className="flex justify-end">
-                            <Dialog.CloseTrigger asChild>
-                                <button className={`px-6 py-2 text-white rounded-lg transition-colors theme-bg`}>
-                                    确定
-                                </button>
-                            </Dialog.CloseTrigger>
-                        </div>
+                        {
+                            showDialogFooter ?                   <div className="flex justify-end">
+                                <Dialog.CloseTrigger asChild>
+                                    <button className={`px-6 py-2 text-white rounded-lg transition-colors theme-bg`}>
+                                        确定
+                                    </button>
+                                </Dialog.CloseTrigger>
+                            </div> : null
+                        }
                     </Dialog.Content>
                 </Dialog.Positioner>
             </Dialog.Root>

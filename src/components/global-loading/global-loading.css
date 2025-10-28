@@ -1,0 +1,9 @@
+.global-loading-icon-container{
+    background-color: rgba(255,255,255,0.7);
+}
+.global-loading-icon-container-show{
+    display: flex;
+}
+.global-loading-icon-container-hide{
+    display: none;
+}
