@@ -16,19 +16,23 @@ interface BlogMyListContentProps {
     draft: number,
     published: number
 }
+
+const defaultPage = {
+    current: 1,
+    pageSize: 10,
+    pageCount: 5,
+    total: 0,
+    showQuickJumper: true,
+    showSizeChanger: true,
+    pageSizeOptions: [10, 20, 30, 40]
+}
 export default function BlogMyListContent({ initList, initPage, draft, published}: BlogMyListContentProps) {
     const { showLoading, hideLoading } = useLoading()
     const [blogList, setBlogList] = useState(initList || [])
     const [currentStatus, setCurrentStatus] = useState(-1)
     const [blogListTitleWidth, setBlogListTitleWidth] = useState(1200)
     const [renderPagination, setRenderPagination] = useState<Partial<PaginationOptions>>({
-        current: 1,
-        pageSize: 10,
-        pageCount: 5,
-        total: 0,
-        showQuickJumper: true,
-        showSizeChanger: true,
-        pageSizeOptions: [10, 20, 30, 40],
+       ...defaultPage,
         ...initPage
     })
 
@@ -40,7 +44,13 @@ export default function BlogMyListContent({ initList, initPage, draft, published
      */
     const countChange  = (type: number) => {
         setCurrentStatus(type)
-        getBlogList(type, renderPagination)
+        setRenderPagination({
+            ...defaultPage
+        })
+        console.log("after set rendder pagination renderPagination=", renderPagination)
+        console.log("after set rendder pagination renderPagination=", {...renderPagination})
+        console.log("after set rendder pagination defaultPage=", {...defaultPage})
+        getBlogList(type, { ...defaultPage })
     }
     /**
      * 获取博客列表

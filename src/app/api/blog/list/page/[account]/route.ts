@@ -106,11 +106,28 @@ export async function GET(
             .order('update_at', { ascending: false })
             .range(from, to)
 
+        const author = {
+            account: targetUser.account,
+            name: targetUser.name,
+            avatar: targetUser.avatar,
+            isCurrentUser: isOwnBlog // 前端可以据此显示不同的UI
+        }
+
         if (blogError) {
             console.error('数据库查询错误:', blogError)
             return NextResponse.json({
-                code: 500,
-                message: `获取博客列表失败: ${blogError.message}`
+                code: 200,
+                message: '获取博客列表成功',
+                data: {
+                    author,
+                    list: [],
+                    pagination: {
+                        current: page,
+                        pageSize: pageSize,
+                        total:0,
+                        totalPages: 0
+                    }
+                }
             })
         }
 
@@ -153,12 +170,7 @@ export async function GET(
             code: 200,
             message: '获取博客列表成功',
             data: {
-                author: {
-                    account: targetUser.account,
-                    name: targetUser.name,
-                    avatar: targetUser.avatar,
-                    isCurrentUser: isOwnBlog // 前端可以据此显示不同的UI
-                },
+                author,
                 list: formattedBlogs,
                 pagination: {
                     current: page,

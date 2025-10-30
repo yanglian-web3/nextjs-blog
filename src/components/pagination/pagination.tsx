@@ -28,9 +28,9 @@ const Pagination: React.FC<PaginationProps> = ({ options, onChange }) => {
     // 更新选项
     useEffect(() => {
         const newPaginationOptions = { ...defaultPaginationOptions, ...options };
-        // console.log("use effect new_Pagination_Options=", newPaginationOptions)
+        console.log("use effect new_Pagination_Options=", newPaginationOptions)
         setRenderOptions(newPaginationOptions);
-    }, []);
+    }, [options]);
 
     // 计算总页数
     const pageNum = useMemo(() => {
@@ -97,7 +97,7 @@ const Pagination: React.FC<PaginationProps> = ({ options, onChange }) => {
         if (index > pageNum) index = pageNum;
 
         const newOptions = { ...renderOptions, current: index };
-        setRenderOptions(newOptions);
+        // setRenderOptions(newOptions);
 
         // 更新输入框的值
         if (renderOptions.showQuickJumper) {
@@ -133,7 +133,7 @@ const Pagination: React.FC<PaginationProps> = ({ options, onChange }) => {
             pageSize: value,
             current: 1 // 重置为第一页
         };
-        setRenderOptions(newOptions);
+        // setRenderOptions(newOptions);
         onChange?.(newOptions);
     };
 
