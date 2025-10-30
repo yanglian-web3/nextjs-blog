@@ -101,16 +101,35 @@ export async function GET(
             query = query.ilike('title', `%${searchTitle.trim()}%`)
             console.log('添加标题模糊查询:', searchTitle.trim())
         }
-        // 7. 执行查询（按更新时间倒序）
-        const { data: blogs, error: blogError, count } = await query
-            .order('update_at', { ascending: false })
-            .range(from, to)
+        // 7. 并行查询：获取博客列表和发布数
+        const [blogResult, publishedCountResult] = await Promise.all([
+            // 查询博客列表
+            query
+                .order('update_at', { ascending: false })
+                .range(from, to),
 
+            // 查询发布数（status=1 的总数）
+            supabase
+                .from('blog')
+                .select('id', { count: 'exact' })
+                .eq('user_id', targetUser.auth_user_id)
+                .eq('status', 1)
+        ])
+        // // 7. 执行查询（按更新时间倒序）
+        // const { data: blogs, error: blogError, count } = await query
+        //     .order('update_at', { ascending: false })
+        //     .range(from, to)
+        const { data: blogs, error: blogError, count } = blogResult
+        const { count: publishedCount } = publishedCountResult
         const author = {
             account: targetUser.account,
             name: targetUser.name,
             avatar: targetUser.avatar,
             isCurrentUser: isOwnBlog // 前端可以据此显示不同的UI
+        }
+
+        const countInfo = {
+            publishedCount
         }
 
         if (blogError) {
@@ -126,6 +145,9 @@ export async function GET(
                         pageSize: pageSize,
                         total:0,
                         totalPages: 0
+                    },
+                    countInfo: {
+                        publishedCount: 0
                     }
                 }
             })
@@ -177,7 +199,8 @@ export async function GET(
                     pageSize: pageSize,
                     total,
                     totalPages: totalPages
-                }
+                },
+                countInfo
             }
         })
 

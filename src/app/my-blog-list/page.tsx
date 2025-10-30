@@ -20,10 +20,12 @@ export default async function MyBlogList() {
     })
     const blogList:BlogItemType[] = myBlogResult.list || []
     console.log("bloglist.length=", blogList.length)
+    const published = myBlogResult.countInfo?.publishedCount || 0
+    const draft = blogList.length - published
     return (
         <div className={"page-container"}>
             <BlogListHead/>
-            <BlogMyListContent initList={blogList} initPage={myBlogResult.pagination} draft={0} published={0}/>
+            <BlogMyListContent initList={blogList} initPage={myBlogResult.pagination} draft={ draft} published={published}/>
         </div>
     );
 }

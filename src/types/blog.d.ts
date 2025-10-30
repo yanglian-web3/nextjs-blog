@@ -9,6 +9,7 @@ export interface BlogItemCommonType {
     viewCount: string;
     commentCount: string;
     summary: string;
+    user_id: string
 }
 export interface BlogItemType extends BlogItemCommonType{
     createdAt: string;
@@ -52,5 +53,8 @@ export interface AccountBlogResult {
         isCurrentUser: boolean;
     },
     list:BlogItemType[],
-    pagination: PaginationOptions
+    pagination: PaginationOptions,
+    countInfo: {
+        publishedCount: number
+    }
 }

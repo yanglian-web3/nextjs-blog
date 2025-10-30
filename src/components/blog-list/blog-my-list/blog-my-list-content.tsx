@@ -47,9 +47,9 @@ export default function BlogMyListContent({ initList, initPage, draft, published
         setRenderPagination({
             ...defaultPage
         })
-        console.log("after set rendder pagination renderPagination=", renderPagination)
-        console.log("after set rendder pagination renderPagination=", {...renderPagination})
-        console.log("after set rendder pagination defaultPage=", {...defaultPage})
+        // console.log("after set rendder pagination renderPagination=", renderPagination)
+        // console.log("after set rendder pagination renderPagination=", {...renderPagination})
+        // console.log("after set rendder pagination defaultPage=", {...defaultPage})
         getBlogList(type, { ...defaultPage })
     }
     /**
@@ -93,11 +93,11 @@ export default function BlogMyListContent({ initList, initPage, draft, published
                 <div className="blog-status-item flex items-center mr-4 cursor-pointer" onClick={() => countChange(-1)}>
                     <span className={ `blog-status-item-text ${currentStatus === -1 ? "font-bold text-gray-900" : "text-gray-500"}`}>全部({published +  draft})</span>
                 </div>
-                <div className="blog-status-item flex items-center mr-4 cursor-pointer" onClick={() => countChange(0)}>
-                    <span className={`blog-status-item-text ${currentStatus === 0 ? "font-bold text-gray-900" : "text-gray-500"}`}>已发布({published})</span>
-                </div>
                 <div className="blog-status-item flex items-center mr-4 cursor-pointer" onClick={() => countChange(1)}>
-                    <span className={`blog-status-item-text ${currentStatus === 1 ? "font-bold text-gray-900" : "text-gray-500"}`}>草稿({draft})</span>
+                    <span className={`blog-status-item-text ${currentStatus === 1 ? "font-bold text-gray-900" : "text-gray-500"}`}>已发布({published})</span>
+                </div>
+                <div className="blog-status-item flex items-center mr-4 cursor-pointer" onClick={() => countChange(0)}>
+                    <span className={`blog-status-item-text ${currentStatus === 0 ? "font-bold text-gray-900" : "text-gray-500"}`}>草稿({draft})</span>
                 </div>
             </div>
             <div className="w-max-1200 relative m-auto">

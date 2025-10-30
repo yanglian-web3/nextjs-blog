@@ -106,7 +106,7 @@ export default function BlogEditPublishButtons() {
                     onClick={() => handleSave(1)}
                     className="blog-edit-button blog-edit-publish-button px-6 py-2 text-white rounded-lg transition-colors bg-blue-500 hover:bg-blue-600 font-medium"
                 >
-                    发布文章
+                    保存并发布
                 </button>
             </div>
 
