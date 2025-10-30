@@ -1,5 +1,5 @@
 import BlogListHead from "../../components/blog-list/blog-list-head/blog-list-head";
-import "./account-home-page.css"
+import "./my-blog-list.css"
 import {AccountBlogResult, BlogItemType} from "../../types/blog";
 import BlogMyListContent from "../../components/blog-list/blog-my-list/blog-my-list-content";
 import {getBlogListByAccount} from "../../utils/blog";
@@ -23,7 +23,7 @@ export default async function MyBlogList() {
     return (
         <div className={"page-container"}>
             <BlogListHead/>
-            <BlogMyListContent initList={blogList} initPage={myBlogResult.pagination}/>
+            <BlogMyListContent initList={blogList} initPage={myBlogResult.pagination} draft={0} published={0}/>
         </div>
     );
 }

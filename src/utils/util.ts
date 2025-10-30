@@ -14,3 +14,18 @@ export function getRandom(min:number, max:number) {
 export function getRandomInt(min:number, max:number) {
     return Math.floor(getRandom(min, max))
 }
+
+/**
+ *  获取单个 cookie 值
+ * @param name
+ */
+export const getCookie = (name: string): string | null => {
+    if (typeof document === 'undefined') return null
+
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) {
+        return parts.pop()?.split(';').shift() || null
+    }
+    return null
+}

@@ -119,17 +119,19 @@ export async function GET(
             const { created_at, id, update_at, status, content, cover, title } = blog
             // 从内容中提取纯文本作为摘要
             const contentText = content.replace(/<[^>]*>/g, '')
-
+            const summary = contentText.length > 500
+                ? contentText.substring(0, 500)
+                : contentText
 
             return {
                 id,
                 title,
-                content: contentText, // 返回摘要而不是完整内容
+                summary, // 返回摘要而不是完整内容
                 cover,
                 status,
                 createdAt: created_at,
                 updatedAt: update_at,
-                commentNum: 0 // 默认值，可以根据需要添加评论查询
+                commentCount: "0" // 默认值，可以根据需要添加评论查询
             }
         })
 

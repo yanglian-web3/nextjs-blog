@@ -7,15 +7,18 @@ import Pagination from "../../pagination/pagination";
 import {PaginationOptions} from "../../../types/pagination";
 import NoData from "../../no-data/no-data";
 import {getBlogListByAccount} from "../../../utils/blog";
-import {useParams} from "next/navigation";
 import {useLoading} from "../../../context/loading-context";
+import {getCookie} from "../../../utils/util";
 
-export default function BlogMyListContent({ initList, initPage}: { initList: BlogItemType[], initPage: Partial<PaginationOptions>}) {
-    const params = useParams()
+interface BlogMyListContentProps {
+    initList: BlogItemType[],
+    initPage: Partial<PaginationOptions>,
+    draft: number,
+    published: number
+}
+export default function BlogMyListContent({ initList, initPage, draft, published}: BlogMyListContentProps) {
     const { showLoading, hideLoading } = useLoading()
-    const [blogList, setBlogList] = useState(initList)
-    const [draft, setDraft] = useState(blogList.filter((item) => item.status === 0).length)
-    const [published, setPublished] = useState(blogList.filter((item) => item.status === 1).length)
+    const [blogList, setBlogList] = useState(initList || [])
     const [currentStatus, setCurrentStatus] = useState(-1)
     const [blogListTitleWidth, setBlogListTitleWidth] = useState(1200)
     const [renderPagination, setRenderPagination] = useState<Partial<PaginationOptions>>({
@@ -30,6 +33,7 @@ export default function BlogMyListContent({ initList, initPage}: { initList: Blo
     })
 
     const blogContentContainer = useRef<HTMLDivElement | null>(null);
+
     /**
      * 统计按钮切换
      * @param type
@@ -43,8 +47,9 @@ export default function BlogMyListContent({ initList, initPage}: { initList: Blo
      */
     const getBlogList = (type: number, paginationInfo: Partial<PaginationOptions>) => {
         showLoading()
+        const account = getCookie("user_account") || ""
         getBlogListByAccount({
-            account: params.account as string,
+            account,
             pagination:{current: paginationInfo.current, pageSize: paginationInfo.pageSize},
             searchParams:{status: type === -1 ? undefined : type}
         }).then((myBlogResult) => {
@@ -85,7 +90,7 @@ export default function BlogMyListContent({ initList, initPage}: { initList: Blo
                     <span className={`blog-status-item-text ${currentStatus === 1 ? "font-bold text-gray-900" : "text-gray-500"}`}>草稿({draft})</span>
                 </div>
             </div>
-            <div className="blog-content-out-container relative m-auto">
+            <div className="w-max-1200 relative m-auto">
                 <div className="blog-list-title-container flex justify-between items-center border-b border-gray-100 px-4" style={{width: blogListTitleWidth + 'px'}}>
                     <span>文章</span>
                     <div className="blog-list-title-right flex justify-end items-center">

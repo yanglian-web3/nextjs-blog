@@ -6,12 +6,15 @@ export interface BlogItemCommonType {
     content: string;
     cover: string,
     status: number;
+    viewCount: string;
+    commentCount: string;
+    summary: string;
 }
 export interface BlogItemType extends BlogItemCommonType{
     createdAt: string;
     updatedAt: string;
-    commentNum: number;
     account: string;
+    summary: string;
     auth_user_id: string;
 }
 
@@ -19,6 +22,7 @@ export interface BlogItemServeType extends BlogItemCommonType{
     created_at: string;
     update_at: string;
     comment_num: number;
+    view_count: number;
     user: {
         account: string;
         name: string;
@@ -31,10 +35,7 @@ export interface BlogCountInfo {
 }
 
 export interface BlogHomeItemType extends BlogItemCommonType {
-    summary: string;
     editTime: string;
-    viewCount: string;
-    commentCount: string;
     publish: string;
     url: string;
     account: string;
