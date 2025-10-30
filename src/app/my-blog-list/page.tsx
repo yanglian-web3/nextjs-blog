@@ -5,24 +5,20 @@ import BlogMyListContent from "../../components/blog-list/blog-my-list/blog-my-l
 import {getBlogListByAccount} from "../../utils/blog";
 import {cookies} from "next/headers";
 
-interface PageProps {
-    params: {
-        account: string
-    }
-}
-export default async function AccountBlogPage({ params}: PageProps) {
-    // 等待 params 和 searchParams
-    const [resolvedParams] = await Promise.all([params])
+
+export default async function MyBlogList() {
     // 服务端路由调用api时，拿不到cookie，在页面组件中获取 cookies（这里能拿到）
     const cookieStore = await cookies()
     const sessionToken = cookieStore.get('session_token')?.value
+    const account = cookieStore.get('user_account')?.value
     console.log("在页面获取 sessionToken=", sessionToken)
+    console.log("在页面获取 account=", account)
     const myBlogResult:AccountBlogResult = await getBlogListByAccount({
-        account:resolvedParams.account,
+        account: account!,
         pagination: {current: 1, pageSize: 10},
-        sessionToken
+        sessionToken: sessionToken!
     })
-    const blogList:BlogItemType[] = myBlogResult.list
+    const blogList:BlogItemType[] = myBlogResult.list || []
     console.log("bloglist.length=", blogList.length)
     return (
         <div className={"page-container"}>

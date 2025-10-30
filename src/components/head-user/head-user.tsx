@@ -53,7 +53,7 @@ export default function HeadUser({ mode = "center" }: { mode?: "right" | "center
                     <p className="pl-1 text-xl">{userInfo.phone || "--"}</p>
                 </li>
             </ul>
-            <Link href={`/${userInfo.account}`} target={"_blank"} rel="noopener noreferrer" className={"block border-t-1 border-gray-300"}>
+            <Link href={`/my-blog-list`} target={"_blank"} rel="noopener noreferrer" className={"block border-t-1 border-gray-300"}>
                 <div className="px-3 py-2 cursor-pointer flex items-center">
                     <IconList width={20} height={20}/>
                     <p className="pl-1 text-xl">内容管理</p>
