@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 import { checkHasLogin } from '../../../../../../utils/api/check-session'
 import {UserInfo} from "../../../../../../types/user";
 import {BlogItemServeType} from "../../../../../../types/blog";
+import {formatDateTime} from "../../../../../../utils/date-format";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -168,8 +169,8 @@ export async function GET(
                 summary, // 返回摘要而不是完整内容
                 cover,
                 status,
-                createdAt: created_at,
-                updatedAt: update_at,
+                createdAt: formatDateTime(created_at),
+                updatedAt: formatDateTime(update_at),
                 commentCount: "0" // 默认值，可以根据需要添加评论查询
             }
         })

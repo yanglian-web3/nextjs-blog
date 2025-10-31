@@ -9,7 +9,7 @@ const supabase = createClient(
 )
 
 // 需要认证的路径
-const protectedPaths = ['/add-edit', '/detail', '/my-blog-list']
+const protectedPaths = ['/add-edit', '/my-blog-list']
 
 function parseUrlSearchParams(search: string) {
     const params = new URLSearchParams(search)

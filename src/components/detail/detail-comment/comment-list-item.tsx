@@ -3,6 +3,7 @@ import "./comment-list-item.css"
 import IconMsg from "../../icons/icon-msg";
 import CommentInputSend from "./comment-input-send";
 import {useState} from "react";
+import UserHeadImage from "../../head-user/user-head-image";
 
 export default function CommentListItem({ info, sub, isSub = false}: { info: CommentContentItem, sub?: CommentContentItem[], isSub?: boolean},){
     const { commentId, avatar, content, userName, postTime, loginUserDigg, parentUserName } = info
@@ -27,8 +28,8 @@ export default function CommentListItem({ info, sub, isSub = false}: { info: Com
     return <>
         <div className={`comment-list-item-container mb-5 ${isSub ? "ml-13" : ""}`} key={commentId}>
             <div className={"comment-list-item flex mb-5"}>
-                <div className={`comment-user-head-container cursor-pointer mr-4 flex-shrink-0 ${ isSub ? "w-8 h-8" : "w-10 h-10"}`}>
-                    <img className={"comment-user-head-img"} src={avatar ||  ""} alt=""/>
+                <div className={`comment-user-head-container cursor-pointer mr-4 flex-shrink-0 `}>
+                    <UserHeadImage name={userName} src={avatar} size={ isSub ? "sm" : "md"}/>
                 </div>
                 <div className={"info-right-container w-full"}>
                     <div className={"info-top-container flex justify-between items-center mb-2 w-full"}>

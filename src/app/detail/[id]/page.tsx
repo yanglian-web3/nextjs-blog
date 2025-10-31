@@ -6,16 +6,16 @@ import IconViewFill from "../../../components/icons/icon-view-fill";
 import "./detail-page.css"
 import {BlogCountInfo} from "../../../types/blog";
 import BlogDetailBottom from "../../../components/detail/blog-detail-bottom/blog-detail-bottom";
+import {getBlogDetail} from "../../../utils/blog";
 
-const initialMarkdown = ``
 
-export default function BlogDetail() {
-const value = initialMarkdown
-    const title = "欢迎使用Markdown编辑器"
-    const blogCountInfo: BlogCountInfo = {
-        commentCount: 10,
-        readCount: 100
-    }
+
+export default async function BlogDetail({params}) {
+    const [resolvedParams] = await Promise.all([params])
+    console.log("resolvedParams=",resolvedParams)
+    const blogDataResult = await getBlogDetail(resolvedParams.id)
+    console.log("blog_Detail_result result=", {...blogDataResult, content: "太多了省略..."})
+    const {title, content, viewCount, commentCount, createdAt} = blogDataResult
     return <div className="blog-detail-container bg-gray-200 flex flex-col">
         <BlogDetailHead/>
         <div className="blog-detail-title mt-3 flex justify-center ">
@@ -25,20 +25,20 @@ const value = initialMarkdown
                   <div className="flex">
                       <div className="publish-date-container flex items-center text-gray-500 mr-10">
                           <IconClockFill width={15} height={15} color={"#999999"}/>
-                          <span className="ml-1">于 2024-06-03 21:31:00 发布</span>
+                          <span className="ml-1">于 {createdAt} 发布</span>
                       </div>
                       <div className="read-container flex items-center text-gray-500">
                           <IconViewFill width={15} height={15} color={"#999999"}/>
-                          <span className="ml-1"> 阅读量 2.7k</span>
+                          <span className="ml-1"> 阅读量 {viewCount}</span>
                       </div>
                   </div>
                </div>
            </div>
         </div>
         <div className="blog-detail-preview-and-bottom-container flex justify-center">
-            <BlogDetailPreview value={value}/>
+            <BlogDetailPreview value={content}/>
             {/*为了对齐，放在preview组件里面，放在外面可能会因浏览器其他插件影响，导致底部和中间不对齐*/}
-            <BlogDetailBottom blogCountInfo={blogCountInfo}/>
+            <BlogDetailBottom commentCount={commentCount}/>
         </div>
     </div>
 }

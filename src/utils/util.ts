@@ -29,3 +29,16 @@ export const getCookie = (name: string): string | null => {
     }
     return null
 }
+
+/**
+ * 处理数量显示，根据数据大小，显示不同单位
+ */
+export function handleCount(count: number) {
+   if(count > 10000){
+       return `${(count / 10000).toFixed(1)}万`
+   }
+   if(count > 1000){
+       return `${(count / 1000).toFixed(1)}千`
+   }
+   return count
+}

@@ -10,7 +10,7 @@ import { useSelector} from "react-redux";
 import { RootState} from "../../../store/index";
 import UserHeadImage from "../../head-user/user-head-image";
 
-export default function BlogDetailBottom({blogCountInfo}: {blogCountInfo: BlogCountInfo}) {
+export default function BlogDetailBottom({commentCount = "0"}: {commentCount: string}) {
     const { userInfo } = useSelector((state: RootState) => state.user)
 
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -30,7 +30,7 @@ export default function BlogDetailBottom({blogCountInfo}: {blogCountInfo: BlogCo
                 <div className={"blog-detail-bottom-right flex justify-end items-center"}>
                     <div className={"blog-detail-item flex items-center cursor-pointer"} onClick={openComment}>
                         <IconMsg width={24} height={24} color={"#666666"}/>
-                        <span className={"ml-2 text-gray-500"}>{ blogCountInfo.commentCount}</span>
+                        <span className={"ml-2 text-gray-500"}>{ commentCount}</span>
                     </div>
                     <div className={"blog-detail-item flex items-center"} onClick={openComment}>
                         <button className="theme-bg text-white py-1 px-4 rounded-full cursor-pointer text-sm">写评论</button>
@@ -41,7 +41,7 @@ export default function BlogDetailBottom({blogCountInfo}: {blogCountInfo: BlogCo
         <SlideDrawer title={
             <>
                 <span>评论</span>
-                <span className={"ml-2 text-gray-500"}>{ blogCountInfo.commentCount}</span>
+                <span className={"ml-2 text-gray-500"}>{ commentCount}</span>
             </>
         } open={drawerOpen} onOpenChange={(open) => setDrawerOpen(open)}>
             <DetailComment/>

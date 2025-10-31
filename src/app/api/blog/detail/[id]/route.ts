@@ -1,9 +1,11 @@
 // src/app/api/blog/detail/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { checkHasLogin } from '../../../../utils/api/check-session'
-import { BlogItemServeType } from "../../../../types/blog";
-import {UserInfo} from "../../../../types/user";
+import { checkHasLogin } from '../../../../../utils/api/check-session'
+import { BlogItemServeType } from "../../../../../types/blog";
+import {UserInfo} from "../../../../../types/user";
+import {formatDateTime} from "../../../../../utils/date-format";
+import {handleCount} from "../../../../../utils/util";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -12,11 +14,11 @@ const supabase = createClient(
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: { id: number } }
 ) {
     try {
         const [resolvedParams] = await Promise.all([params])
-        const blogId = resolvedParams.id
+        const blogId = Number(resolvedParams.id)
 
         console.log('=== 开始获取博客详情 ===', { blogId })
 
@@ -64,7 +66,7 @@ export async function GET(
         // 3. 查询作者信息
         const { data: author, error: authorError }: { data: UserInfo, error: any} = await supabase
             .from('user')
-            .select('auth_user_id, account, name, avatar, bio')
+            .select('auth_user_id, account, name, avatar')
             .eq('auth_user_id', blog.user_id)
             .single()
 
@@ -98,34 +100,24 @@ export async function GET(
                 .eq('id', blogId)
         }
 
-        // 6. 查询相关博客（同作者的已发布博客）
-        const { data: relatedBlogs } = await supabase
-            .from('blog')
-            .select('id, title, cover, created_at')
-            .eq('user_id', blog.user_id)
-            .eq('status', 1)
-            .neq('id', blogId)
-            .order('created_at', { ascending: false })
-            .limit(4)
-
-        // 7. 查询评论数量
+        // 6. 查询评论数量
         const { count: commentCount } = await supabase
             .from('comments')
             .select('id', { count: 'exact' })
             .eq('blog_id', blogId)
             .eq('status', 1) // 只统计已审核的评论
 
-        // 9. 构建响应数据
+        // 7. 构建响应数据
         const blogDetail = {
             id,
             title,
             content,
             cover,
             status,
-            createdAt: created_at,
-            updatedAt: update_at,
-            viewCount: (view_count || 0) + (!isOwnBlog && isPublished ? 1 : 0), // 实时计数
-            commentCount: commentCount || 0
+            createdAt: formatDateTime(created_at),
+            updatedAt: formatDateTime(update_at),
+            viewCount: handleCount((view_count || 0) + (!isOwnBlog && isPublished ? 1 : 0)), // 实时计数
+            commentCount: handleCount(commentCount || 0)
         }
 
         return NextResponse.json({

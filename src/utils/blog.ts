@@ -1,4 +1,4 @@
-import {AccountBlogResult, BlogHomeItemType} from "../types/blog";
+import {AccountBlogResult, BlogHomeItemType, BlogItemType} from "../types/blog";
 import {PaginationOptions} from "../types/pagination";
 import qs from "qs"
 
@@ -60,3 +60,24 @@ export function getBlogListByAccount(options: {
             })
     })
 }
+
+/**
+ * 获取博客详情
+ * @param id
+ */
+export const getBlogDetail = (id: string) => {
+    return  new Promise<BlogItemType>((resolve) => {
+        fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/detail/${id}`)
+            .then(res => res.json())
+            .then(result => {
+                // console.log("get_Blog_Detail result=", {...result,content: "太多了省略..."})
+                const { code ,data, message} = result
+                if(code !== 200){
+                    console.error("getBlogDetail 获取博客详情失败:", message)
+                    resolve({})
+                } else {
+                    resolve(data)
+                }
+            })
+    })
+ }
