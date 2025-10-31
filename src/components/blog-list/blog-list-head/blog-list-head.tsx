@@ -8,8 +8,6 @@ import IconPlus from "../../icons/icon-plus";
 import Link from 'next/link'
 import Login from "../../auth/login/login";
 import {useEffect, useState} from "react";
-import Registry from "../../auth/registry/registry";
-import ForgetPass from "../../forget-pass/forget-pass";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../../../store/index";
 import {getUserInfo} from "../../../utils/user";
@@ -21,8 +19,7 @@ function BlogListHead() {
     const { userInfo } = useSelector((state: RootState) => state.user)
 
     const [loginOpen, setLoginOpen] = useState(false)
-    const [registryOpen, setRegistryOpen] = useState(false)
-    const [forgetPassOpen, setForgetPassOpen] = useState(false)
+
 
     useEffect(() => {
         getUserInfo().then(res => {
@@ -37,40 +34,6 @@ function BlogListHead() {
     const openLogin = () => {
         setLoginOpen(true)
     }
-    /**
-     * 关闭登录弹窗
-     */
-    const onLoginClose = () => {
-        console.log("关闭登录弹窗")
-        setLoginOpen(false)
-    }
-    /**
-     * 打开注册弹窗
-     */
-    const openRegistry = () => {
-        onLoginClose()
-        setRegistryOpen(true)
-    }
-    /**
-     * 关闭注册弹窗
-     */
-    const onRegistryClose = () => {
-        setRegistryOpen(false)
-    }
-    /**
-     * 打开忘记密码弹窗
-     */
-    const openForgetPass = () => {
-        onLoginClose()
-        setForgetPassOpen(true)
-    }
-    /**
-     * 关闭忘记密码弹窗
-     */
-    const onForgetPassClose = () => {
-        setForgetPassOpen(false)
-    }
-
 
 
     return <>
@@ -95,13 +58,7 @@ function BlogListHead() {
                 </div>
             </div>
         </div>
-        <Login open={loginOpen} onClose={onLoginClose} onOpenRegistry={openRegistry} onOpenForgetPass={openForgetPass}/>
-        <Registry open={registryOpen} onClose={onRegistryClose} onOpenLogin={() => {
-            onRegistryClose()
-            openLogin()
-        }
-        }/>
-        <ForgetPass open={forgetPassOpen} onClose={onForgetPassClose}/>
+        <Login open={loginOpen} updateOpen={setLoginOpen}/>
     </>
 }
 

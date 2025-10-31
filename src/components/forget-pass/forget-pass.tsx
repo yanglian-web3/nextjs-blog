@@ -16,12 +16,11 @@ interface LoginFormError {
 }
 interface Props {
     open: boolean;
-    onClose: () => void;
+    updateOpen: () => void;
     onOpenLogin: () => void;
 }
 
-export default function ForgetPass({ open, onClose, onOpenLogin }: Props) {
-    const [isOpen, setOpen] = useState(false);
+export default function ForgetPass({ open, updateOpen, onOpenLogin }: Props) {
     const [isSubmitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState<Partial<LoginFormError>>({});
     const [formData, setFormData] = useState<LoginForm>({
@@ -30,7 +29,6 @@ export default function ForgetPass({ open, onClose, onOpenLogin }: Props) {
     });
 
     useEffect(() => {
-        setOpen(open);
         if (open) {
             resetForm(); // 打开时重置表单
         }
@@ -141,13 +139,13 @@ export default function ForgetPass({ open, onClose, onOpenLogin }: Props) {
      * 关闭
      */
     const handleClose = () => {
-        onClose();
+        updateOpen();
         resetForm(); // 关闭时重置表单
     };
 
 
     return (
-        <Dialog.Root open={isOpen}>
+        <Dialog.Root open={open}>
             <Dialog.Backdrop
                 className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
                 onClick={handleClose}
@@ -210,6 +208,12 @@ export default function ForgetPass({ open, onClose, onOpenLogin }: Props) {
                                     >
                                         {isSubmitting ? '找回密码中...' : '找回密码'}
                                     </button>
+                                </div>
+                                <div className={"flex justify-between"}>
+                                    <button type={"button"}
+                                            className={"cursor-pointer theme-color-hover text-sm"}
+                                            onClick={onOpenLogin}
+                                    >我记得密码，去登录</button>
                                 </div>
                             </form>
                         </div>

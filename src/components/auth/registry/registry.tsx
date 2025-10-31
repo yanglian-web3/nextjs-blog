@@ -24,13 +24,12 @@ interface LoginFormError {
 }
 interface Props {
     open: boolean;
-    onClose: () => void;
     onOpenLogin: () => void;
+    updateOpen: (isOpen: boolean) => void
 }
 
 
-export default function Registry({ open, onClose, onOpenLogin }: Props) {
-    const [isOpen, setOpen] = useState(false);
+export default function Registry({ open, updateOpen, onOpenLogin }: Props) {
     const [isSubmitting, setSubmitting] = useState(false);
     const [toastOpen, setToastOpen] = useState(false);
     const [toastType, setToastType] = useState("info")
@@ -45,7 +44,6 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
     const [formData, setFormData] = useState<LoginForm>({...initFormData});
 
     useEffect(() => {
-        setOpen(open);
         if (open) {
             resetForm(); // 打开时重置表单
         }
@@ -167,13 +165,13 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
      * 关闭
      */
     const handleClose = () => {
-        onClose();
+        updateOpen(false);
         resetForm(); // 关闭时重置表单
     };
 
 
     return <>
-        <Dialog.Root open={isOpen}>
+        <Dialog.Root open={open}>
             <Dialog.Backdrop
                 className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
                 onClick={handleClose}
@@ -280,7 +278,7 @@ export default function Registry({ open, onClose, onOpenLogin }: Props) {
                                         </span> : '注册'}
                                     </button>
                                 </div>
-                                <div className={"registry-favigater-pass-container flex justify-between"}>
+                                <div className={" flex justify-between"}>
                                     <button type={"button"}
                                             className={"cursor-pointer theme-color-hover text-sm"}
                                             onClick={onOpenLogin}

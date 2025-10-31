@@ -10,7 +10,9 @@ import {CryptoUtils} from "../../../utils/crypto";
 import Toast from "../../toast/toast";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../store/index";
-import { updateUserInfo, updateToken } from "../../../store/user-slice";
+import { updateUserInfo } from "../../../store/user-slice";
+import Registry from "../registry/registry";
+import ForgetPass from "../../forget-pass/forget-pass";
 
 interface LoginForm {
     email: string;
@@ -23,15 +25,13 @@ interface LoginFormError {
 }
 interface Props {
     open: boolean;
-    onClose: () => void;
-    onOpenRegistry: () => void;
-    onOpenForgetPass: () => void;
+    updateOpen: (isOpen: boolean) => void
 }
 
-export default function Login({ open, onClose, onOpenRegistry, onOpenForgetPass }: Props) {
+export default function Login({ open, updateOpen }: Props) {
     const dispatch = useDispatch<AppDispatch>()
-
-    const [isOpen, setOpen] = useState(false);
+    const [registryOpen, setRegistryOpen] = useState(false)
+    const [forgetPassOpen, setForgetPassOpen] = useState(false)
     const [isSubmitting, setSubmitting] = useState(false);
     const [toastOpen, setToastOpen] = useState(false);
     const [registerMsg, setRegisterMsg] = useState('');
@@ -43,7 +43,7 @@ export default function Login({ open, onClose, onOpenRegistry, onOpenForgetPass 
     });
 
     useEffect(() => {
-        setOpen(open);
+        console.log("use effect open=", open)
         if (open) {
             resetForm(); // 打开时重置表单
         }
@@ -161,13 +161,27 @@ export default function Login({ open, onClose, onOpenRegistry, onOpenForgetPass 
      * 关闭
      */
     const handleClose = () => {
-        onClose();
+        updateOpen(false);
         resetForm(); // 关闭时重置表单
     };
 
+    /**
+     * 打开注册弹窗
+     */
+    const openRegistry = () => {
+        handleClose()
+        setRegistryOpen(true)
+    }
+    /**
+     * 打开忘记密码弹窗
+     */
+    const openForgetPass = () => {
+        handleClose()
+        setForgetPassOpen(true)
+    }
 
     return <>
-        <Dialog.Root open={isOpen}>
+        <Dialog.Root open={open}>
             <Dialog.Backdrop
                 className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
                 onClick={handleClose}
@@ -241,14 +255,14 @@ export default function Login({ open, onClose, onOpenRegistry, onOpenForgetPass 
                                         {isSubmitting ? '登录中...' : '登录'}
                                     </button>
                                 </div>
-                                <div className={"registry-favigater-pass-container flex justify-between"}>
+                                <div className={" flex justify-between"}>
                                     <button type={"button"}
                                             className={"cursor-pointer theme-color-hover text-sm"}
-                                            onClick={onOpenRegistry}
+                                            onClick={openRegistry}
                                     >账号注册</button>
                                     <button type={"button"}
                                             className={"cursor-pointer text-sm theme-color-hover"}
-                                            onClick={onOpenForgetPass}
+                                            onClick={openForgetPass}
                                     >忘记密码</button>
                                 </div>
                             </form>
@@ -268,5 +282,15 @@ export default function Login({ open, onClose, onOpenRegistry, onOpenForgetPass 
             </Dialog.Positioner>
         </Dialog.Root>
         <Toast open={toastOpen} msg={registerMsg} type={toastType} onClose={() => setToastOpen(false)} />
+        <Registry open={registryOpen} updateOpen={setRegistryOpen} onOpenLogin={() => {
+            setRegistryOpen(false)
+            updateOpen(true)
+        }
+        }/>
+        <ForgetPass open={forgetPassOpen} updateOpen={setForgetPassOpen} onOpenLogin={() => {
+            setForgetPassOpen(false)
+            updateOpen(true)
+        }
+        }/>
     </>
 }
