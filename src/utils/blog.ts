@@ -1,4 +1,4 @@
-import {AccountBlogResult, BlogHomeItemType, BlogItemType} from "../types/blog";
+import {AccountBlogResult, BlogDetailResult, BlogHomeItemType, BlogItemType} from "../types/blog";
 import {PaginationOptions} from "../types/pagination";
 import qs from "qs"
 
@@ -66,7 +66,7 @@ export function getBlogListByAccount(options: {
  * @param id
  */
 export const getBlogDetail = (id: string) => {
-    return  new Promise<BlogItemType>((resolve) => {
+    return  new Promise<BlogDetailResult>((resolve) => {
         fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/detail/${id}`)
             .then(res => res.json())
             .then(result => {

@@ -6,8 +6,8 @@ export interface BlogItemCommonType {
     content: string;
     cover: string,
     status: number;
-    viewCount: string;
-    commentCount: string;
+    // viewCount: string;
+    // commentCount: string;
     summary: string;
 }
 export interface BlogItemType extends BlogItemCommonType{
@@ -51,5 +51,18 @@ export interface AccountBlogResult {
     pagination: PaginationOptions,
     countInfo: {
         publishedCount: number
+    }
+}
+
+export interface BlogDetailResult {
+    detail: BlogItemType,
+    countInfo: {
+        viewCount: string,
+        commentCount: string
+    },
+    author: {
+        account: string;
+        name: string;
+        avatar: string;
     }
 }

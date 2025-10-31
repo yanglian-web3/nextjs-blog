@@ -115,15 +115,20 @@ export async function GET(
             cover,
             status,
             createdAt: formatDateTime(created_at),
-            updatedAt: formatDateTime(update_at),
-            viewCount: handleCount((view_count || 0) + (!isOwnBlog && isPublished ? 1 : 0)), // 实时计数
-            commentCount: handleCount(commentCount || 0)
+            updatedAt: formatDateTime(update_at)
         }
 
         return NextResponse.json({
             code: 200,
             message: '获取博客详情成功',
-            data: blogDetail
+            data: {
+                detail: blogDetail,
+                countInfo: {
+                    viewCount: handleCount((view_count || 0) + (!isOwnBlog && isPublished ? 1 : 0)),
+                    commentCount: handleCount(commentCount || 0)
+                },
+                author
+            }
         })
 
     } catch (error) {
