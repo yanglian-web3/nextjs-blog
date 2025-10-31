@@ -1,14 +1,14 @@
 import {AccountBlogResult, BlogDetailResult, BlogHomeItemType, BlogItemType} from "../types/blog";
 import {PaginationOptions} from "../types/pagination";
 import qs from "qs"
+import {blogFetch} from "./blog-fetch";
 
 /**
  * 获取随机精选博客列表
  */
 export function getBlogListRandom() {
     return  new Promise<BlogHomeItemType[]>((resolve) => {
-        fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/list/random`)
-            .then(res => res.json())
+        blogFetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/list/random`)
             .then(result => {
                 const { code ,data, message} = result
                 if(code !== 200){
@@ -39,13 +39,12 @@ export function getBlogListByAccount(options: {
     const {current, pageSize} = pagination
     return  new Promise<AccountBlogResult>((resolve) => {
         const searchQuery = qs.stringify(searchParams)
-        fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/list/page/${account}?${searchQuery}&current=${current}&pageSize=${pageSize}`, {
+        blogFetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/list/page/${account}?${searchQuery}&current=${current}&pageSize=${pageSize}`, {
             credentials: 'include',
             headers: {
                 'session_token': sessionToken || ''
             }
         })
-            .then(res => res.json())
             .then(result => {
                 const { code ,data, message} = result
                 if(code !== 200){
@@ -67,8 +66,7 @@ export function getBlogListByAccount(options: {
  */
 export const getBlogDetail = (id: string) => {
     return  new Promise<BlogDetailResult>((resolve) => {
-        fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/detail/${id}`)
-            .then(res => res.json())
+        blogFetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/detail/${id}`)
             .then(result => {
                 // console.log("get_Blog_Detail result=", {...result,content: "太多了省略..."})
                 const { code ,data, message} = result

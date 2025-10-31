@@ -8,6 +8,7 @@ import { Dialog } from '@ark-ui/react'
 import IconWarning from "../icons/icon-warning";
 import {useLoading} from "../../context/loading-context";
 import {useRouter} from "next/navigation";
+import {blogFetch} from "../../utils/blog-fetch";
 
 type AlertType = 'warning' | 'error' | 'info'
 
@@ -63,11 +64,11 @@ export default function BlogEditPublishButtons() {
     const handleSave = (status:number) => {
         if (!validateForm()) return
         showLoading()
-        fetch('/api/blog/add-edit', {
+        blogFetch('/api/blog/add-edit', {
             credentials: 'include',
             method: 'POST',
             body: JSON.stringify({ title, content, status })
-        }).then(res => res.json())
+        })
             .then(data => {
                 if(data.code === 200){
                     // 保存草稿逻辑

@@ -9,6 +9,7 @@ import {validateEmail, validateForm, validatePassword, validateSingleField} from
 import BlogInput from "../../form/blog-input";
 import {CryptoUtils} from "../../../utils/crypto";
 import Toast from "../../toast/toast"
+import {blogFetch} from "../../../utils/blog-fetch";
 
 interface LoginForm {
     name: string;
@@ -128,13 +129,13 @@ export default function Registry({ open, updateOpen, onOpenLogin }: Props) {
         }
         setSubmitting(true);
         console.log('提交注册数据:', formData);
-        fetch("/api/auth/register",{
+        blogFetch("/api/auth/register",{
             method: 'POST',
             body: JSON.stringify({
                 ...formData,
                 password: CryptoUtils.md5(formData.password)
             })
-        }).then(res => res.json()).then(data => {
+        }).then(data => {
             console.log('注册结果 data:', data)
             const { code, message } = data
             setRegisterMsg(message)

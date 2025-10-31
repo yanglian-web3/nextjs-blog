@@ -1,4 +1,4 @@
-// src/app/api/blog/add-edit/route.ts
+// src/app/api/comment/send/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from "@supabase/supabase-js"
 import { checkHasLogin } from "../../../../utils/api/check-session"
@@ -22,8 +22,8 @@ export async function POST(request: NextRequest) {
         console.log('=== 开始创建/更新评论 ===')
 
         // 1. 解析请求数据
-        const { account, articleId, avatar, commentId, content, userName, parentUserName, parentAccount }: BlogRequest = await request.json() as CommentContentItem
-        console.log('接收到的数据:', {  account, articleId, avatar, commentId, content, userName, parentUserName, parentAccount })
+        const { user_account, article_id, avatar, commentId, content, userName, parentUserName, parentAccount }: BlogRequest = await request.json() as CommentContentItem
+        console.log('接收到的数据:', {  user_account, article_id, avatar, commentId, content, userName, parentUserName, parentAccount })
 
         // 2. 检查登录状态
         const { result, session, message } = await checkHasLogin(request, supabase, request.cookies.get('session_token')?.value)
@@ -44,13 +44,13 @@ export async function POST(request: NextRequest) {
                 message: '内容为必填项'
             })
         }
-        if (!articleId) {
+        if (!article_id) {
             return NextResponse.json({
                 code: 400,
                 message: "文章ID缺失"
             })
         }
-        if (!account || !userName) {
+        if (!user_account || !userName) {
             return NextResponse.json({
                 code: 400,
                 message: "用户信息缺失"
@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
         const userId = session.user_id
         console.log('用户ID:', userId)
         console.log('用户ID类型:', typeof userId)
+        // console.log('session:', session)
 
         if (!userId) {
             return NextResponse.json({
@@ -75,14 +76,14 @@ export async function POST(request: NextRequest) {
         let error
 
         const insertData = {
-            articleId,
+            article_id,
             avatar,
             content,
-            // postTime,
+            user_id: userId,
             user_name: userName,
             parent_userName: parentUserName,
-            parent_account: parentAccount,
-            account,
+            parent_user_account: parentAccount,
+            user_account,
             created_at: new Date().toISOString(),
         }
 
@@ -90,7 +91,7 @@ export async function POST(request: NextRequest) {
         console.log('开始插入数据...')
 
         const insertResult = await supabase
-            .from('blog')
+            .from('comments')
             .insert(insertData)
             .select()
 

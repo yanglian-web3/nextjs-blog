@@ -1,29 +1,42 @@
 import {CommentItem} from "../../../types/comment";
 import {useEffect, useState} from "react";
-import { getCommentList } from "../../../app/api/blog";
 import CommentListItem from "./comment-list-item";
+import {useParams} from "next/navigation";
+import {blogFetch} from "../../../utils/blog-fetch";
 
-export default function CommentList() {
+export default function CommentList({refreshNum}: {refreshNum: number}) {
 
+    const {id } = useParams()
     const [list, setList ] = useState<CommentItem[]>([])
+    const [current, setCurrent] = useState(1)
+
 
     useEffect(() => {
-        getCommentList().then((res) => {
-            console.log("res=", res)
-            setList(res.list as CommentItem[])
-        })
-    }, [])
+        getList()
+    }, [refreshNum])
 
-    // 渲染评论列表
-    const renderCommentList = (item: CommentItem) => {
-
+    /**
+     * 获取评论列表数据
+     */
+    const getList = () => {
+        blogFetch(`/api/comment/list?articleId=${id}&current=${current}&pageSize=100`)
+            .then((result) => {
+                const { code, data, message } = result
+                if (code === 200) {
+                    console.log("data=", data)
+                    setList(data.list)
+                } else {
+                    console.log("message=", message)
+                }
+                console.log("data=", data)
+            })
     }
 
     return <div className={"comment-list-container"}>
         {
             list && list.map((item, index) => {
                 const {info, sub} = item
-                return <CommentListItem info={info} sub={sub}/>
+                return <CommentListItem info={info} sub={sub} success={getList}/>
             })
         }
     </div>

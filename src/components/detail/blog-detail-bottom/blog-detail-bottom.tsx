@@ -10,7 +10,17 @@ import Login from "../../auth/login/login";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../store/index";
 
-export default function BlogDetailBottom({commentCount = "0", author = {}}: {commentCount: string, author: {name: string, avatar: string, account: string}}) {
+interface BlogDetailBottomProps {
+    commentCount?: string
+    author?: {
+        name?: string
+        avatar?: string
+        account?: string
+    },
+    success?: () => void
+}
+
+export default function BlogDetailBottom({commentCount = "0", success, author = {}}: BlogDetailBottomProps) {
 
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [loginOpen, setLoginOpen] = useState(false)
@@ -49,7 +59,7 @@ export default function BlogDetailBottom({commentCount = "0", author = {}}: {com
                 <span className={"ml-2 text-gray-500"}>{ commentCount}</span>
             </>
         } open={drawerOpen} onOpenChange={(open) => setDrawerOpen(open)}>
-            <DetailComment/>
+            <DetailComment success={success}/>
         </SlideDrawer>
         <Login open={loginOpen} updateOpen={setLoginOpen}/>
     </>

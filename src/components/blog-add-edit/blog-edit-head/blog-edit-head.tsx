@@ -14,7 +14,7 @@ import {updateUserInfo} from "../../../store/user-slice";
 
 function BlogEditHead() {
     const dispatch = useDispatch<AppDispatch>()
-    const { userInfo } = useSelector((state: RootState) => state.user)
+
 
     const { title } = useSelector((state: RootState) => state.blogEdit)
 

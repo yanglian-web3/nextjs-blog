@@ -11,6 +11,7 @@ import {updateUserInfo} from "../../store/user-slice";
 import Link from "next/link";
 import IconList from "../icons/icon-list";
 import UserHeadImage from "./user-head-image";
+import {blogFetch} from "../../utils/blog-fetch";
 
 
 
@@ -28,7 +29,7 @@ export default function HeadUser({ mode = "center" }: { mode?: "right" | "center
         // 清除浏览器cookie
 
         // 调用退出登录api
-        fetch("/api/auth/logout")
+        blogFetch("/api/auth/logout")
     }
 
 

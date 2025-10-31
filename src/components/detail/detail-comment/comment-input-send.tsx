@@ -1,10 +1,21 @@
 import {useState} from "react";
 import {useLoading} from "../../../context/loading-context";
 import BlogAlert, { AlertConfig, AlertType } from "../../blog-alert/blog-alert";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../store/index";
+import { useParams } from "next/navigation";
+import {blogFetch} from "../../../utils/blog-fetch";
 
+interface CommentInputSendProps {
+    parentUserName?:string,
+    parentAccount?:string,
+    success: () => void
+}
 
+export default function CommentInputSend({parentUserName, parentAccount, success}: CommentInputSendProps){
+    const { userInfo } = useSelector((state: RootState) => state.user)
+    const { id } = useParams()
 
-export default function CommentInputSend(){
     const [value, setValue] = useState("");
     const { showLoading, hideLoading } = useLoading()
     const [alertOpen, setAlertOpen] = useState(false)
@@ -23,19 +34,30 @@ export default function CommentInputSend(){
         console.log("value=", value)
         if (!validateForm()) return
         showLoading()
-        fetch('/api/comment/send', {
+        const { avatar, name, account } = userInfo
+        blogFetch('/api/comment/send', {
             credentials: 'include',
             method: 'POST',
-            body: JSON.stringify({ content: value })
-        }).then(res => res.json())
+            body: JSON.stringify({
+                article_id: id,
+                avatar,
+                userName: name,
+                user_account:account,
+                content: value,
+                parentUserName,
+                parentAccount,
+            })
+        })
             .then(data => {
                 if(data.code === 200){
                     // 保存草稿逻辑
                     setShowDialogFooter(false)
                     showAlert("保存成功", "info", "保存成功")
+                    setValue( "")
                     setTimeout(() => {
                         hideAlert()
                         // 刷新列表
+                        success && success()
                     }, 2000)
                 } else {
                     showAlert("保存失败，请重试", "error", "保存失败")

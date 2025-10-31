@@ -13,6 +13,7 @@ import {AppDispatch} from "../../../store/index";
 import { updateUserInfo } from "../../../store/user-slice";
 import Registry from "../registry/registry";
 import ForgetPass from "../../forget-pass/forget-pass";
+import {blogFetch} from "../../../utils/blog-fetch";
 
 interface LoginForm {
     email: string;
@@ -104,13 +105,13 @@ export default function Login({ open, updateOpen }: Props) {
 
         setSubmitting(true);
         console.log('提交登录数据:', formData);
-        fetch("/api/auth/login",{
+        blogFetch("/api/auth/login",{
             method: 'POST',
             body: JSON.stringify({
                 ...formData,
                 password: CryptoUtils.md5(formData.password)
             })
-        }).then(res => res.json())
+        })
             .then(result => {
                 console.log('登录结果 result:', result)
                 // 登录成功后的处理

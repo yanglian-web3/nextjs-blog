@@ -5,7 +5,15 @@ import CommentInputSend from "./comment-input-send";
 import {useState} from "react";
 import UserHeadImage from "../../head-user/user-head-image";
 
-export default function CommentListItem({ info, sub, isSub = false}: { info: CommentContentItem, sub?: CommentContentItem[], isSub?: boolean},){
+interface CommentListItemProps {
+    info: CommentContentItem,
+    sub?: CommentContentItem[],
+    isSub?: boolean,
+    success: () => void
+
+}
+
+export default function CommentListItem({ info, sub, success,isSub = false}: CommentListItemProps){
     const { commentId, avatar, content, userName, postTime, loginUserDigg, parentUserName } = info
     const [replay, setReplay] = useState(false);
 
@@ -51,12 +59,12 @@ export default function CommentListItem({ info, sub, isSub = false}: { info: Com
         </div>
         {
             replay && <div className={"ml-13 mb-5"}>
-                <CommentInputSend/>
+                <CommentInputSend success={success}/>
             </div>
         }
         {
             sub && sub.length && sub.map((item, index) => {
-                return <CommentListItem info={item} isSub={ true}/>
+                return <CommentListItem info={item} isSub={ true} success={success}/>
             })
         }
     </>
