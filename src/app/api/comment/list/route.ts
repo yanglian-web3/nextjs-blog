@@ -2,12 +2,38 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkHasLogin } from '../../../../utils/api/check-session'
-import {CommentContentItem} from "../../../../types/comment";
+import {CommentContentItem, CommentItem} from "../../../../types/comment";
+import {underlineToHump} from "../../../../utils/util";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
+/**
+ * 处理数据，生成Info和sub
+ * @param list
+ */
+const handleCommentData = (list: CommentContentItem[]) => {
+    // 先处理下划线转驼峰
+    const handleFieldList = list.map(item => {
+        const keys = Object.keys(item)
+        return keys.reduce((result, key) => {
+            return {
+                ...result,
+                [underlineToHump(key)]: item[key]
+            }
+        }, {} as CommentContentItem)
+    })
+    //筛选过滤数据
+    const firstLevelComments = handleFieldList.filter(item => !item.parentAccount)
+    return firstLevelComments.reduce((result,current) => {
+        result.push({
+            info: current,
+            sub: handleFieldList.filter(item => item.parentId === current.id)
+        })
+        return result
+    }, [] as CommentItem[])
+}
 
 export async function GET(
     request: NextRequest
@@ -26,7 +52,7 @@ export async function GET(
         console.log('requestHeaders.get(\'session_token\'):', requestHeaders.get('session_token'))
         console.log('request.cookies.get(\'session_token\')?.value', request.cookies.get('session_token')?.value)
 
-        // 3. 检查当前登录状态和用户身份
+        // 2. 检查当前登录状态和用户身份
         const { result: isLoggedIn, session } = await checkHasLogin(request, supabase, sessionToken)
 
         if(!isLoggedIn){
@@ -35,7 +61,7 @@ export async function GET(
                 message: '未登录'
             })
         }
-
+        // 3. 验证参数
         if(!articleId){
             return NextResponse.json({
                 code: 400,
@@ -55,20 +81,21 @@ export async function GET(
                 article_id,
                 content,
                 user_id,
-                user_name,
+                username,
                 user_account,
                 avatar,
                 parent_user_account,
+                parent_id,
                 parent_username,
                 created_at
             `, { count: 'exact' })
             .eq('article_id', articleId)
         
-        // 7. 并行查询：获取评论列表和发布数
+        // 6. 并行查询：获取列表
         const queryResult = await query
             .order('created_at', { ascending: false })
             .range(from, to)
-        const { data: comments, error: commentError, count } = queryResult
+        const { data: comments, error: commentError, count }:{data: CommentContentItem[], error: any, count: number} = queryResult
         
 
         if (commentError) {
@@ -88,12 +115,7 @@ export async function GET(
             })
         }
 
-        // 7. 处理数据格式
-        const formattedCommentss = (comments || []).map((comments:CommentContentItem) => {
-            return comments
-        })
-
-        // 8. 分页信息
+        // 7. 分页信息
         const total = count || 0
         const totalPages = Math.ceil(total / pageSize)
 
@@ -103,7 +125,7 @@ export async function GET(
             code: 200,
             message: '获取评论列表成功',
             data: {
-                list: formattedCommentss,
+                list: handleCommentData(comments),
                 pagination: {
                     current: page,
                     pageSize: pageSize,

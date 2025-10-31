@@ -5,14 +5,17 @@ import {useSelector} from "react-redux";
 import {RootState} from "../../../store/index";
 import { useParams } from "next/navigation";
 import {blogFetch} from "../../../utils/blog-fetch";
+import {humpToUnderline} from "../../../utils/util";
+import {CommentContentItem} from "../../../types/comment";
 
 interface CommentInputSendProps {
-    parentUserName?:string,
+    parentUsername?:string,
     parentAccount?:string,
+    parentId?:string,
     success: () => void
 }
 
-export default function CommentInputSend({parentUserName, parentAccount, success}: CommentInputSendProps){
+export default function CommentInputSend({parentUsername, parentAccount, parentId, success}: CommentInputSendProps){
     const { userInfo } = useSelector((state: RootState) => state.user)
     const { id } = useParams()
 
@@ -35,18 +38,26 @@ export default function CommentInputSend({parentUserName, parentAccount, success
         if (!validateForm()) return
         showLoading()
         const { avatar, name, account } = userInfo
+        const sendData = {
+            articleId: id,
+            parentId,
+            avatar,
+            username: name,
+            userAccount:account,
+            content: value,
+            parentUsername,
+            parentAccount,
+        }
+        console.log("Object.keys(data)=", Object.keys(sendData))
         blogFetch('/api/comment/send', {
             credentials: 'include',
             method: 'POST',
-            body: JSON.stringify({
-                article_id: id,
-                avatar,
-                userName: name,
-                user_account:account,
-                content: value,
-                parentUserName,
-                parentAccount,
-            })
+            body: JSON.stringify(Object.keys(sendData).reduce((result,current) => {
+                // console.log("current=", current)
+                console.log("humpToUnderline[current]=", humpToUnderline(current))
+                result[humpToUnderline(current)] = sendData[current]
+                return result
+            }, {} as CommentContentItem))
         })
             .then(data => {
                 if(data.code === 200){

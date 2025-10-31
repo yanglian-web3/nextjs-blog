@@ -54,11 +54,11 @@ export type Database = {
           id: number
           parent_id: number | null
           parent_user_account: string | null
-          parent_user_name: string | null
+          parentUsername: string | null
           updated_at: string | null
           user_account: string | null
           user_id: string | null
-          user_name: string | null
+          username: string | null
         }
         Insert: {
           article_id: number
@@ -69,11 +69,11 @@ export type Database = {
           id: number
           parent_id?: number | null
           parent_user_account?: string | null
-          parent_user_name?: string | null
+          parentUsername?: string | null
           updated_at?: string | null
           user_account?: string | null
           user_id?: string | null
-          user_name?: string | null
+          username?: string | null
         }
         Update: {
           article_id?: number
@@ -84,11 +84,11 @@ export type Database = {
           id?: number
           parent_id?: number | null
           parent_user_account?: string | null
-          parent_user_name?: string | null
+          parentUsername?: string | null
           updated_at?: string | null
           user_account?: string | null
           user_id?: string | null
-          user_name?: string | null
+          username?: string | null
         }
         Relationships: [
           {

@@ -1,13 +1,14 @@
 export interface CommentContentItem{
     articleId: string,
     avatar: string,
-    commentId: number,
+    id: string,
     content: string,
     postTime: string,
-    userName: string,
-    parentUserName: string,
-    parentAccount: string,
-    account: string,
+    username: string,
+    parentUsername?: string,
+    parentAccount?: string,
+    parentId?:string,
+    userAccount: string,
     loginUserDigg: boolean,
 }
 export interface CommentItem {

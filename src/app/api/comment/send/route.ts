@@ -22,8 +22,8 @@ export async function POST(request: NextRequest) {
         console.log('=== 开始创建/更新评论 ===')
 
         // 1. 解析请求数据
-        const { user_account, article_id, avatar, commentId, content, userName, parentUserName, parentAccount }: BlogRequest = await request.json() as CommentContentItem
-        console.log('接收到的数据:', {  user_account, article_id, avatar, commentId, content, userName, parentUserName, parentAccount })
+        const { user_account, article_id, avatar, parentId, content, username, parent_username, parent_user_account, parent_id }: BlogRequest = await request.json() as CommentContentItem
+        console.log('接收到的数据:', {  user_account, article_id, avatar, parentId, content, username, parent_username, parent_user_account, parent_id })
 
         // 2. 检查登录状态
         const { result, session, message } = await checkHasLogin(request, supabase, request.cookies.get('session_token')?.value)
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
                 message: "文章ID缺失"
             })
         }
-        if (!user_account || !userName) {
+        if (!user_account || !username) {
             return NextResponse.json({
                 code: 400,
                 message: "用户信息缺失"
@@ -80,10 +80,12 @@ export async function POST(request: NextRequest) {
             avatar,
             content,
             user_id: userId,
-            user_name: userName,
-            parent_userName: parentUserName,
-            parent_user_account: parentAccount,
+            parentId,
+            username,
+            parent_username,
+            parent_user_account,
             user_account,
+            parent_id,
             created_at: new Date().toISOString(),
         }
 

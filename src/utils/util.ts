@@ -42,3 +42,18 @@ export function handleCount(count: number) {
    }
    return count
 }
+
+/**
+ * 驼峰转为下划线
+ */
+export function humpToUnderline(str: string) {
+    return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+}
+/**
+ * 下划线转为驼峰
+ */
+export function underlineToHump(str: string) {
+    return str.replace(/_(\w)/g, function(all, letter) {
+        return letter.toUpperCase()
+    })
+}

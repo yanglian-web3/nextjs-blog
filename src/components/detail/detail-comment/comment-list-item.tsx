@@ -14,7 +14,7 @@ interface CommentListItemProps {
 }
 
 export default function CommentListItem({ info, sub, success,isSub = false}: CommentListItemProps){
-    const { commentId, avatar, content, userName, postTime, loginUserDigg, parentUserName } = info
+    const { id, avatar, content, username, postTime, loginUserDigg, parentUsername, userAccount } = info
     const [replay, setReplay] = useState(false);
 
     /**
@@ -23,21 +23,21 @@ export default function CommentListItem({ info, sub, success,isSub = false}: Com
     const getInfoTopLeft = () =>{
         if(isSub){
             return <>
-                <span className={"user-name text-sm text-gray-400"}>{userName}</span>
+                <span className={"user-name text-sm text-gray-400"}>{username}</span>
                 {
                     !loginUserDigg && <span className={"text-sm theme-color ml-1 theme-bg-opacity5"}>作者</span>
                 }
                 <span className={"user-name text-sm text-gray-400 mx-2"}>回复</span>
-                <span className={"user-name text-sm text-gray-400"}>{parentUserName} {postTime}</span>
+                <span className={"user-name text-sm text-gray-400"}>{parentUsername} {postTime}</span>
             </>
         }
-        return <span className={"user-name text-sm text-gray-400 whitespace-nowrap"}>{userName} {postTime}</span>
+        return <span className={"user-name text-sm text-gray-400 whitespace-nowrap"}>{username} {postTime}</span>
     }
     return <>
-        <div className={`comment-list-item-container mb-5 ${isSub ? "ml-13" : ""}`} key={commentId}>
+        <div className={`comment-list-item-container mb-5 ${isSub ? "ml-13" : ""}`} key={id}>
             <div className={"comment-list-item flex mb-5"}>
                 <div className={`comment-user-head-container cursor-pointer mr-4 flex-shrink-0 `}>
-                    <UserHeadImage name={userName} src={avatar} size={ isSub ? "sm" : "md"}/>
+                    <UserHeadImage name={username} src={avatar} size={ isSub ? "sm" : "md"}/>
                 </div>
                 <div className={"info-right-container w-full"}>
                     <div className={"info-top-container flex justify-between items-center mb-2 w-full"}>
@@ -59,13 +59,13 @@ export default function CommentListItem({ info, sub, success,isSub = false}: Com
         </div>
         {
             replay && <div className={"ml-13 mb-5"}>
-                <CommentInputSend success={success}/>
+                <CommentInputSend parentUsername={username} parentAccount={userAccount} parentId={ id} success={success}/>
             </div>
         }
         {
-            sub && sub.length && sub.map((item, index) => {
+            sub && sub.length ? sub.map((item, index) => {
                 return <CommentListItem info={item} isSub={ true} success={success}/>
-            })
+            }) : null
         }
     </>
 }
