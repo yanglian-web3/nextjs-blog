@@ -1,6 +1,5 @@
 
 import BlogDetailPreview from "../../../components/detail/blog-detail-preview/blog-detail-preview";
-import BlogDetailHead from "../../../components/detail/blog-detail-head/blog-detail-head";
 import IconClockFill from "../../../components/icons/icon-clock-fill";
 import IconViewFill from "../../../components/icons/icon-view-fill";
 import "./detail-page.css"

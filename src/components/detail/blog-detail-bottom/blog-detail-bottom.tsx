@@ -6,14 +6,23 @@ import DetailComment from "../detail-comment/detail-comment";
 import {useState} from "react";
 import SlideDrawer from "../../slide-drawer/slide-drawer";
 import UserHeadImage from "../../head-user/user-head-image";
+import Login from "../../auth/login/login";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../store/index";
 
 export default function BlogDetailBottom({commentCount = "0", author = {}}: {commentCount: string, author: {name: string, avatar: string, account: string}}) {
 
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [loginOpen, setLoginOpen] = useState(false)
+    const { userInfo } = useSelector((state: RootState) => state.user)
     /**
      * 打开评论
      */
     const openComment = () => {
+        if(!userInfo || !userInfo.id){
+            setLoginOpen(true)
+            return
+        }
         setDrawerOpen(true)
     }
     return <>
@@ -42,6 +51,6 @@ export default function BlogDetailBottom({commentCount = "0", author = {}}: {com
         } open={drawerOpen} onOpenChange={(open) => setDrawerOpen(open)}>
             <DetailComment/>
         </SlideDrawer>
-
+        <Login open={loginOpen} updateOpen={setLoginOpen}/>
     </>
 }

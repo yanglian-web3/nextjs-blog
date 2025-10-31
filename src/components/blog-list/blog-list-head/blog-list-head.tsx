@@ -5,7 +5,6 @@ import PropTypes from "prop-types"
 import IconSearch from "../../icons/icon-search";
 import HeadUser from "../../head-user/head-user";
 import IconPlus from "../../icons/icon-plus";
-import Link from 'next/link'
 import Login from "../../auth/login/login";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
@@ -34,6 +33,16 @@ function BlogListHead() {
     const openLogin = () => {
         setLoginOpen(true)
     }
+    /**
+     * 跳转到添加编辑页面
+     */
+    const goAddEdit = () => {
+        if(!userInfo || !userInfo.id){
+            openLogin()
+            return
+        }
+        window.open('/add-edit', '_blank');
+    }
 
 
     return <>
@@ -49,12 +58,10 @@ function BlogListHead() {
                     { userInfo && userInfo.id && userInfo.account && userInfo.name ?
                         <HeadUser/>  :
                         <button className={"login-btn bg-gray-200 w-12 h-12 text-center rounded-3xl cursor-pointer"} onClick={openLogin}>登录</button>}
-                    <Link href={`/add-edit`} target="_blank" rel="noopener noreferrer">
-                        <div className="create-container ml-10 flex items-center py-1 px-6 rounded-full cursor-pointer">
-                            <IconPlus width={20} height={20} color="#ffffff"/>
-                            <span className="text-xl text-white ml-1">创作</span>
-                        </div>
-                    </Link>
+                    <div className="create-container ml-10 flex items-center py-1 px-6 rounded-full cursor-pointer" onClick={goAddEdit}>
+                        <IconPlus width={20} height={20} color="#ffffff"/>
+                        <span className="text-xl text-white ml-1">创作</span>
+                    </div>
                 </div>
             </div>
         </div>
