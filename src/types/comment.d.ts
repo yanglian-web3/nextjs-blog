@@ -1,4 +1,5 @@
 import {PaginationOptions} from "./pagination";
+import {CamelToSnakeKeys} from "./type-utils";
 
 export interface CommentContentItem{
     articleId: string,
@@ -20,4 +21,10 @@ export interface CommentItem {
         list:CommentContentItem[],
         pagination: PaginationOptions
     }
+}
+
+export interface CommentSqlQueryResult {
+    data: CamelToSnakeKeys<CommentContentItem>[],
+    error: any,
+    count: number
 }

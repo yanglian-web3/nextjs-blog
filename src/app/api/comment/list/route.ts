@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkHasLogin } from '../../../../utils/api/check-session'
-import {CommentContentItem} from "../../../../types/comment";
+import {CommentContentItem, CommentSqlQueryResult} from "../../../../types/comment";
 import {multiUnderlineToHump} from "../../../../utils/util";
 import {getParamsAndHeads, getSubQuery, handlePostTime, queryFromTo, selectFields} from "../comment-api-util";
 import {getErrorEmptyResponse, getServeError500, notLoginMessage, validateRequiredFields} from "../../api-util";
@@ -27,7 +27,7 @@ const handleCommentData = async (list: CamelToSnakeKeys<CommentContentItem>[], a
     for(const current of afterHandlePostTimeList){
         const { id } = current
         let subQuery = getSubQuery(supabase,articleId!,id!)
-        const dataResult:{data: CamelToSnakeKeys<CommentContentItem>[], error: any, count: number} = await queryFromTo(page,pageSize,subQuery)
+        const dataResult:CommentSqlQueryResult = await queryFromTo(page,pageSize,subQuery)
         const { data: subComments, error: subCommentError, count:subCount } = dataResult
         const total = subCount || 0
         const totalPages = Math.ceil(total / pageSize)
@@ -97,7 +97,7 @@ export async function GET(
         const queryResult = await query
             .order('created_at', { ascending: false })
             .range(from, to)
-        const { data: comments, error: commentError, count }:{data: CommentContentItem[], error: any, count: number} = queryResult
+        const { data: comments, error: commentError, count }:CommentSqlQueryResult = queryResult
 
         if (commentError) {
             console.error('数据库查询错误:', commentError)

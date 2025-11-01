@@ -27,8 +27,8 @@ export const checkHasLogin = async (request: NextRequest, supabase, sessionToken
         .gt('expires_at', new Date().toISOString())
         .single()
 
-    console.log("session=", session)
-    console.log("sessionError=", sessionError)
+    // console.log("session=", session)
+    // console.log("sessionError=", sessionError)
 
     if (sessionError || !session) {
         return {

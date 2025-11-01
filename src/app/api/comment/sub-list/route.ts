@@ -2,10 +2,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkHasLogin } from '../../../../utils/api/check-session'
-import {CommentContentItem, CommentItem} from "../../../../types/comment";
+import {CommentContentItem, CommentItem, CommentSqlQueryResult} from "../../../../types/comment";
 import {underlineToHump} from "../../../../utils/util";
 import {getParamsAndHeads, getSubQuery, queryFromTo, selectFields} from "../comment-api-util";
 import {getServeError500, getErrorEmptyResponse, notLoginMessage, validateRequiredFields} from "../../api-util";
+import {CamelToSnakeKeys} from "../../../../types/type-utils";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -24,7 +25,7 @@ export async function GET(
     try {
         // 1. 获取查询参数
         const { page, pageSize, articleId, parentId, sessionToken } = await getParamsAndHeads(request)
-        console.log('查询参数:', { page, pageSize })
+        console.log('查询参数:', { page, pageSize, articleId, parentId })
         console.log('request.cookies.get(\'session_token\')?.value', request.cookies.get('session_token')?.value)
         // 2. 检查当前登录状态和用户身份
         const { result: isLoggedIn } = await checkHasLogin(request, supabase, sessionToken)
@@ -39,8 +40,8 @@ export async function GET(
         }
         // 4. 构建查询，查询文章id为articleId的，并且评论id为parentId的数据
         let query = getSubQuery(supabase,articleId!,parentId!)
-
-        const { data: comments, error: commentError, count }:{data: CommentContentItem[], error: any, count: number} = await queryFromTo(page,pageSize,query)
+        console.log("query=", query)
+        const { data: comments, error: commentError, count }:CommentSqlQueryResult = await queryFromTo(page,pageSize,query)
 
         if (commentError) {
             console.error('数据库查询错误:', commentError)

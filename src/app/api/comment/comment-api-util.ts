@@ -33,7 +33,8 @@ export const queryFromTo = async (page: number, pageSize: number, query: any) =>
 
 
 export const getSubQuery = (supabase: any, articleId: string, parentId: string) => {
-    // 构建查询，查询文章id为articleId的，并且parent_id为null的
+    // 构建查询，查询文章id为articleId的，并且评论id为parentId的
+    // console.log("getSubQuery=", articleId, parentId)
     return supabase
         .from('comments')
         .select(selectFields, { count: 'exact' })

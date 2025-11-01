@@ -41,22 +41,37 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
     /**
      * 获取子评论列表数据
      * @param parentId
+     * @param originSubList
      * @param page
      */
-    const getMoreSubList = (parentId:string, page:number) => {
-        blogFetch(`/api/comment/sub-list?articleId=${id}&parentId=${parentId}&current=${page}`)
+    const getMoreSubList = (parentId:string, originSubList: CommentContentItem[], page:number) => {
+        const newPage = originSubList.length < 10 ? 1 : page + 1
+        blogFetch(`/api/comment/sub-list?articleId=${id}&parentId=${parentId}&current=${newPage}`)
             .then((result) => {
                 const { code, data } = result
                 if (code === 200) {
                     console.log("data=", data)
                     // setList([...list,...data.list])
                     // setTotal(data.pagination.total)
-                    const originList = list
-                    const currentListItemIndex = originList.findIndex((item) => item.info.id === parentId)
+                    const currentListItemIndex = list.findIndex((item) => item.info.id === parentId)
+                    console.log("currentListItemIndex=", currentListItemIndex)
                     if(currentListItemIndex > -1){
-                        originList[currentListItemIndex].sub.list.push(data.list)
-                        originList[currentListItemIndex].sub.pagination = data.pagination
-                        setList(originList)
+                        // 使用函数+展开运算符方式来更新深层次数据
+                        setList(prevList => {
+                            return prevList.map((item, index) => {
+                                if (index === currentListItemIndex) {
+                                    // 创建新的对象，保持不可变性
+                                    return {
+                                        ...item,
+                                        sub: {
+                                            list: newPage === 1 ? data.list : [...item.sub.list, ...data.list],
+                                            pagination: data.pagination
+                                        }
+                                    }
+                                }
+                                return item
+                            })
+                        })
                     }
 
                 }
@@ -73,15 +88,15 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
     }
     /**
      * 渲染子评论列表
-     * @param list
+     * @param subList
      * @param pagination
      * @param parentId
      */
-    const renderSubListDom = (list: CommentContentItem[], pagination: PaginationOptions, parentId:string) => {
-        if(list && list.length){
+    const renderSubListDom = (subList: CommentContentItem[], pagination: PaginationOptions, parentId:string) => {
+        if(subList && subList.length){
             return <>
                 {
-                    list.map((item, index) => {
+                    subList.map((item, index) => {
                         return <CommentListItem info={item}
                                                 key={item.id}
                                                 isSub={ true}
@@ -91,10 +106,10 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
                     })
                 }
                 {
-                    pagination.total > list.length ? <div className={"mb-8 ml-24 flex align-center"}>
+                    pagination.total > subList.length ? <div className={"mb-8 ml-24 flex align-center"}>
                        <span className={"text-gray-500 text-sm"}>共 {pagination.total} 条回复{}</span>
                         <button className="text-gray-900 cursor-pointer text-sm flex justify-center ml-3"
-                                onClick={() => getMoreSubList(parentId, pagination.current + 1)}>
+                                onClick={() => getMoreSubList(parentId, subList,subList.length < 10 ? 1 : pagination.current + 1)}>
                             加载更多
                         </button>
                     </div> : null
