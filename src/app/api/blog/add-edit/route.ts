@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from "@supabase/supabase-js"
 import { checkHasLogin } from "../../../../utils/api/check-session"
+import {getServeError500, validateRequiredFields} from "../../api-util";
 
 interface BlogRequest {
     id?: number | string
@@ -35,13 +36,10 @@ export async function POST(request: NextRequest) {
                 message: message || '未登录'
             })
         }
-
         // 3. 验证必填字段
-        if (!title || !content) {
-            return NextResponse.json({
-                code: 400,
-                message: '标题和内容均为必填项'
-            })
+        const { validateCode, validateResult} = validateRequiredFields({title,content})
+        if(!validateCode){
+            return validateResult
         }
 
         // 4. 获取用户ID
@@ -152,9 +150,6 @@ export async function POST(request: NextRequest) {
 
     } catch (error) {
         console.error('BLOG API 错误:', error)
-        return NextResponse.json({
-            code: 500,
-            message: `服务器内部错误:${error instanceof Error ? error.message : 'Unknown error'}`
-        })
+        return getServeError500(error)
     }
 }

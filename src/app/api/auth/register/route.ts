@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '../../../../lib/supabase'
 import {checkUserExists} from "./check-user-exists";
 import {CryptoUtils} from "../../../../utils/crypto";
+import {getServeError500, validateRequiredFields} from "../../api-util";
 
 
 
@@ -13,13 +14,9 @@ export async function POST(request: NextRequest) {
         const { email, password, account, name } = requestResult
 
         // 验证必填字段
-        if (!email || !password || !account || !name) {
-            return NextResponse.json(
-                {
-                    code: 500,
-                    message: '邮箱、密码和账号均为必填项'
-                }
-            )
+        const { validateCode, validateResult} = validateRequiredFields({email,password,account,name})
+        if(!validateCode){
+            return validateResult
         }
 
 // 使用示例
@@ -107,11 +104,6 @@ export async function POST(request: NextRequest) {
 
     } catch (error) {
         console.error('Register API error:', error)
-        return NextResponse.json(
-            {
-                code: 500,
-                message: `服务器内部错误:${error instanceof Error ? error.message : 'Unknown error'}`,
-            }
-        )
+        return getServeError500(error)
     }
 }

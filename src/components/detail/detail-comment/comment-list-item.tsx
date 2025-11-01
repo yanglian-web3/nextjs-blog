@@ -7,13 +7,12 @@ import UserHeadImage from "../../head-user/user-head-image";
 
 interface CommentListItemProps {
     info: CommentContentItem,
-    sub?: CommentContentItem[],
     isSub?: boolean,
     success: () => void
     parentId?: string
 }
 
-export default function CommentListItem({ info, sub, success, parentId, isSub = false}: CommentListItemProps){
+export default function CommentListItem({ info, success, parentId, isSub = false}: CommentListItemProps){
     const { id, avatar, content, username, postTime, loginUserDigg, parentUsername, userAccount } = info
     const [replay, setReplay] = useState(false);
 
@@ -69,11 +68,6 @@ export default function CommentListItem({ info, sub, success, parentId, isSub = 
             replay && <div className={"ml-13 mb-5"}>
                 <CommentInputSend parentUsername={username} parentUserAccount={userAccount} parentId={ parentId || id} success={subCommentsSuccess}/>
             </div>
-        }
-        {
-            sub && sub.length ? sub.map((item, index) => {
-                return <CommentListItem info={item} isSub={ true} parentId={parentId || id} success={subCommentsSuccess}/>
-            }) : null
         }
     </>
 }

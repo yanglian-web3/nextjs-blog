@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import {BlogHomeItemType, BlogItemServeType} from "../../../../../types/blog";
+import {getServeError500} from "../../../api-util";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -112,9 +113,6 @@ export async function GET(request: NextRequest) {
 
     } catch (error) {
         console.error('精选博客API错误:', error)
-        return NextResponse.json({
-            code: 500,
-            message: `服务器内部错误: ${error instanceof Error ? error.message : 'Unknown error'}`
-        })
+        return getServeError500(error)
     }
 }

@@ -6,6 +6,7 @@ import { BlogItemServeType } from "../../../../../types/blog";
 import {UserInfo} from "../../../../../types/user";
 import {formatDateTime} from "../../../../../utils/date-format";
 import {handleCount} from "../../../../../utils/util";
+import {getServeError500} from "../../../api-util";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -55,13 +56,6 @@ export async function GET(
         }
 
         const { id, title, content, cover, status, created_at, update_at, user_id, view_count } = blog
-
-        console.log('查询到博客:', {
-            id,
-            title,
-            status,
-            user_id
-        })
 
         // 3. 查询作者信息
         const { data: author, error: authorError }: { data: UserInfo, error: any} = await supabase
@@ -133,9 +127,6 @@ export async function GET(
 
     } catch (error) {
         console.error('获取博客详情API错误:', error)
-        return NextResponse.json({
-            code: 500,
-            message: `服务器内部错误: ${error instanceof Error ? error.message : 'Unknown error'}`
-        })
+        return getServeError500(error)
     }
 }

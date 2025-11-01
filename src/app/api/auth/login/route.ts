@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from "@supabase/supabase-js"
 import { CryptoUtils } from "../../../../utils/crypto"
 import { createSession } from "../../../../lib/session"
+import {getServeError500, validateRequiredFields} from "../../api-util";
 
 interface LoginRequest {
     email: string
@@ -19,11 +20,9 @@ export async function POST(request: NextRequest) {
         const { email, password }: LoginRequest = await request.json()
 
         // 验证必填字段
-        if (!email || !password) {
-            return NextResponse.json({
-                code: 400,
-                message: '邮箱和密码均为必填项'
-            })
+        const { validateCode, validateResult} = validateRequiredFields({email,password})
+        if(!validateCode){
+            return validateResult
         }
 
         // 1. 使用 Supabase Auth 登录
@@ -146,9 +145,6 @@ export async function POST(request: NextRequest) {
 
     } catch (error) {
         console.error('Login API error:', error)
-        return NextResponse.json({
-            code: 500,
-            message: `服务器内部错误:${error instanceof Error ? error.message : 'Unknown error'}`
-        })
+        return getServeError500( error)
     }
 }

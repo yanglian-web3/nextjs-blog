@@ -5,6 +5,7 @@ import { checkHasLogin } from '../../../../../../utils/api/check-session'
 import {UserInfo} from "../../../../../../types/user";
 import {BlogItemServeType} from "../../../../../../types/blog";
 import {formatDateTime} from "../../../../../../utils/date-format";
+import {getServeError500} from "../../../../api-util";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -30,7 +31,6 @@ export async function GET(
         const sessionToken = requestHeaders.get('session_token') || request.cookies.get('session_token')?.value
 
         console.log('查询参数:', { account, page, pageSize, status, searchTitle })
-        console.log('requestHeaders.get(\'session_token\'):', requestHeaders.get('session_token'))
         console.log('request.cookies.get(\'session_token\')?.value', request.cookies.get('session_token')?.value)
 
         // 2. 首先根据 account 查找目标用户
@@ -207,9 +207,6 @@ export async function GET(
 
     } catch (error) {
         console.error('获取作者博客API错误:', error)
-        return NextResponse.json({
-            code: 500,
-            message: `服务器内部错误: ${error instanceof Error ? error.message : 'Unknown error'}`
-        })
+        return getServeError500(error)
     }
 }

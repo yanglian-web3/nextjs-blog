@@ -36,7 +36,19 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
         {
             list && list.map((item, index) => {
                 const {info, sub} = item
-                return <CommentListItem info={info} sub={sub} success={getList}/>
+                return <>
+                    <CommentListItem info={info} key={info.id} success={getList}/>
+                    {
+                        sub && sub.length ? sub.map((item, index) => {
+                            return <CommentListItem info={item}
+                                                    key={item.id}
+                                                    isSub={ true}
+                                                    parentId={info.id}
+                                                    success={getList}
+                            />
+                        }) : null
+                    }
+                </>
             })
         }
     </div>

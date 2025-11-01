@@ -1,6 +1,7 @@
 // src/app/api/auth/logout/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import {getServeError500} from "../../api-util";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -45,9 +46,6 @@ export async function GET(request: NextRequest) {
 
     } catch (error) {
         console.error('Logout error:', error)
-        return NextResponse.json({
-            code: 500,
-            message: '登出失败'
-        })
+        return getServeError500(error)
     }
 }

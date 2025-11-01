@@ -4,6 +4,8 @@ import { createClient } from '@supabase/supabase-js'
 import { checkHasLogin } from '../../../../utils/api/check-session'
 import {CommentContentItem, CommentItem} from "../../../../types/comment";
 import {underlineToHump} from "../../../../utils/util";
+import {getParamsAndHeads, selectFields} from "../comment-api-util";
+import {getErrorEmptyResponse, getServeError500, notLoginMessage, validateRequiredFields} from "../../api-util";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -35,61 +37,48 @@ const handleCommentData = (list: CommentContentItem[]) => {
     }, [] as CommentItem[])
 }
 
+/**
+ * 获取作者评论
+ * @param request
+ * @constructor
+ * 查询逻辑：
+ * 1）先获取第一层的评论，分页查询parent_id为null的评论
+ * 2）获取子评论，根据第一层评论的id，查询parent_id等于当前id的评论,分页查询
+ * 3）组装数据
+ */
 export async function GET(
     request: NextRequest
 ) {
     try {
 
         // 1. 获取查询参数
-        const { searchParams } = new URL(request.url)
-        const page = parseInt(searchParams.get('current') || '1')
-        const pageSize = parseInt(searchParams.get('pageSize') || '10')
-        const articleId = searchParams.get('articleId')
-        const requestHeaders = request.headers
-        const sessionToken = requestHeaders.get('session_token') || request.cookies.get('session_token')?.value
+        const { page, pageSize, articleId, sessionToken } = await getParamsAndHeads(request)
 
         console.log('查询参数:', { page, pageSize })
-        console.log('requestHeaders.get(\'session_token\'):', requestHeaders.get('session_token'))
         console.log('request.cookies.get(\'session_token\')?.value', request.cookies.get('session_token')?.value)
 
         // 2. 检查当前登录状态和用户身份
-        const { result: isLoggedIn, session } = await checkHasLogin(request, supabase, sessionToken)
+        const { result: isLoggedIn } = await checkHasLogin(request, supabase, sessionToken)
 
         if(!isLoggedIn){
-            return NextResponse.json({
-                code: 401,
-                message: '未登录'
-            })
+            return notLoginMessage
         }
         // 3. 验证参数
-        if(!articleId){
-            return NextResponse.json({
-                code: 400,
-                message: '缺少参数：articleId'
-            })
+        const { validateCode, validateResult} = validateRequiredFields({articleId})
+        if(!validateCode){
+            return validateResult
         }
 
         // 4. 计算分页
         const from = (page - 1) * pageSize
         const to = from + pageSize - 1
 
-        // 5. 构建查询
+        // 5. 构建查询，查询文章id为articleId的，并且parent_id为null的
         let query = supabase
             .from('comments')
-            .select(`
-                id,
-                article_id,
-                content,
-                user_id,
-                username,
-                user_account,
-                avatar,
-                parent_user_account,
-                parent_id,
-                parent_username,
-                created_at
-            `, { count: 'exact' })
+            .select(selectFields, { count: 'exact' })
             .eq('article_id', articleId)
+            .is('parent_id', null)  // 使用 .is() 方法查询 NULL 值
         
         // 6. 并行查询：获取列表
         const queryResult = await query
@@ -100,19 +89,7 @@ export async function GET(
 
         if (commentError) {
             console.error('数据库查询错误:', commentError)
-            return NextResponse.json({
-                code: 200,
-                message: '获取评论列表成功',
-                data: {
-                    list: [],
-                    pagination: {
-                        current: page,
-                        pageSize: pageSize,
-                        total:0,
-                        totalPages: 0
-                    }
-                }
-            })
+            return getErrorEmptyResponse(page, pageSize,"获取评论列表成功")
         }
 
         // 7. 分页信息
@@ -137,9 +114,6 @@ export async function GET(
 
     } catch (error) {
         console.error('获取作者评论API错误:', error)
-        return NextResponse.json({
-            code: 500,
-            message: `服务器内部错误: ${error instanceof Error ? error.message : 'Unknown error'}`
-        })
+        return getServeError500(error)
     }
 }
