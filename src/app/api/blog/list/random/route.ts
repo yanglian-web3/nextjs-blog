@@ -12,12 +12,22 @@ const supabase = createClient(
 export async function GET(request: NextRequest) {
     try {
         console.log('=== 开始获取随机精选博客列表 ===')
-
-        // 1. 先获取所有已发布博客的ID
-        const { data: allBlogs, error: countError } = await supabase
+        // 1. 获取查询参数
+        const { searchParams } = new URL(request.url)
+        const searchTitle = searchParams.get('title')
+        // 2. 先获取所有已发布博客的ID
+        let query = supabase
             .from('blog')
             .select('id')
             .eq('status', 1)
+
+        if (searchTitle && searchTitle.trim()) {
+            // 使用 ilike 进行不区分大小写的模糊查询
+            // % 表示任意字符，可以匹配标题中包含关键词的博客
+            query = query.ilike('title', `%${searchTitle.trim()}%`)
+            console.log('添加标题模糊查询:', searchTitle.trim())
+        }
+        const { data: allBlogs, error: countError } = await query
 
         if (countError) {
             console.error('获取博客ID列表错误:', countError)

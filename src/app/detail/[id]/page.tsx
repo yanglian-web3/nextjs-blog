@@ -17,7 +17,7 @@ export default async function BlogDetail({params}) {
     console.log("blog_Detail_result result=", {...detail, content: "太多了省略..."})
     const {title, content, createdAt} = detail
     return <div className="blog-detail-container bg-gray-200 flex flex-col bg-white">
-        <BlogListHead/>
+        <BlogListHead showSearch={false}/>
         <div className="blog-detail-title mt-3 flex justify-center ">
            <div className="bg-white blog-title-inner px-6 py-3 rounded-t-sm">
                <h1 className="font-bold text-4xl">{title}</h1>

@@ -6,7 +6,7 @@ import BlogMyListContent from "../../components/blog-list/blog-my-list/blog-my-l
 export default async function MyBlogList() {
     return (
         <div className={"page-container"}>
-            <BlogListHead/>
+            <BlogListHead showSearch={false}/>
             <BlogMyListContent/>
         </div>
     );

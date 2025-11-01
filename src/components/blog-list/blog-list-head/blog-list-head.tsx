@@ -11,11 +11,14 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../../../store/index";
 import {getUserInfo} from "../../../utils/user";
 import { updateUserInfo } from "../../../store/user-slice";
+import IconClear from "../../icons/icon-clear";
+import { updateSearchValue} from "../../../store/blog-search-slice"
 
 
-function BlogListHead() {
+function BlogListHead({showSearch = true}: {showSearch?: boolean}) {
     const dispatch = useDispatch<AppDispatch>()
     const { userInfo } = useSelector((state: RootState) => state.user)
+    const [searchValue, setSearchValue] = useState("")
 
     const [loginOpen, setLoginOpen] = useState(false)
 
@@ -43,16 +46,53 @@ function BlogListHead() {
         }
         window.open('/add-edit', '_blank');
     }
+    /**
+     * 搜索
+     */
+    const search = () => {
+        console.log("search searchValue=", searchValue)
+        dispatch(updateSearchValue(searchValue))
+    }
+    /**
+     * 清空搜索标题
+     */
+    const clearSearchTitle = () => {
+        setSearchValue("")
+        dispatch(updateSearchValue(""))
+    }
+    /**
+     * 输入框值改变
+     * @param e
+     */
+    const searchValueChange = (e) => {
+        setSearchValue(e.target.value)
+    }
 
 
     return <>
         <div className="blog-head-out-container">
             <div className="blog-head-container flex justify-between items-center">
                 <div className="blog-search-container relative flex">
-                    <input placeholder="输入标题搜索" className="blog-search-input blog-head-input border border-solid border-gray-200 pl-4 pr-10 py-1 w-100"/>
-                    <span className="search-icon cursor-pointer absolute right-2">
-                 <IconSearch/>
-              </span>
+                    {
+                        showSearch ? <>
+                            <div className={"flex items-center"}>
+                                <input placeholder="输入标题搜索"
+                                       className="blog-search-input text-gray-500 blog-head-input border border-gray-200 pl-4 pr-10 py-1 w-120"
+                                     value={searchValue}
+                                     onChange={searchValueChange}
+                                />
+                                {
+                                    searchValue ?  <div className="cursor-pointer absolute right-12 flex justify-center items-center h-full"
+                                                        onClick={clearSearchTitle}>
+                                        <IconClear  width={20} height={20} color={"#999999"}/>
+                                    </div> : null
+                                }
+                                <div className="cursor-pointer flex justify-center items-center h-full px-2 bg-gray-100 border border-l-0 border-gray-200"  onClick={search}>
+                                    <IconSearch width={20} height={20}/>
+                                </div>
+                            </div>
+                        </> : null
+                    }
                 </div>
                 <div className="flex justify-end items-center">
                     { userInfo && userInfo.id && userInfo.account && userInfo.name ?

@@ -6,9 +6,9 @@ import {blogFetch} from "./blog-fetch";
 /**
  * 获取随机精选博客列表
  */
-export function getBlogListRandom() {
+export function getBlogListRandom(searchValue:string) {
     return  new Promise<BlogHomeItemType[]>((resolve) => {
-        blogFetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/list/random`)
+        blogFetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/list/random?title=${searchValue}`)
             .then(result => {
                 const { code ,data, message} = result
                 if(code !== 200){

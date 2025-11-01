@@ -115,9 +115,9 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
                     })
                 }
                 {
-                    pagination.total > subList.length ? <div className={"mb-8 ml-24 flex align-center"}>
+                    pagination.total > subList.length ? <div className={"mb-8 ml-24 flex items-center"}>
                        <span className={"text-gray-500 text-sm"}>共 {pagination.total} 条回复{}</span>
-                        <button className="text-gray-900 cursor-pointer text-sm flex justify-center ml-3 align-center"
+                        <button className="text-gray-900 cursor-pointer text-sm flex justify-center ml-3 items-center"
                                 onClick={() => getMoreSubList(parentId, subList,pagination.current)}>
                             加载更多
                             { subListMoreLoading ? <IconLoading width={20} height={20}/> : null}
@@ -150,7 +150,7 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
                     list.length < total ? <div className={"flex justify-center items-center mt-10"}>
                         <span>{total - list.length}</span>
                         <span className={"text-gray-500 ml-2 mr-3"}>条评论被折叠</span>
-                        <button className="text-gray-900 flex align-center cursor-pointer text-sm"
+                        <button className="text-gray-900 flex items-center cursor-pointer text-sm"
                               onClick={getMoreList}>查看{ listMoreLoading ? <IconLoading width={20} height={20}/> : null}</button>
                     </div> : null
                 }
