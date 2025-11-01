@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import {blogFetch} from "../../../utils/blog-fetch";
 import {humpToUnderline} from "../../../utils/util";
 import {CommentContentItem} from "../../../types/comment";
+import "./comment-input-send.css"
 
 interface CommentInputSendProps {
     parentUsername?:string,

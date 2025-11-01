@@ -43,7 +43,7 @@ export const getSubQuery = (supabase: any, articleId: string, parentId: string) 
  * 获取参数和请求头
  * @param request
  */
-export const getParamsAndHeads = async (request: NextRequest) =>() => {
+export const getParamsAndHeads = (request: NextRequest) => {
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('current') || '1')
     const pageSize = parseInt(searchParams.get('pageSize') || '10')

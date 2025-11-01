@@ -1,3 +1,4 @@
+
 /**
  * 生成n-m的随机数,包含max
  * @param min
@@ -56,4 +57,38 @@ export function underlineToHump(str: string) {
     return str.replace(/_(\w)/g, function(all, letter) {
         return letter.toUpperCase()
     })
+}
+
+/**
+ * 批量处理对象里面的字符串
+ * @param list
+ * @param fn
+ * @constructor
+ */
+export const multiHandleStrInObject = <T>(list: T[], fn: (k:string) => T) => {
+    return list.map(item => {
+        const keys = Object.keys(item)
+        return keys.reduce((result, key) => {
+            return {
+                ...result,
+                [fn(key)]: item[key]
+            }
+        }, {} as T)
+    })
+}
+
+/**
+ * 批量下划线转为驼峰
+ * @param list
+ * @constructor
+ */
+export const multiUnderlineToHump = <T>(list: T[]) => {
+    return multiHandleStrInObject(list, underlineToHump)
+}
+
+/**
+ * 批量驼峰转为下划线
+ */
+export const multiHumpToUnderline = <T>(list: T[]) => {
+    return multiHandleStrInObject(list, humpToUnderline)
 }

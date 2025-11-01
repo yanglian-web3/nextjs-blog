@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkHasLogin } from '../../../../utils/api/check-session'
 import {CommentContentItem, CommentItem} from "../../../../types/comment";
-import {underlineToHump} from "../../../../utils/util";
-import {getParamsAndHeads, selectFields} from "../comment-api-util";
+import {multiUnderlineToHump, underlineToHump} from "../../../../utils/util";
+import {getParamsAndHeads, getSubQuery, queryFromTo, selectFields} from "../comment-api-util";
 import {getErrorEmptyResponse, getServeError500, notLoginMessage, validateRequiredFields} from "../../api-util";
 
 const supabase = createClient(
@@ -14,27 +14,38 @@ const supabase = createClient(
 /**
  * 处理数据，生成Info和sub
  * @param list
+ * @param articleId
  */
-const handleCommentData = (list: CommentContentItem[]) => {
+const handleCommentData = async (list: CommentContentItem[], articleId) => {
     // 先处理下划线转驼峰
-    const handleFieldList = list.map(item => {
-        const keys = Object.keys(item)
-        return keys.reduce((result, key) => {
-            return {
-                ...result,
-                [underlineToHump(key)]: item[key]
-            }
-        }, {} as CommentContentItem)
-    })
-    //筛选过滤数据
-    const firstLevelComments = handleFieldList.filter(item => !item.parentUserAccount)
-    return firstLevelComments.reduce((result,current) => {
-        result.push({
+    const handleFieldList = multiUnderlineToHump<CommentContentItem>(list)
+    const handleResult = []
+    const page = 1
+    const pageSize = 3 // 子评论默认加载3条
+    for(const current of handleFieldList){
+        const { id } = current
+        let subQuery = getSubQuery(supabase,articleId!,id!)
+        const dataResult:{data: CommentContentItem[], error: any, count: number} = await queryFromTo(page,pageSize,subQuery)
+        const { data: subComments, error: subCommentError, subCount } = dataResult
+        const total = subCount || 0
+        const totalPages = Math.ceil(total / pageSize)
+        const subList = subCommentError || !subComments ? [] : multiUnderlineToHump(subComments)
+        handleResult.push({
             info: current,
-            sub: handleFieldList.filter(item => item.parentId === current.id)
+            sub: {
+                list: subList,
+                pagination: {
+                    current: page,
+                    pageSize: pageSize,
+                    total,
+                    totalPages: totalPages
+                },
+            }
         })
-        return result
-    }, [] as CommentItem[])
+    }
+
+    return handleResult
+
 }
 
 /**
@@ -53,7 +64,6 @@ export async function GET(
 
         // 1. 获取查询参数
         const { page, pageSize, articleId, sessionToken } = await getParamsAndHeads(request)
-
         console.log('查询参数:', { page, pageSize })
         console.log('request.cookies.get(\'session_token\')?.value', request.cookies.get('session_token')?.value)
 
@@ -85,7 +95,6 @@ export async function GET(
             .order('created_at', { ascending: false })
             .range(from, to)
         const { data: comments, error: commentError, count }:{data: CommentContentItem[], error: any, count: number} = queryResult
-        
 
         if (commentError) {
             console.error('数据库查询错误:', commentError)
@@ -96,13 +105,13 @@ export async function GET(
         const total = count || 0
         const totalPages = Math.ceil(total / pageSize)
 
-
+        const dataList = await handleCommentData(comments, articleId)
 
         return NextResponse.json({
             code: 200,
             message: '获取评论列表成功',
             data: {
-                list: handleCommentData(comments),
+                list: dataList,
                 pagination: {
                     current: page,
                     pageSize: pageSize,

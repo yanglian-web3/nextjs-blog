@@ -1,3 +1,5 @@
+import {PaginationOptions} from "./pagination";
+
 export interface CommentContentItem{
     articleId: string,
     avatar: string,
@@ -13,5 +15,8 @@ export interface CommentContentItem{
 }
 export interface CommentItem {
     info: CommentContentItem,
-    sub: CommentContentItem[]
+    sub: {
+        list:CommentContentItem[],
+        pagination: PaginationOptions
+    }
 }

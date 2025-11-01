@@ -12,7 +12,9 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
 
 
     useEffect(() => {
-        getList()
+        if(refreshNum){
+            getList()
+        }
     }, [refreshNum])
 
     /**
@@ -39,7 +41,7 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
                 return <>
                     <CommentListItem info={info} key={info.id} success={getList}/>
                     {
-                        sub && sub.length ? sub.map((item, index) => {
+                        sub && sub.list && sub.list.length ? sub.list.map((item, index) => {
                             return <CommentListItem info={item}
                                                     key={item.id}
                                                     isSub={ true}

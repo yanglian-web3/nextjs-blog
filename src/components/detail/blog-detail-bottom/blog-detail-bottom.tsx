@@ -2,13 +2,14 @@
 
 import IconMsg from "../../icons/icon-msg";
 import "./blog-detail-bottom.css"
-import DetailComment from "../detail-comment/detail-comment";
 import {useState} from "react";
 import SlideDrawer from "../../slide-drawer/slide-drawer";
 import UserHeadImage from "../../head-user/user-head-image";
 import Login from "../../auth/login/login";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../store/index";
+import CommentInputSend from "../detail-comment/comment-input-send";
+import CommentList from "../detail-comment/comment-list";
 
 interface BlogDetailBottomProps {
     commentCount?: string
@@ -20,11 +21,19 @@ interface BlogDetailBottomProps {
     success?: () => void
 }
 
-export default function BlogDetailBottom({commentCount = "0", success, author = {}}: BlogDetailBottomProps) {
+export default function BlogDetailBottom({commentCount = "0", author = {}}: BlogDetailBottomProps) {
 
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [loginOpen, setLoginOpen] = useState(false)
     const { userInfo } = useSelector((state: RootState) => state.user)
+    const [refreshNum, setRefreshNum]  = useState(0)
+
+    /**
+     * 评论成功
+     */
+    const success = () => {
+        setRefreshNum(refreshNum + 1)
+    }
     /**
      * 打开评论
      */
@@ -33,6 +42,7 @@ export default function BlogDetailBottom({commentCount = "0", success, author = 
             setLoginOpen(true)
             return
         }
+        setRefreshNum(refreshNum + 1)
         setDrawerOpen(true)
     }
     return <>
@@ -59,7 +69,15 @@ export default function BlogDetailBottom({commentCount = "0", success, author = 
                 <span className={"ml-2 text-gray-500"}>{ commentCount}</span>
             </>
         } open={drawerOpen} onOpenChange={(open) => setDrawerOpen(open)}>
-            <DetailComment success={success}/>
+            <div className={"detail-comment-container p-2"}>
+                <div className="comment-send-container flex mb-7">
+                    <UserHeadImage name={userInfo?.name} src={userInfo?.avatar} size={"sm"}/>
+                    <div className={"ml-4 flex-1 flex"}>
+                        <CommentInputSend success={success}/>
+                    </div>
+                </div>
+                <CommentList refreshNum={refreshNum}/>
+            </div>
         </SlideDrawer>
         <Login open={loginOpen} updateOpen={setLoginOpen}/>
     </>
