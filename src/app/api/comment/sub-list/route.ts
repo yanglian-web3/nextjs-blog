@@ -37,7 +37,7 @@ export async function GET(
         if(!validateCode){
             return validateResult
         }
-        // 4. 构建查询，查询文章id为articleId的，并且parent_id为null的
+        // 4. 构建查询，查询文章id为articleId的，并且评论id为parentId的数据
         let query = getSubQuery(supabase,articleId!,parentId!)
 
         const { data: comments, error: commentError, count }:{data: CommentContentItem[], error: any, count: number} = await queryFromTo(page,pageSize,query)
@@ -58,7 +58,7 @@ export async function GET(
                 list: comments,
                 pagination: {
                     current: page,
-                    pageSize: pageSize,
+                    pageSize,
                     total,
                     totalPages: totalPages
                 },

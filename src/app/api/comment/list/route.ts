@@ -17,29 +17,31 @@ const supabase = createClient(
  * @param list
  * @param articleId
  */
-const handleCommentData = async (list: CommentContentItem[], articleId) => {
+const handleCommentData = async (list: CamelToSnakeKeys<CommentContentItem>[], articleId) => {
     // 先处理下划线转驼峰
-    const handleFieldList = multiUnderlineToHump<CommentContentItem,CamelToSnakeKeys<CommentContentItem>>(list)
+    const handleFieldList = multiUnderlineToHump<CamelToSnakeKeys<CommentContentItem>, CommentContentItem>(list)
+    const afterHandlePostTimeList = handlePostTime(handleFieldList)
     const handleResult = []
     const page = 1
     const pageSize = 3 // 子评论默认加载3条
-    for(const current of handleFieldList){
+    for(const current of afterHandlePostTimeList){
         const { id } = current
         let subQuery = getSubQuery(supabase,articleId!,id!)
-        const dataResult:{data: CommentContentItem[], error: any, count: number} = await queryFromTo(page,pageSize,subQuery)
-        const { data: subComments, error: subCommentError, subCount } = dataResult
+        const dataResult:{data: CamelToSnakeKeys<CommentContentItem>[], error: any, count: number} = await queryFromTo(page,pageSize,subQuery)
+        const { data: subComments, error: subCommentError, count:subCount } = dataResult
         const total = subCount || 0
         const totalPages = Math.ceil(total / pageSize)
-        const subList = subCommentError || !subComments ? [] : multiUnderlineToHump<CommentContentItem,CamelToSnakeKeys<CommentContentItem>>(subComments)
+        const subList = subCommentError || !subComments ? [] : multiUnderlineToHump<CamelToSnakeKeys<CommentContentItem>, CommentContentItem>(subComments)
+        const afterHandlePostTimeSubList = handlePostTime(subList)
         handleResult.push({
             info: current,
             sub: {
-                list: subList,
+                list: afterHandlePostTimeSubList,
                 pagination: {
                     current: page,
-                    pageSize: pageSize,
+                    pageSize,
                     total,
-                    totalPages: totalPages
+                    totalPages
                 },
             }
         })

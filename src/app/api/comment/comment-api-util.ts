@@ -60,13 +60,36 @@ export const getParamsAndHeads = (request: NextRequest) => {
         sessionToken
     }
 }
+
+/**
+ * 根据今天时间对比时间，显示今天、昨天、前天
+ * 2025-11-01T04:10:56.482867+00:00
+ */
+export const getPostTimeShowValue = (postTime:string, dateAfterValue:string) => {
+    const now = new Date().getTime()
+    const postTimeStamp = new Date(postTime).getTime()
+    const hourMinute = dateAfterValue.substring(0, 5)
+    // console.log("hourMinute=", hourMinute)
+    // console.log("dateAfterValue=", dateAfterValue)
+    if (now - postTimeStamp < 24 * 60 * 60 * 1000) {
+        return "今天 " + hourMinute
+    }
+    if (now - postTimeStamp < 2 * 24 * 60 * 60 * 1000) {
+        return "昨天 " + hourMinute
+    }
+    if (now - postTimeStamp < 3 * 24 * 60 * 60 * 1000) {
+        return "前天 " + hourMinute
+    }
+    return postTime
+}
 /**
  * 处理显示用的评论时间
  * @param data
  */
 export const handlePostTime = (data: CommentContentItem[]) => {
     return data.map((item) => {
-        item.postTime = item.createdAt.split("T")[0]
+        const dateArr = item.createdAt.split("T")
+        item.postTime = getPostTimeShowValue(dateArr[0], dateArr[1])
         return item
     })
 }

@@ -1,8 +1,9 @@
-import {CommentItem} from "../../../types/comment";
+import {CommentContentItem, CommentItem} from "../../../types/comment";
 import {useEffect, useState} from "react";
 import CommentListItem from "./comment-list-item";
 import {useParams} from "next/navigation";
 import {blogFetch} from "../../../utils/blog-fetch";
+import {PaginationOptions} from "../../../types/pagination";
 
 export default function CommentList({refreshNum}: {refreshNum: number}) {
 
@@ -38,6 +39,31 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
             })
     }
     /**
+     * 获取子评论列表数据
+     * @param parentId
+     * @param page
+     */
+    const getMoreSubList = (parentId:string, page:number) => {
+        blogFetch(`/api/comment/sub-list?articleId=${id}&parentId=${parentId}&current=${page}`)
+            .then((result) => {
+                const { code, data } = result
+                if (code === 200) {
+                    console.log("data=", data)
+                    // setList([...list,...data.list])
+                    // setTotal(data.pagination.total)
+                    const originList = list
+                    const currentListItemIndex = originList.findIndex((item) => item.info.id === parentId)
+                    if(currentListItemIndex > -1){
+                        originList[currentListItemIndex].sub.list.push(data.list)
+                        originList[currentListItemIndex].sub.pagination = data.pagination
+                        setList(originList)
+                    }
+
+                }
+                console.log("data=", data)
+            })
+    }
+    /**
      * 加载更多数据
      */
     const getMoreList = () => {
@@ -45,27 +71,52 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
         setCurrent(newCurrent)
         getList(newCurrent)
     }
-
+    /**
+     * 渲染子评论列表
+     * @param list
+     * @param pagination
+     * @param parentId
+     */
+    const renderSubListDom = (list: CommentContentItem[], pagination: PaginationOptions, parentId:string) => {
+        if(list && list.length){
+            return <>
+                {
+                    list.map((item, index) => {
+                        return <CommentListItem info={item}
+                                                key={item.id}
+                                                isSub={ true}
+                                                parentId={parentId}
+                                                success={getList}
+                        />
+                    })
+                }
+                {
+                    pagination.total > list.length ? <div className={"mb-8 ml-24 flex align-center"}>
+                       <span className={"text-gray-500 text-sm"}>共 {pagination.total} 条回复{}</span>
+                        <button className="text-gray-900 cursor-pointer text-sm flex justify-center ml-3"
+                                onClick={() => getMoreSubList(parentId, pagination.current + 1)}>
+                            加载更多
+                        </button>
+                    </div> : null
+                }
+            </>
+        }
+        return null
+    }
+    /**
+     * 渲染评论列表
+     */
     const renderListDom = () => {
         if(list && list.length){
             return <>
                 {
                     list.map((item, index) => {
                         const {info, sub} = item
+                        const { list, pagination} =  sub
                         return <>
                             <CommentListItem info={info} key={info.id} success={getList}/>
                             {
-                                sub && sub.list && sub.list.length ? sub.list.map((item, index) => {
-                                    return <CommentListItem info={item}
-                                                            key={item.id}
-                                                            isSub={ true}
-                                                            parentId={info.id}
-                                                            success={getList}
-                                    />
-                                }) : null
-                            }
-                            {
-
+                                sub && renderSubListDom(list, pagination, info.id)
                             }
                         </>
                     })
