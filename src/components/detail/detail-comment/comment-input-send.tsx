@@ -10,12 +10,12 @@ import {CommentContentItem} from "../../../types/comment";
 
 interface CommentInputSendProps {
     parentUsername?:string,
-    parentAccount?:string,
+    parentUserAccount?:string,
     parentId?:string,
     success: () => void
 }
 
-export default function CommentInputSend({parentUsername, parentAccount, parentId, success}: CommentInputSendProps){
+export default function CommentInputSend({parentUsername, parentUserAccount, parentId, success}: CommentInputSendProps){
     const { userInfo } = useSelector((state: RootState) => state.user)
     const { id } = useParams()
 
@@ -46,7 +46,7 @@ export default function CommentInputSend({parentUsername, parentAccount, parentI
             userAccount:account,
             content: value,
             parentUsername,
-            parentAccount,
+            parentUserAccount,
         }
         console.log("Object.keys(data)=", Object.keys(sendData))
         blogFetch('/api/comment/send', {
@@ -113,7 +113,7 @@ export default function CommentInputSend({parentUsername, parentAccount, parentI
     return <>
         <div className={"comment-input-send-container flex-1 relative"}>
             <div className={"comment-input-container pb-7"}>
-                    <textarea className={"comment-input bg-gray-100 w-full py-2 px-4"}
+                    <textarea className={"comment-input bg-gray-100 w-full py-2 px-4 text-gray-500"}
                               placeholder={"请输入评论"}
                               value={value}
                               maxLength={1000}

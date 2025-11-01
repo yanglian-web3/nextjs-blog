@@ -10,10 +10,10 @@ interface CommentListItemProps {
     sub?: CommentContentItem[],
     isSub?: boolean,
     success: () => void
-
+    parentId?: string
 }
 
-export default function CommentListItem({ info, sub, success,isSub = false}: CommentListItemProps){
+export default function CommentListItem({ info, sub, success, parentId, isSub = false}: CommentListItemProps){
     const { id, avatar, content, username, postTime, loginUserDigg, parentUsername, userAccount } = info
     const [replay, setReplay] = useState(false);
 
@@ -32,6 +32,14 @@ export default function CommentListItem({ info, sub, success,isSub = false}: Com
             </>
         }
         return <span className={"user-name text-sm text-gray-400 whitespace-nowrap"}>{username} {postTime}</span>
+    }
+    /**
+     * 子评论完成
+     */
+    const subCommentsSuccess = () => {
+        console.log("子评论完成================")
+        success && success()
+        setReplay(false)
     }
     return <>
         <div className={`comment-list-item-container mb-5 ${isSub ? "ml-13" : ""}`} key={id}>
@@ -59,12 +67,12 @@ export default function CommentListItem({ info, sub, success,isSub = false}: Com
         </div>
         {
             replay && <div className={"ml-13 mb-5"}>
-                <CommentInputSend parentUsername={username} parentAccount={userAccount} parentId={ id} success={success}/>
+                <CommentInputSend parentUsername={username} parentUserAccount={userAccount} parentId={ parentId || id} success={subCommentsSuccess}/>
             </div>
         }
         {
             sub && sub.length ? sub.map((item, index) => {
-                return <CommentListItem info={item} isSub={ true} success={success}/>
+                return <CommentListItem info={item} isSub={ true} parentId={parentId || id} success={subCommentsSuccess}/>
             }) : null
         }
     </>

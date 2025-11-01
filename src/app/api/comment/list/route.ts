@@ -25,7 +25,7 @@ const handleCommentData = (list: CommentContentItem[]) => {
         }, {} as CommentContentItem)
     })
     //筛选过滤数据
-    const firstLevelComments = handleFieldList.filter(item => !item.parentAccount)
+    const firstLevelComments = handleFieldList.filter(item => !item.parentUserAccount)
     return firstLevelComments.reduce((result,current) => {
         result.push({
             info: current,

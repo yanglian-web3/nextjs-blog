@@ -6,7 +6,7 @@ export interface CommentContentItem{
     postTime: string,
     username: string,
     parentUsername?: string,
-    parentAccount?: string,
+    parentUserAccount?: string,
     parentId?:string,
     userAccount: string,
     loginUserDigg: boolean,
