@@ -51,7 +51,17 @@ export default function CommentListItem({ info, success, parentId, isSub = false
                         <div className={"flex-1 w-0 whitespace-nowrap overflow-ellipsis overflow-hidden"}>
                             {getInfoTopLeft()}
                         </div>
-                        <div className={"info-apply-container flex items-center cursor-pointer flex-shrink-0 ml-5"}
+                        <div className={"info-apply-container flex items-center cursor-pointer relative flex-shrink-0 ml-5"}
+                             onClick={() => setReplay(!replay)}
+                        >
+                            <span className={"text-lg text-gray-400"}>···</span>
+                            <div className={"absolute right-0 top-full bg-white border border-gray-200 rounded-md shadow-md z-10"}>
+                                <div className={"py-2 px-4"}>
+                                    <span className={"text-sm text-gray-500"}>删除</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={"info-apply-container flex items-center cursor-pointer flex-shrink-0 ml-4"}
                              onClick={() => setReplay(!replay)}
                         >
                             <IconMsg color="#999999" width={16} height={16}/>
