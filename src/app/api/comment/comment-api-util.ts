@@ -1,4 +1,5 @@
 import {NextRequest} from "next/server";
+import {CommentContentItem} from "../../../types/comment";
 
 export const selectFields = `
                 id,
@@ -58,4 +59,14 @@ export const getParamsAndHeads = (request: NextRequest) => {
         parentId,
         sessionToken
     }
+}
+/**
+ * 处理显示用的评论时间
+ * @param data
+ */
+export const handlePostTime = (data: CommentContentItem[]) => {
+    return data.map((item) => {
+        item.postTime = item.createdAt.split("T")[0]
+        return item
+    })
 }

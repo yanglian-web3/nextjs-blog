@@ -2,10 +2,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkHasLogin } from '../../../../utils/api/check-session'
-import {CommentContentItem, CommentItem} from "../../../../types/comment";
-import {multiUnderlineToHump, underlineToHump} from "../../../../utils/util";
-import {getParamsAndHeads, getSubQuery, queryFromTo, selectFields} from "../comment-api-util";
+import {CommentContentItem} from "../../../../types/comment";
+import {multiUnderlineToHump} from "../../../../utils/util";
+import {getParamsAndHeads, getSubQuery, handlePostTime, queryFromTo, selectFields} from "../comment-api-util";
 import {getErrorEmptyResponse, getServeError500, notLoginMessage, validateRequiredFields} from "../../api-util";
+import {CamelToSnakeKeys} from "../../../../types/type-utils";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -18,7 +19,7 @@ const supabase = createClient(
  */
 const handleCommentData = async (list: CommentContentItem[], articleId) => {
     // 先处理下划线转驼峰
-    const handleFieldList = multiUnderlineToHump<CommentContentItem>(list)
+    const handleFieldList = multiUnderlineToHump<CommentContentItem,CamelToSnakeKeys<CommentContentItem>>(list)
     const handleResult = []
     const page = 1
     const pageSize = 3 // 子评论默认加载3条
@@ -29,7 +30,7 @@ const handleCommentData = async (list: CommentContentItem[], articleId) => {
         const { data: subComments, error: subCommentError, subCount } = dataResult
         const total = subCount || 0
         const totalPages = Math.ceil(total / pageSize)
-        const subList = subCommentError || !subComments ? [] : multiUnderlineToHump(subComments)
+        const subList = subCommentError || !subComments ? [] : multiUnderlineToHump<CommentContentItem,CamelToSnakeKeys<CommentContentItem>>(subComments)
         handleResult.push({
             info: current,
             sub: {
