@@ -80,7 +80,7 @@ export default function BlogDetailBottom({commentCount = "0", author = {}}: Blog
                 <span className={"ml-2 text-gray-500"}>{ commentCount}</span>
             </>
         } open={drawerOpen} onOpenChange={openChange}>
-            <div className={"detail-comment-container p-2"}>
+            <div className={"detail-comment-container p-2 flex min-h-full flex-col"}>
                 <div className="comment-send-container flex mb-7">
                     <UserHeadImage name={userInfo?.name} src={userInfo?.avatar} size={"sm"}/>
                     <div className={"ml-4 flex-1 flex"}>

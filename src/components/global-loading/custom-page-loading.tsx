@@ -4,7 +4,10 @@ import GlobalLoadingComponent from "./global-loading-component";
 
 export default function CustomPageLoading({children, loading}: { children: React.ReactNode, loading: boolean }) {
 
-    return <GlobalLoadingComponent>
+    return <div>
         {children}
-    </GlobalLoadingComponent>
+        <div className={`${loading ? 'block' : 'hidden'} w-full h-full`}>
+            <GlobalLoadingComponent/>
+        </div>
+    </div>
 }

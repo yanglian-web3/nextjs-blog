@@ -98,8 +98,7 @@ export async function GET(
         const { count: commentCount } = await supabase
             .from('comments')
             .select('id', { count: 'exact' })
-            .eq('blog_id', blogId)
-            .eq('status', 1) // 只统计已审核的评论
+            .eq('article_id', blogId)
 
         // 7. 构建响应数据
         const blogDetail = {

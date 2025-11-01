@@ -1,9 +1,11 @@
 import {CommentContentItem, CommentItem} from "../../../types/comment";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import CommentListItem from "./comment-list-item";
 import {useParams} from "next/navigation";
 import {blogFetch} from "../../../utils/blog-fetch";
 import {PaginationOptions} from "../../../types/pagination";
+import CustomPageLoading from "../../global-loading/custom-page-loading";
+import IconLoading from "../../icons/icon-loading";
 
 export default function CommentList({refreshNum}: {refreshNum: number}) {
 
@@ -11,6 +13,9 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
     const [list, setList ] = useState<CommentItem[]>([])
     const [current, setCurrent] = useState(1)
     const [total, setTotal] = useState(1)
+    const [listLoading, setListLoading] = useState(false) // 页面加载
+    const [listMoreLoading, setListMoreLoading] = useState(false) // 列表更多加载
+    const [subListMoreLoading, setSubListMoreLoading] = useState(false) // 子列表更多加载
 
 
     useEffect(() => {
@@ -26,7 +31,8 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
     /**
      * 获取评论列表数据
      */
-    const getList = (page:number) => {
+    const getList = (page:number, more=false) => {
+        more ? setListMoreLoading(true) : setListLoading(true)
         blogFetch(`/api/comment/list?articleId=${id}&current=${page}&pageSize=10`)
             .then((result) => {
                 const { code, data } = result
@@ -36,7 +42,9 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
                     setTotal(data.pagination.total)
                 }
                 console.log("data=", data)
-            })
+            }).finally(() => {
+                more ? setListMoreLoading(false) : setListLoading(false)
+        })
     }
     /**
      * 获取子评论列表数据
@@ -46,13 +54,12 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
      */
     const getMoreSubList = (parentId:string, originSubList: CommentContentItem[], page:number) => {
         const newPage = originSubList.length < 10 ? 1 : page + 1
+        setSubListMoreLoading(true)
         blogFetch(`/api/comment/sub-list?articleId=${id}&parentId=${parentId}&current=${newPage}`)
             .then((result) => {
                 const { code, data } = result
                 if (code === 200) {
                     console.log("data=", data)
-                    // setList([...list,...data.list])
-                    // setTotal(data.pagination.total)
                     const currentListItemIndex = list.findIndex((item) => item.info.id === parentId)
                     console.log("currentListItemIndex=", currentListItemIndex)
                     if(currentListItemIndex > -1){
@@ -76,7 +83,9 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
 
                 }
                 console.log("data=", data)
-            })
+            }).finally(() => {
+                setSubListMoreLoading(false)
+        })
     }
     /**
      * 加载更多数据
@@ -84,7 +93,7 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
     const getMoreList = () => {
         const newCurrent = current + 1
         setCurrent(newCurrent)
-        getList(newCurrent)
+        getList(newCurrent, true)
     }
     /**
      * 渲染子评论列表
@@ -108,9 +117,10 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
                 {
                     pagination.total > subList.length ? <div className={"mb-8 ml-24 flex align-center"}>
                        <span className={"text-gray-500 text-sm"}>共 {pagination.total} 条回复{}</span>
-                        <button className="text-gray-900 cursor-pointer text-sm flex justify-center ml-3"
-                                onClick={() => getMoreSubList(parentId, subList,subList.length < 10 ? 1 : pagination.current + 1)}>
+                        <button className="text-gray-900 cursor-pointer text-sm flex justify-center ml-3 align-center"
+                                onClick={() => getMoreSubList(parentId, subList,pagination.current)}>
                             加载更多
+                            { subListMoreLoading ? <IconLoading width={20} height={20}/> : null}
                         </button>
                     </div> : null
                 }
@@ -140,8 +150,8 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
                     list.length < total ? <div className={"flex justify-center items-center mt-10"}>
                         <span>{total - list.length}</span>
                         <span className={"text-gray-500 ml-2 mr-3"}>条评论被折叠</span>
-                        <button className="text-gray-900 rounded-full cursor-pointer text-sm"
-                              onClick={getMoreList}>查看</button>
+                        <button className="text-gray-900 flex align-center cursor-pointer text-sm"
+                              onClick={getMoreList}>查看{ listMoreLoading ? <IconLoading width={20} height={20}/> : null}</button>
                     </div> : null
                 }
             </>
@@ -149,9 +159,11 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
         return null
     }
 
-    return <div className={"comment-list-container"}>
-        {
-            renderListDom()
-        }
+    return <div className={"relative w-full h-full flex-1"}>
+        <CustomPageLoading loading={ listLoading}>
+            {
+                renderListDom()
+            }
+        </CustomPageLoading>
     </div>
 }
