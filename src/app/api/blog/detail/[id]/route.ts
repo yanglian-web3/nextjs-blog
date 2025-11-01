@@ -6,7 +6,7 @@ import { BlogItemServeType } from "../../../../../types/blog";
 import {UserInfo} from "../../../../../types/user";
 import {formatDateTime} from "../../../../../utils/date-format";
 import {handleCount} from "../../../../../utils/util";
-import {getServeError500} from "../../../api-util";
+import {getServeError500, queryCommentsCount} from "../../../api-util";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -95,10 +95,7 @@ export async function GET(
         }
 
         // 6. 查询评论数量
-        const { count: commentCount } = await supabase
-            .from('comments')
-            .select('id', { count: 'exact' })
-            .eq('article_id', blogId)
+        const commentCount = await queryCommentsCount(supabase, blogId)
 
         // 7. 构建响应数据
         const blogDetail = {

@@ -3,15 +3,43 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkHasLogin } from '../../../../../../utils/api/check-session'
 import {UserInfo} from "../../../../../../types/user";
-import {BlogItemServeType} from "../../../../../../types/blog";
+import {BlogItemServeType, BlogItemType} from "../../../../../../types/blog";
 import {formatDateTime} from "../../../../../../utils/date-format";
-import {getServeError500} from "../../../../api-util";
+import {getServeError500, queryCommentsCount} from "../../../../api-util";
+import {handleCount} from "../../../../../../utils/util";
+import NP from "number-precision"
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
+const handleBlogData = async (blogs: BlogItemServeType[]) => {
+    const formattedBlogs: BlogItemType[] = []
+    for(const blog of  blogs){
+        const { created_at, id, update_at, status, content, cover, title, view_count } = blog
+        // 从内容中提取纯文本作为摘要
+        const contentText = content.replace(/<[^>]*>/g, '')
+        const summary = contentText.length > 500
+            ? contentText.substring(0, 500)
+            : contentText
+        const commentCount = await queryCommentsCount(supabase, id)
+        formattedBlogs.push({
+            id,
+            title,
+            content: "",
+            cover,
+            status,
+            viewCount: handleCount(view_count || 0),
+            commentCount: handleCount(Number(commentCount) || 0),
+            summary, // 返回摘要而不是完整内容
+            account: "",
+            createdAt: formatDateTime(created_at),
+            updatedAt: formatDateTime(update_at),
+        })
+    }
+    return formattedBlogs
+}
 export async function GET(
     request: NextRequest,
     { params }: { params: { account: string } }
@@ -77,11 +105,12 @@ export async function GET(
                 status,
                 created_at,
                 update_at,
+                view_count,
                 user_id
             `, { count: 'exact' })
             .eq('user_id', targetUser.auth_user_id)
 
-        // 状态筛选逻辑：
+        // 7 状态筛选逻辑：
         // - 如果是查看自己的博客，可以按状态筛选，默认显示所有
         // - 如果是查看他人的博客，只能看已发布的（status=1）
         if (isOwnBlog) {
@@ -95,14 +124,14 @@ export async function GET(
             // 查看他人的博客，强制只显示已发布的
             query = query.eq('status', 1)
         }
-        // 6. 添加标题模糊查询
+        // 8. 添加标题模糊查询
         if (searchTitle && searchTitle.trim()) {
             // 使用 ilike 进行不区分大小写的模糊查询
             // % 表示任意字符，可以匹配标题中包含关键词的博客
             query = query.ilike('title', `%${searchTitle.trim()}%`)
             console.log('添加标题模糊查询:', searchTitle.trim())
         }
-        // 7. 并行查询：获取博客列表和发布数
+        // 9. 并行查询：获取博客列表和发布数
         const [blogResult, publishedCountResult] = await Promise.all([
             // 查询博客列表
             query
@@ -116,21 +145,17 @@ export async function GET(
                 .eq('user_id', targetUser.auth_user_id)
                 .eq('status', 1)
         ])
-        // // 7. 执行查询（按更新时间倒序）
+        // // 10. 执行查询（按更新时间倒序）
         // const { data: blogs, error: blogError, count } = await query
         //     .order('update_at', { ascending: false })
         //     .range(from, to)
         const { data: blogs, error: blogError, count } = blogResult
-        const { count: publishedCount } = publishedCountResult
+        const { count: published } = publishedCountResult
         const author = {
             account: targetUser.account,
             name: targetUser.name,
             avatar: targetUser.avatar,
             isCurrentUser: isOwnBlog // 前端可以据此显示不同的UI
-        }
-
-        const countInfo = {
-            publishedCount
         }
 
         if (blogError) {
@@ -148,32 +173,15 @@ export async function GET(
                         totalPages: 0
                     },
                     countInfo: {
-                        publishedCount: 0
+                        published: 0
                     }
                 }
             })
         }
 
-        // 7. 处理数据格式
-        const formattedBlogs = (blogs || []).map((blog:BlogItemServeType) => {
-            const { created_at, id, update_at, status, content, cover, title } = blog
-            // 从内容中提取纯文本作为摘要
-            const contentText = content.replace(/<[^>]*>/g, '')
-            const summary = contentText.length > 500
-                ? contentText.substring(0, 500)
-                : contentText
 
-            return {
-                id,
-                title,
-                summary, // 返回摘要而不是完整内容
-                cover,
-                status,
-                createdAt: formatDateTime(created_at),
-                updatedAt: formatDateTime(update_at),
-                commentCount: "0" // 默认值，可以根据需要添加评论查询
-            }
-        })
+        // 11. 处理数据格式
+        const formattedBlogs = await handleBlogData(blogs)
 
         // 8. 分页信息
         const total = count || 0
@@ -201,7 +209,11 @@ export async function GET(
                     total,
                     totalPages: totalPages
                 },
-                countInfo
+                countInfo: {
+                    published,
+                    total,
+                    draft: NP.minus(total, published)
+                }
             }
         })
 

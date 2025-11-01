@@ -4,11 +4,10 @@ import { useState } from "react"
 import "./blog-edit-publish-buttons.css"
 import { useSelector } from "react-redux"
 import { RootState } from "../../store/index"
-import { Dialog } from '@ark-ui/react'
-import IconWarning from "../icons/icon-warning";
 import {useLoading} from "../../context/loading-context";
 import {useRouter} from "next/navigation";
 import {blogFetch} from "../../utils/blog-fetch";
+import BlogAlert from "../blog-alert/blog-alert";
 
 type AlertType = 'warning' | 'error' | 'info'
 
@@ -112,31 +111,7 @@ export default function BlogEditPublishButtons() {
             </div>
 
             {/* 警告弹窗 */}
-            <Dialog.Root open={alertOpen} onOpenChange={(e) => setAlertOpen(e.open)}>
-                <Dialog.Backdrop className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]" />
-                <Dialog.Positioner className="fixed inset-0 flex items-center justify-center p-4 z-[100]">
-                    <Dialog.Content className={`bg-white rounded-lg shadow-xl w-full max-w-md p-6`}>
-                        <Dialog.Title className={`text-lg font-semibold mb-2`}>
-                          <div className={`flex items-center gap-2`}>
-                              <IconWarning/>
-                              {alertConfig.title}
-                          </div>
-                        </Dialog.Title>
-                        <Dialog.Description className={`mb-6`}>
-                            {alertConfig.message}
-                        </Dialog.Description>
-                        {
-                            showDialogFooter ?                   <div className="flex justify-end">
-                                <Dialog.CloseTrigger asChild>
-                                    <button className={`px-6 py-2 text-white rounded-lg transition-colors theme-bg`}>
-                                        确定
-                                    </button>
-                                </Dialog.CloseTrigger>
-                            </div> : null
-                        }
-                    </Dialog.Content>
-                </Dialog.Positioner>
-            </Dialog.Root>
+            <BlogAlert  open={alertOpen} updateOpen={setAlertOpen} alertConfig={alertConfig} showDialogFooter={showDialogFooter}/>
         </>
     )
 }

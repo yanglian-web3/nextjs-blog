@@ -1,7 +1,7 @@
 "use client"
 
 import BlogMyListItem from "./blog-my-list-item";
-import {BlogItemType} from "../../../types/blog";
+import {BlogItemType, BlogStatusCountInfo} from "../../../types/blog";
 import {useEffect, useRef, useState} from "react";
 import Pagination from "../../pagination/pagination";
 import {PaginationOptions} from "../../../types/pagination";
@@ -10,12 +10,7 @@ import {getBlogListByAccount} from "../../../utils/blog";
 import {useLoading} from "../../../context/loading-context";
 import {getCookie} from "../../../utils/util";
 
-interface BlogMyListContentProps {
-    initList: BlogItemType[],
-    initPage: Partial<PaginationOptions>,
-    draft: number,
-    published: number
-}
+
 
 const defaultPage = {
     current: 1,
@@ -26,17 +21,21 @@ const defaultPage = {
     showSizeChanger: true,
     pageSizeOptions: [10, 20, 30, 40]
 }
-export default function BlogMyListContent({ initList, initPage, draft, published}: BlogMyListContentProps) {
+export default function BlogMyListContent() {
     const { showLoading, hideLoading } = useLoading()
-    const [blogList, setBlogList] = useState(initList || [])
+    const [blogList, setBlogList] = useState([])
     const [currentStatus, setCurrentStatus] = useState(-1)
     const [blogListTitleWidth, setBlogListTitleWidth] = useState(1200)
+    const [countInfo, setCountInfo] = useState<BlogStatusCountInfo>({ published: 0, draft: 0, total: 0})
     const [renderPagination, setRenderPagination] = useState<Partial<PaginationOptions>>({
        ...defaultPage,
-        ...initPage
     })
 
     const blogContentContainer = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        getBlogList(currentStatus, { ...defaultPage })
+    },[])
 
     /**
      * 统计按钮切换
@@ -47,9 +46,6 @@ export default function BlogMyListContent({ initList, initPage, draft, published
         setRenderPagination({
             ...defaultPage
         })
-        // console.log("after set rendder pagination renderPagination=", renderPagination)
-        // console.log("after set rendder pagination renderPagination=", {...renderPagination})
-        // console.log("after set rendder pagination defaultPage=", {...defaultPage})
         getBlogList(type, { ...defaultPage })
     }
     /**
@@ -65,6 +61,7 @@ export default function BlogMyListContent({ initList, initPage, draft, published
         }).then((myBlogResult) => {
             setRenderPagination(myBlogResult.pagination)
             setBlogList(myBlogResult.list)
+            setCountInfo(myBlogResult.countInfo)
         }).finally(() => {
             hideLoading()
         })
@@ -86,18 +83,28 @@ export default function BlogMyListContent({ initList, initPage, draft, published
         setBlogListTitleWidth(blogContentContainer.current?.clientWidth || 1200)
     }, [blogList.length])
 
+    /**
+     * 发布成功
+     */
+    const publishSuccess = () => {
+        setRenderPagination({
+            ...defaultPage
+        })
+        getBlogList(currentStatus, defaultPage)
+    }
+
     // console.log("blogList=", blogList)
     return (
         <>
             <div className="blog-count-container flex items-center m-auto">
                 <div className="blog-status-item flex items-center mr-4 cursor-pointer" onClick={() => countChange(-1)}>
-                    <span className={ `blog-status-item-text ${currentStatus === -1 ? "font-bold text-gray-900" : "text-gray-500"}`}>全部({published +  draft})</span>
+                    <span className={ `blog-status-item-text ${currentStatus === -1 ? "font-bold text-gray-900" : "text-gray-500"}`}>全部({countInfo.total})</span>
                 </div>
                 <div className="blog-status-item flex items-center mr-4 cursor-pointer" onClick={() => countChange(1)}>
-                    <span className={`blog-status-item-text ${currentStatus === 1 ? "font-bold text-gray-900" : "text-gray-500"}`}>已发布({published})</span>
+                    <span className={`blog-status-item-text ${currentStatus === 1 ? "font-bold text-gray-900" : "text-gray-500"}`}>已发布({countInfo.published})</span>
                 </div>
                 <div className="blog-status-item flex items-center mr-4 cursor-pointer" onClick={() => countChange(0)}>
-                    <span className={`blog-status-item-text ${currentStatus === 0 ? "font-bold text-gray-900" : "text-gray-500"}`}>草稿({draft})</span>
+                    <span className={`blog-status-item-text ${currentStatus === 0 ? "font-bold text-gray-900" : "text-gray-500"}`}>草稿({countInfo.draft})</span>
                 </div>
             </div>
             <div className="w-max-1200 relative m-auto">
@@ -112,7 +119,7 @@ export default function BlogMyListContent({ initList, initPage, draft, published
 
                     {
                         blogList.length ? blogList.map((item) => {
-                            return <BlogMyListItem item={item} key={item.id}/>
+                            return <BlogMyListItem item={item} key={item.id} publishSuccess={publishSuccess}/>
                         }) : <NoData/>
                     }
                 </div>

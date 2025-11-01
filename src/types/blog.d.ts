@@ -6,16 +6,15 @@ export interface BlogItemCommonType {
     content: string;
     cover: string,
     status: number;
-    // viewCount: string;
-    // commentCount: string;
+    viewCount: string;
+    commentCount: string;
     summary: string;
 }
 export interface BlogItemType extends BlogItemCommonType{
     createdAt: string;
     updatedAt: string;
     account: string;
-    summary: string;
-    auth_user_id: string;
+    auth_user_id?: string;
 }
 
 export interface BlogItemServeType extends BlogItemCommonType{
@@ -39,6 +38,11 @@ export interface BlogHomeItemType extends BlogItemCommonType {
     avatar: string;
     blogUrl: string;
 }
+interface BlogStatusCountInfo {
+    published: number,
+    draft: number,
+    total: number
+}
 
 export interface AccountBlogResult {
     author: {
@@ -49,9 +53,7 @@ export interface AccountBlogResult {
     },
     list:BlogItemType[],
     pagination: PaginationOptions,
-    countInfo: {
-        publishedCount: number
-    }
+    countInfo: BlogStatusCountInfo
 }
 
 export interface BlogDetailResult {

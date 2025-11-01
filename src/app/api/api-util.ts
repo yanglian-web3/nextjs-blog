@@ -59,3 +59,16 @@ export const notLoginMessage = NextResponse.json({
     code: 401,
     message: '未登录'
 })
+
+/**
+ * 查询评论数量
+ * @param supabase
+ * @param articleId
+ */
+export const queryCommentsCount = async (supabase,articleId: number):Promise<string> => {
+    const { count } = await supabase
+        .from('comments')
+        .select('id', { count: 'exact' })
+        .eq('article_id', articleId)
+    return count
+}

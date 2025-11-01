@@ -55,6 +55,7 @@ export async function GET(request: NextRequest) {
                 update_at,
                 status,
                 user_id,
+                view_count,
                 user:user_id (
                     account,
                     name,
@@ -74,7 +75,7 @@ export async function GET(request: NextRequest) {
 
         // 4. 处理数据格式
         const formattedBlogs = (blogs || []).map((blog:BlogItemServeType) => {
-            const { user, content, created_at, update_at, id, title, cover} =  blog
+            const { user, content, created_at, update_at, id, title, cover, view_count} =  blog
             const contentText = content.replace(/<[^>]*>/g, '')
             const summary = contentText.length > 500
                 ? contentText.substring(0, 500)
@@ -93,7 +94,7 @@ export async function GET(request: NextRequest) {
                 summary,
                 cover,
                 editTime,
-                viewCount: "0",
+                viewCount: view_count,
                 commentCount: "0",
                 publish,
                 url: `/detail/${id}`,
