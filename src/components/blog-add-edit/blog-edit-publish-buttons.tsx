@@ -77,7 +77,7 @@ export default function BlogEditPublishButtons() {
                     setTimeout(() => {
                         hideAlert()
                         // 跳转到个人主页
-                        router.push(`/${userInfo.account}`)
+                        router.push(`/my-blog-list`)
                     }, 2000)
                 } else {
                     showAlert("保存失败，请重试", "error", "保存失败")

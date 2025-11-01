@@ -5,10 +5,13 @@ import { useEffect, useState } from 'react'
 import { useDispatch } from "react-redux"
 import MDEditor from '@uiw/react-md-editor'
 import { AppDispatch } from "../../store/index"
-import { updateContent } from "../../store/blog-edit-slice"
+import { updateContent, updateTitle } from "../../store/blog-edit-slice"
 import { useEditorContext } from '../../context/editor-context'
-import { useLoading } from "../../context/loading-context";
 import "./blog-editor.css"
+import {getBlogDetail} from "../../utils/blog";
+import { useSearchParams } from "next/navigation";
+import {BlogDetailResult} from "../../types/blog";
+import {useLoading} from "../../context/loading-context";
 
 // 包含多种编程语言的示例内容
 const initialMarkdown = `# 欢迎使用Markdown编辑器
@@ -93,15 +96,40 @@ public class Main {
 
 export default function BlogEditor() {
     const dispatch = useDispatch<AppDispatch>()
+    const searchParams = useSearchParams()
+    const { showLoading, hideLoading } = useLoading()
     const { setEditor } = useEditorContext()
     const [isClient, setIsClient] = useState(false)
     const [value, setValue] = useState("")
+    const [detailId, setDetailId] = useState("")
 
 
     useEffect(() => {
         setIsClient(true)
-        handleChange(initialMarkdown)
+        console.log("searchParams=", searchParams)
+        const id =  searchParams.get("id")
+        if(id){
+            setDetailId(id)
+            getDetailData(id)
+        } else {
+            handleChange(initialMarkdown)
+        }
     }, [])
+    /**
+     * 获取详情数据
+     * @param id
+     */
+    const getDetailData = (id:string) => {
+        showLoading()
+        getBlogDetail(id).then((detailData:BlogDetailResult) => {
+            console.log("detailData=", detailData)
+            const { title, content } = detailData.detail
+            handleChange(content)
+            dispatch(updateTitle(title))
+        }).finally(() => {
+            hideLoading()
+        })
+    }
 
     /**
      * 处理编辑器内容改变
