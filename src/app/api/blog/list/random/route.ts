@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import {BlogHomeItemType, BlogItemServeType} from "../../../../../types/blog";
 import {getServeError500} from "../../../api-util";
+import {handleCount} from "../../../../../utils/util";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -104,8 +105,7 @@ export async function GET(request: NextRequest) {
                 summary,
                 cover,
                 editTime,
-                viewCount: view_count,
-                commentCount: "0",
+                viewCount: handleCount(view_count),
                 publish,
                 url: `/detail/${id}`,
                 account: user?.account,

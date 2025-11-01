@@ -1,11 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface BlogState {
-    searchValue: string
+    searchValue: string,
+    searchRefreshNum: number
 }
 
 const initialState: BlogState = {
     searchValue: '',
+    searchRefreshNum: 0
 }
 
 export const blogSlice = createSlice({
@@ -20,8 +22,16 @@ export const blogSlice = createSlice({
                 payload: searchValue
             })
         },
+        updateSearchRefreshNum: {
+            reducer: (state, action: PayloadAction<number>) => {
+                state.searchRefreshNum = action.payload
+            },
+            prepare: (searchValue: number) => ({
+                payload: searchValue
+            })
+        },
     },
 })
 
-export const { updateSearchValue } = blogSlice.actions
+export const { updateSearchValue, updateSearchRefreshNum } = blogSlice.actions
 export default blogSlice.reducer

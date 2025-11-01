@@ -41,7 +41,7 @@ export function handleCount(count: number) {
    if(count > 1000){
        return `${(count / 1000).toFixed(1)}千`
    }
-   return count + ""
+   return (count || 0) + ""
 }
 
 /**

@@ -12,12 +12,13 @@ import {AppDispatch, RootState} from "../../../store/index";
 import {getUserInfo} from "../../../utils/user";
 import { updateUserInfo } from "../../../store/user-slice";
 import IconClear from "../../icons/icon-clear";
-import { updateSearchValue} from "../../../store/blog-search-slice"
+import {updateSearchRefreshNum, updateSearchValue} from "../../../store/blog-search-slice"
 
 
 function BlogListHead({showSearch = true}: {showSearch?: boolean}) {
     const dispatch = useDispatch<AppDispatch>()
     const { userInfo } = useSelector((state: RootState) => state.user)
+    const { searchRefreshNum } = useSelector((state: RootState) => state.blogSearch)
     const [searchValue, setSearchValue] = useState("")
 
     const [loginOpen, setLoginOpen] = useState(false)
@@ -52,6 +53,7 @@ function BlogListHead({showSearch = true}: {showSearch?: boolean}) {
     const search = () => {
         console.log("search searchValue=", searchValue)
         dispatch(updateSearchValue(searchValue))
+        dispatch(updateSearchRefreshNum(searchRefreshNum+1))
     }
     /**
      * 清空搜索标题
@@ -59,6 +61,7 @@ function BlogListHead({showSearch = true}: {showSearch?: boolean}) {
     const clearSearchTitle = () => {
         setSearchValue("")
         dispatch(updateSearchValue(""))
+        dispatch(updateSearchRefreshNum(0))
     }
     /**
      * 输入框值改变
@@ -66,6 +69,15 @@ function BlogListHead({showSearch = true}: {showSearch?: boolean}) {
      */
     const searchValueChange = (e) => {
         setSearchValue(e.target.value)
+    }
+    /**
+     * 键盘按下
+     * @param e
+     */
+    const onkeydown = (e) => {
+        if(e.key === "Enter"){
+            search()
+        }
     }
 
 
@@ -80,6 +92,7 @@ function BlogListHead({showSearch = true}: {showSearch?: boolean}) {
                                        className="blog-search-input text-gray-500 blog-head-input border border-gray-200 pl-4 pr-10 py-1 w-120"
                                      value={searchValue}
                                      onChange={searchValueChange}
+                                       onKeyDown={onkeydown}
                                 />
                                 {
                                     searchValue ?  <div className="cursor-pointer absolute right-12 flex justify-center items-center h-full"

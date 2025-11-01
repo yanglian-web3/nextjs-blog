@@ -15,7 +15,7 @@ import {RootState} from "../../../store/index";
 export default function AccountBlogListContent({ initList, initPage}: { initList: BlogItemType[], initPage: Partial<PaginationOptions>}) {
     const params = useParams()
     const { showLoading, hideLoading } = useLoading()
-    const { searchValue } = useSelector((state: RootState) => state.blogSearch)
+    const { searchValue, searchRefreshNum } = useSelector((state: RootState) => state.blogSearch)
     const [blogList, setBlogList] = useState(initList)
     const [_width,setBlogListTitleWidth] = useState(1200)
     const defaultPagination = {
@@ -39,7 +39,7 @@ export default function AccountBlogListContent({ initList, initPage}: { initList
         // 监听搜索标题值变化，重新请求数据
         setRenderPagination({...defaultPagination})
         getBlogList(defaultPagination)
-    }, [searchValue])
+    }, [searchRefreshNum])
 
     /**
      * 获取博客列表

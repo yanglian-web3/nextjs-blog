@@ -11,7 +11,7 @@ import {useSelector} from "react-redux";
 import {RootState} from "../../../store/index";
 
 export default function BlogHomeListContent({ initList}: { initList: BlogHomeItemType[]}) {
-    const { searchValue } = useSelector((state: RootState) => state.blogSearch)
+    const { searchValue, searchRefreshNum } = useSelector((state: RootState) => state.blogSearch)
     const [blogList, setBlogList] = useState(initList)
     const { showLoading, hideLoading } = useLoading()
     const blogContentContainer = useRef<HTMLDivElement | null>(null);
@@ -20,7 +20,7 @@ export default function BlogHomeListContent({ initList}: { initList: BlogHomeIte
         // console.log("useEffect searchValue=", searchValue)
         // 监听搜索标题值变化，重新请求数据
         getBlogList()
-    }, [searchValue])
+    }, [searchRefreshNum])
     /**
      * 获取博客列表
      */
