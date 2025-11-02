@@ -12,7 +12,7 @@ import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../store/index";
 import { updateUserInfo } from "../../../store/user-slice";
 import Registry from "../registry/registry";
-import ForgetPass from "../../forget-pass/forget-pass";
+import ForgetPass from "../forget-pass/forget-pass";
 import {blogFetch} from "../../../utils/blog-fetch";
 
 interface LoginForm {

@@ -2,17 +2,20 @@
 
 import { Dialog, Field } from "@ark-ui/react";
 import { useEffect, useState } from "react";
-import IconPlus from "../icons/icon-plus";
-import { ErrorField } from "../../types/form";
+import IconPlus from "../../icons/icon-plus";
+import { ErrorField } from "../../../types/form";
+import BlogInput from "../../form/blog-input";
+import {validateEmail} from "../../../utils/form-handle";
+import BlogAlert from "../../blog-alert/blog-alert";
+import IconLoading from "../../icons/icon-loading";
+import {blogFetch} from "../../../utils/blog-fetch";
 
 interface LoginForm {
-    account: string;
-    password: string;
+    email: string;
 }
 
 interface LoginFormError {
-    account: ErrorField;
-    password: ErrorField;
+    email: ErrorField;
 }
 interface Props {
     open: boolean;
@@ -24,9 +27,14 @@ export default function ForgetPass({ open, updateOpen, onOpenLogin }: Props) {
     const [isSubmitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState<Partial<LoginFormError>>({});
     const [formData, setFormData] = useState<LoginForm>({
-        account: '',
-        password: ''
+        email: '',
     });
+    const [alertOpen, setAlertOpen] = useState(false)
+    const [alertConfig, setAlertConfig] = useState({
+        title: "",
+        message: "",
+        type: 'warning'
+    })
 
     useEffect(() => {
         if (open) {
@@ -37,16 +45,8 @@ export default function ForgetPass({ open, updateOpen, onOpenLogin }: Props) {
     // 验证规则
     const validateField = (name: keyof LoginForm, value: string): string | null => {
         switch (name) {
-            case 'account':
-                if (!value.trim()) return '请输入账号';
-                return null;
-
-            case 'password':
-                if (!value.trim()) return '请输入密码';
-                if (value.length < 6) return '密码至少6位字符';
-                if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(value)) return '密码必须包含字母和数字';
-                return null;
-
+            case 'email':
+                return validateEmail( value);
             default:
                 return null;
         }
@@ -90,7 +90,18 @@ export default function ForgetPass({ open, updateOpen, onOpenLogin }: Props) {
         // 实时验证（可选，也可以在提交时验证）
         validateSingleField(field, value);
     };
-
+    /**
+     * 显示错误信息
+     * @param message
+     */
+    const showError = (message: string) => {
+        setAlertConfig({
+            title: "找回密码失败",
+            message: message,
+            type: 'error'
+        })
+        setAlertOpen(true)
+    }
     /**
      * 表单提交
      * @param e
@@ -104,35 +115,40 @@ export default function ForgetPass({ open, updateOpen, onOpenLogin }: Props) {
         }
 
         setSubmitting(true);
-        try {
-            console.log('提交找回密码数据:', formData);
-            // 这里调用实际的找回密码 API
-            await new Promise(resolve => setTimeout(resolve, 1000)); // 模拟API调用
+        blogFetch("/api/auth/reset-password",{
+            method: 'POST',
+            body: JSON.stringify({
+                ...formData,
+            })
+        }).then((result) => {
+            const { code, message } = result
+            if(code === 200){
+                handleClose()
 
-            // 找回密码成功后的处理
-            console.log('找回密码成功');
-            handleClose();
-
-        } catch (error) {
-            console.error('找回密码失败:', error);
-            // 设置服务器错误
-            setErrors(prev => ({
-                ...prev
-            }));
-        } finally {
+                setAlertConfig({
+                    title: "密码重置邮件已发送",
+                    message,
+                    type: 'info'
+                })
+                setAlertOpen(true)
+            } else {
+                showError(message)
+            }
+        }).catch((error) => {
+            showError(error)
+        }).finally(() => {
             setSubmitting(false);
-        }
+            resetForm()
+        })
     };
 
     // 重置表单
     const resetForm = () => {
         setFormData({
-            account: '',
-            password: ''
+            email: '',
         });
         setErrors({});
     };
-
 
 
     /**
@@ -144,7 +160,7 @@ export default function ForgetPass({ open, updateOpen, onOpenLogin }: Props) {
     };
 
 
-    return (
+    return <>
         <Dialog.Root open={open}>
             <Dialog.Backdrop
                 className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
@@ -158,40 +174,26 @@ export default function ForgetPass({ open, updateOpen, onOpenLogin }: Props) {
 
                     <Dialog.Description className="mb-4">
                         <div className="form">
-                            <form onSubmit={handleSubmit} className="space-y-4">
+                            <form onSubmit={handleSubmit} className="space-y-4 mt-6">
                                 {/* 邮箱字段 */}
-                                <Field.Root invalid={!!errors.account}>
+                                <Field.Root invalid={!!errors.email}>
                                     <Field.Label className="block text-sm font-medium text-gray-700 mb-1">
-                                        账号
+                                        邮箱
                                     </Field.Label>
-                                    <Field.Input
-                                        value={formData.account}
-                                        onChange={handleInputChange('account')}
-                                        placeholder="your account"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 theme-border-color-focus"
+                                    <BlogInput   value={formData.email}
+                                                 placeholder="your email"
+                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 theme-border-color-focus input-placeholder"
+                                                 onChange={handleInputChange('email')}
+                                                 onClear={() => {
+                                                     setFormData(prev => ({
+                                                         ...prev,
+                                                         email: ''
+                                                     }))
+                                                 }}
                                     />
                                     <div className="h-4">
                                         <Field.ErrorText className="text-red-500 text-xs mt-1">
-                                            {errors.account?.message}
-                                        </Field.ErrorText>
-                                    </div>
-                                </Field.Root>
-
-                                {/* 密码字段 */}
-                                <Field.Root invalid={!!errors.password}>
-                                    <Field.Label className="block text-sm font-medium text-gray-700 mb-1">
-                                        密码
-                                    </Field.Label>
-                                    <Field.Input
-                                        type="password"
-                                        value={formData.password}
-                                        onChange={handleInputChange('password')}
-                                        placeholder="请输入密码"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 theme-border-color-focus"
-                                    />
-                                    <div className="h-4">
-                                        <Field.ErrorText className="text-red-500 text-xs mt-1">
-                                            {errors.password?.message}
+                                            {errors.email?.message}
                                         </Field.ErrorText>
                                     </div>
                                 </Field.Root>
@@ -200,13 +202,12 @@ export default function ForgetPass({ open, updateOpen, onOpenLogin }: Props) {
                                     <button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className={`px-6 py-2 text-white rounded-lg transition-colors w-full cursor-pointer ${
-                                            isSubmitting
-                                                ? 'bg-gray-400 cursor-not-allowed'
-                                                : 'theme-bg hover:opacity-90'
+                                        className={`px-6 h-10 text-white rounded-lg transition-colors w-full cursor-pointer flex justify-center items-center theme-bg hover:opacity-90 ${
+                                            isSubmitting ? 'cursor-not-allowed' : ''
                                         }`}
                                     >
-                                        {isSubmitting ? '找回密码中...' : '找回密码'}
+                                        {isSubmitting ? <IconLoading width={20} height={20} color={"#fff"}/> : null}
+                                        下一步
                                     </button>
                                 </div>
                                 <div className={"flex justify-between"}>
@@ -231,5 +232,6 @@ export default function ForgetPass({ open, updateOpen, onOpenLogin }: Props) {
                 </Dialog.Content>
             </Dialog.Positioner>
         </Dialog.Root>
-    );
+        <BlogAlert  open={alertOpen} updateOpen={setAlertOpen} config={alertConfig} footer={true}/>
+    </>
 }

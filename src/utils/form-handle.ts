@@ -22,7 +22,7 @@ export const validateForm = <T, E extends Record<string, any>>(
             isValid = false;
         }
     });
-
+    console.log("new Errors=", newErrors)
     setErrors(newErrors);
     return isValid;
 };
@@ -31,10 +31,15 @@ export const validateForm = <T, E extends Record<string, any>>(
  * 单个字段验证
  * @param options
  */
-export const validateSingleField = <T>(options:{
-    name: keyof T,
-    value: string,
-    validateField: (name: keyof T, value: string) => string | null,
+
+/**
+ * 单个字段验证
+ * @param options
+ */
+export const validateSingleField = <T, K extends Record<keyof T, { message: string }>>(options: {
+    name: keyof T;
+    value: string;
+    validateField: (name: keyof T, value: string) => string | null;
     setErrors: React.Dispatch<React.SetStateAction<Partial<K>>>;
 }) => {
     const { name, value, validateField, setErrors } = options;
@@ -47,9 +52,10 @@ export const validateSingleField = <T>(options:{
 /**
  * 验证密码
  * @param password
+ * @param passwordMsg
  */
-export const validatePassword = (password: string) => {
-    if (!password.trim()) return '请输入密码';
+export const validatePassword = (password: string, passwordMsg = '密码') => {
+    if (!password.trim()) return `请输入${passwordMsg}`;
     if (password.length < 6) return '密码至少6位字符';
     if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(password)) return '密码必须包含字母和数字';
     return null;
