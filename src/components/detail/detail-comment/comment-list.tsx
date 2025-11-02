@@ -33,17 +33,44 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
      */
     const getList = (page:number, more=false) => {
         more ? setListMoreLoading(true) : setListLoading(true)
-        blogFetch(`/api/comment/list?articleId=${id}&current=${page}&pageSize=10`)
-            .then((result) => {
-                const { code, data } = result
-                if (code === 200) {
-                    console.log("data=", data)
-                    setList([...list,...data.list])
-                    setTotal(data.pagination.total)
-                }
-                console.log("data=", data)
+        getCommentList(page)
+            .then((data) => {
+                setList([...list,...data.list])
+                setTotal(data.pagination.total)
             }).finally(() => {
                 more ? setListMoreLoading(false) : setListLoading(false)
+        })
+    }
+    /**
+     * 重置评论列表数据
+     */
+    const getResetCommentList = (page:number) => {
+        setListLoading(true)
+        getCommentList(page).then((data) => {
+            setList([...data.list])
+            setTotal(data.pagination.total)
+        }).finally(() => {
+            setListLoading(false)
+        })
+    }
+    /**
+     * 获取评论列表数据
+     */
+    const getCommentList = (page:number) => {
+        return new Promise((resolve,reject) => {
+            blogFetch(`/api/comment/list?articleId=${id}&current=${page}&pageSize=10`)
+                .then((result) => {
+                    const { code, data } = result
+                    if (code === 200) {
+                        resolve(data)
+                    } else {
+                        reject(data)
+                    }
+                    console.log("data=", data)
+                })
+                .catch((error) => {
+                    reject(error)
+                })
         })
     }
     /**
@@ -110,7 +137,7 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
                                                 key={item.id}
                                                 isSub={ true}
                                                 parentId={parentId}
-                                                success={getList}
+                                                success={reset => reset ? getResetCommentList(1) : getList(1)}
                         />
                     })
                 }
@@ -139,7 +166,7 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
                         const {info, sub} = item
                         const { list, pagination} =  sub
                         return <>
-                            <CommentListItem info={info} key={info.id} success={getList}/>
+                            <CommentListItem info={info} key={info.id} success={reset => reset ? getResetCommentList(1) : getList(1)}/>
                             {
                                 sub && renderSubListDom(list, pagination, info.id)
                             }

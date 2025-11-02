@@ -16,7 +16,7 @@ export default function BlogEditPublishButtons() {
     const { userInfo } = useSelector((state: RootState) => state.user)
     const { title, content } = useSelector((state: RootState) => state.blogEdit)
     const [alertOpen, setAlertOpen] = useState(false)
-    const [showDialogFooter, setShowDialogFooter] = useState(true)
+    const [footer, setShowDialogFooter] = useState(true)
     const [alertConfig, setAlertConfig] = useState({
         title: "",
         message: "",
@@ -111,7 +111,7 @@ export default function BlogEditPublishButtons() {
             </div>
 
             {/* 警告弹窗 */}
-            <BlogAlert  open={alertOpen} updateOpen={setAlertOpen} alertConfig={alertConfig} showDialogFooter={showDialogFooter}/>
+            <BlogAlert  open={alertOpen} updateOpen={setAlertOpen} config={alertConfig} footer={footer}/>
         </>
     )
 }

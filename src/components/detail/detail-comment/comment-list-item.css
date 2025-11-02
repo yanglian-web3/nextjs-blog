@@ -11,3 +11,11 @@
 .comment-list-item-container:hover .info-apply-container{
     display: flex;
 }
+.comment-list-item-container .info-drop-down-container .info-drop-menu-container{
+    display: none;
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    top: 90%;
+}
+.comment-list-item-container .info-drop-down-container:hover .info-drop-menu-container{
+    display: flex;
+}

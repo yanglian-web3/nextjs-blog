@@ -13,7 +13,8 @@ export interface CommentContentItem{
     parentId?:string,
     userAccount: string,
     loginUserDigg: boolean,
-    createdAt: string
+    createdAt: string,
+    userId: string,
 }
 export interface CommentItem {
     info: CommentContentItem,

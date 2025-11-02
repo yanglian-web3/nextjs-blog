@@ -23,7 +23,7 @@ export default function CommentInputSend({parentUsername, parentUserAccount, par
     const [value, setValue] = useState("");
     const { showLoading, hideLoading } = useLoading()
     const [alertOpen, setAlertOpen] = useState(false)
-    const [showDialogFooter, setShowDialogFooter] = useState(true)
+    const [footer, setShowDialogFooter] = useState(true)
     const [alertConfig, setAlertConfig] = useState<AlertConfig>({
         title: "",
         message: "",
@@ -131,6 +131,6 @@ export default function CommentInputSend({parentUsername, parentUserAccount, par
                 >发送</button>
             </div>
         </div>
-        <BlogAlert open={alertOpen} updateOpen={setAlertOpen} alertConfig={alertConfig} showDialogFooter={showDialogFooter}/>
+        <BlogAlert open={alertOpen} updateOpen={setAlertOpen} config={alertConfig} footer={footer}/>
     </>
 }

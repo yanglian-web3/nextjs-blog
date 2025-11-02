@@ -80,6 +80,6 @@ export default function BlogMyListItem({ item, publishSuccess }: BlogMyListItemP
 
         </div>
         {/* 警告弹窗 */}
-        <BlogAlert  open={alertOpen} updateOpen={setAlertOpen} alertConfig={alertConfig} showDialogFooter={false}/>
+        <BlogAlert  open={alertOpen} updateOpen={setAlertOpen} config={alertConfig} footer={false}/>
     </>
 }
