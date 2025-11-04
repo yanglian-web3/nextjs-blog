@@ -26,28 +26,29 @@ export async function generateMetadata({ params }): Promise<Metadata> {
     const blogDataResult = await getBlogDetail(resolvedParams.id)
     const { detail, author } = blogDataResult
     const { title, content, createdAt, summary, cover } = detail
+    const { name } = author
 
     // 从内容中提取描述（前160字符）
     const description = summary || content.replace(/<[^>]*>/g, '').substring(0, 160) + '...'
 
     return {
-        title: `${title} - ${author.name}的博客`,
+        title: `${title} - ${name}的博客`,
         description,
-        keywords: `${title},${author.name},技术博客,编程`, // 根据内容动态生成
-        authors: [{ name: author.name }],
+        keywords: `${title},${name},技术博客,编程`, // 根据内容动态生成
+        authors: [{ name }],
         openGraph: {
             title,
             description,
             type: 'article',
             publishedTime: createdAt,
-            authors: [author.name],
+            authors: [name],
             images: [cover || '/default-og-image.jpg'], // 添加文章封面
         },
         twitter: {
             card: 'summary_large_image',
             title,
             description,
-            images: [detail.cover || '/default-twitter-image.jpg'],
+            images: [cover || '/default-twitter-image.jpg'],
         },
         alternates: {
             canonical: `${process.env.NEXT_PUBLIC_APP_URL}/detail/${resolvedParams.id}`, // 规范URL

@@ -15,7 +15,7 @@ export default function AccountBlogListItem({ item }: { item: BlogItemType}){
                 {item.cover ? <img src={item.cover} alt="cover" className="w-30 h-15 mr-4"/> : null}
                 <div className="item-info w-0 flex-1">
                     <h3 className="item-title text-lg font-bold mb-2">{item.title}</h3>
-                    <div className="item-content w-full text-sm text-gray-500 whitespace-nowrap overflow-hidden overflow-ellipsis mb-2">{item.summary}</div>
+                    <p className="item-content w-full text-sm text-gray-500 whitespace-nowrap overflow-hidden overflow-ellipsis mb-2">{item.summary}</p>
                     <div className={"flex items-center"}>
                         <p className="item-content text-gray-500">{item.createdAt}</p>
                         <div className={"count-container flex items-center"}>
