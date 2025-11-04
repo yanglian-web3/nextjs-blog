@@ -66,8 +66,8 @@ export function underlineToHump(str: string) {
  * @constructor
  */
 export const multiHandleStrInObject = <
-    T extends Record<string, any>,
-    K extends Record<string, any> = { [key: string]: any }
+    T extends Record<string, unknown>,
+    K extends Record<string, unknown> = { [key: string]: unknown }
     >(
     list: T[],
     fn: (key: string) => string
@@ -77,7 +77,7 @@ export const multiHandleStrInObject = <
         Object.keys(item).forEach(key => {
             const newKey = fn(key)
                 // 使用类型断言
-            ;(result as Record<string, any>)[newKey] = item[key]
+            ;(result as Record<string, unknown>)[newKey] = item[key]
         })
         return result
     }) as K[]
@@ -90,8 +90,8 @@ export const multiHandleStrInObject = <
  * @constructor
  */
 export const multiUnderlineToHump = <
-    T extends Record<string, any>,
-    K extends Record<string, any>
+    T extends Record<string, unknown>,
+    K extends Record<string, unknown>
     >(list: T[]): K[] => {
     return multiHandleStrInObject<T, K>(list, underlineToHump)
 }
@@ -100,8 +100,8 @@ export const multiUnderlineToHump = <
  * 批量驼峰转为下划线
  */
 export const multiHumpToUnderline = <
-    T extends Record<string, any>,
-    K extends Record<string, any>
+    T extends Record<string, unknown>,
+    K extends Record<string, unknown>
     >(list: T[]):K[] => {
     return multiHandleStrInObject(list, humpToUnderline)
 }

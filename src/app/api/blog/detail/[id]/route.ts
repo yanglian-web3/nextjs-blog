@@ -16,10 +16,10 @@ const supabase = createClient(
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: number } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const [resolvedParams] = await Promise.all([params])
+        const resolvedParams = await params
         const blogId = Number(resolvedParams.id)
 
         console.log('=== 开始获取博客详情 ===', { blogId })
@@ -32,7 +32,7 @@ export async function GET(
         console.log('会话状态:', { isLoggedIn, currentUserId: session?.user_id })
 
         // 2. 查询博客基本信息
-        const { data: blog, error: blogError }:{data: BlogItemServeType, error: any} = await supabase
+        const { data: blog, error: blogError }:{data: BlogItemServeType, error: unknown} = await supabase
             .from('blog')
             .select(`
                 id,
@@ -59,7 +59,7 @@ export async function GET(
         const { id, title, content, cover, status, created_at, update_at, user_id, view_count } = blog
 
         // 3. 查询作者信息
-        const { data: author, error: authorError }: { data: UserInfo, error: any} = await supabase
+        const { data: author, error: authorError }: { data: UserInfo, error: unknown} = await supabase
             .from('user')
             .select('auth_user_id, account, name, avatar')
             .eq('auth_user_id', blog.user_id)
@@ -121,7 +121,7 @@ export async function GET(
                 detail: blogDetail,
                 countInfo: {
                     viewCount: handleCount((view_count || 0) + (!isOwnBlog && isPublished ? 1 : 0)),
-                    commentCount: handleCount(commentCount || 0)
+                    commentCount: handleCount(Number(commentCount) || 0)
                 },
                 author
             }

@@ -5,9 +5,9 @@ import MySelectList from './my-select-list';
 import { CommonSize } from '../../types/common';
 import "./my-select.css"
 
-interface MySelectProps {
+interface MySelectProps<T> {
     pageContainer?: HTMLElement; // 页面容器按钮
-    list: any[]; // 列表数据
+    list: T[]; // 列表数据
     listHeight?: number; // 列表高度
     listMode?: MySelectListMode; // 列表渲染模式，默认向下拉
     buttonHorizontalMode?: ButtonHorizontalMode; // 按钮是否水平居中
@@ -19,16 +19,15 @@ interface MySelectProps {
         label: string;
         value: string;
     };
-    colorMode?: "lightGreen" | "yellow" | { [k: string]: { [k: string]: string } };
-    onChange?: (value: any, item: any) => void;
-    onUpdateModelValue?: (value: any) => void;
+    onChange?: <T>(value: string | number, item: T) => void;
+    onUpdateModelValue?: (value: string | number) => void;
     onButtonClick?: () => void;
 }
 
 // 创建 Context 替代 Vue 的 inject
 const FormSizeContext = React.createContext<string>("middle");
 
-const MySelect: React.FC<MySelectProps> = ({
+const MySelect = <T,>({
                                                pageContainer,
                                                list,
                                                listHeight,
@@ -39,14 +38,13 @@ const MySelect: React.FC<MySelectProps> = ({
                                                width,
                                                size,
                                                prop,
-                                               colorMode,
                                                onChange,
                                                onUpdateModelValue,
                                                onButtonClick
-                                           }) => {
+                                           }: MySelectProps<T>) => {
     const [selectMode, setSelectMode] = useState<MySelectListMode>();
     const [listIsShow, setListIsShow] = useState(false);
-    const [currentInfo, setCurrentInfo] = useState<any>({});
+    const [currentInfo, setCurrentInfo] = useState<T>({});
     const [isClient, setIsClient] = useState(false);
     const id = useMemo(() => `my-select-container-${Math.random().toString(36).split(".")[1]}`, []);
 
@@ -161,7 +159,7 @@ const MySelect: React.FC<MySelectProps> = ({
     };
 
     // 选择选项处理
-    const chooseOption = (item: any) => {
+    const chooseOption = (item: T) => {
         const value = labelIsValue ? item : item[renderProp.value || "value"];
         onUpdateModelValue?.(value);
         onChange && onChange(value, item);

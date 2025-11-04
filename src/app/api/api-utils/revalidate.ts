@@ -1,8 +1,8 @@
 // utils/revalidate.ts
-export async function triggerBlogRevalidation(blogId: Number) {
+export async function triggerBlogRevalidation(blogId: number) {
     try {
         const response = await fetch(
-            `${process.env.NEXTAUTH_URL}/api/revalidate?id=${blogId}&secret=${process.env.REVALIDATE_SECRET}`,
+            `${process.env.NEXT_PUBLIC_APP_URL}/api/revalidate?id=${blogId}&secret=${process.env.REVALIDATE_SECRET}`,
             {
                 method: 'GET',
             }

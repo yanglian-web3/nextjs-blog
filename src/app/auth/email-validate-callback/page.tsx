@@ -18,7 +18,13 @@ export default function EmailValidateCallback() {
                 switch (event) {
                     case 'SIGNED_IN':
                         setStatus('邮箱验证成功！正在跳转...')
-                        await handleSuccessfulAuth(session)
+                        const user = session.user
+                        const userAccount = user.user_metadata.account
+                        console.log('用户信息:', user)
+                        console.log('邮箱确认状态:', user.email_confirmed_at)
+                        // 给用户一点时间看到成功消息
+                        await new Promise(resolve => setTimeout(resolve, 2000))
+                        router.push(userAccount ? `/${userAccount}` : '/')
                         break
                     case 'INITIAL_SESSION':
                         setStatus('检测到已登录状态...')
@@ -35,26 +41,6 @@ export default function EmailValidateCallback() {
         )
         return () => subscription.unsubscribe()
     }, [router])
-    /**
-     * 处理跳转
-     * @param session
-     */
-    const handleSuccessfulAuth = async (session: any) => {
-        const user = session.user
-        const userAccount = user.user_metadata.account
-
-        console.log('用户信息:', user)
-        console.log('邮箱确认状态:', user.email_confirmed_at)
-
-        // 给用户一点时间看到成功消息
-        await new Promise(resolve => setTimeout(resolve, 2000))
-
-        if (userAccount) {
-            router.push(`/${userAccount}`)
-        } else {
-            router.push('/')
-        }
-    }
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-50">

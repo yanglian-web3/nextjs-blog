@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import BlogAlert from "../../blog-alert/blog-alert";
 import {blogFetch} from "../../../utils/blog-fetch";
 import IconLoading from "../../icons/icon-loading";
+import {RootState} from "../../../store/index";
 
 interface CommentListItemProps {
     info: CommentContentItem,
@@ -17,11 +18,11 @@ interface CommentListItemProps {
 }
 
 export default function CommentListItem({ info, success, parentId, isSub = false}: CommentListItemProps){
-    const { userInfo: {auth_user_id} } = useSelector((state: any) => state.user)
+    const { userInfo: {auth_user_id} } = useSelector((state: RootState) => state.user)
     const { id, avatar, content, username, postTime, loginUserDigg, parentUsername, userAccount, userId } = info
     const [replay, setReplay] = useState(false);
     const [alertOpen, setAlertOpen] = useState(false)
-    const [footerType, setFooterType] = useState("confirm") // 弹窗类型，confirm或者toast
+    const [footerType, setFooterType] = useState<"confirm" | "toast">("confirm") // 弹窗类型，confirm或者toast
     const [confirmLoading, setConfirmLoading] = useState(false); // 确认删除加载中
     const [alertConfig, setAlertConfig] = useState({
         title: "",
@@ -50,7 +51,9 @@ export default function CommentListItem({ info, success, parentId, isSub = false
      */
     const subCommentsSuccess = () => {
         console.log("子评论完成================")
-        success && success()
+        if(success){
+            success()
+        }
         setReplay(false)
     }
 
@@ -130,7 +133,6 @@ export default function CommentListItem({ info, success, parentId, isSub = false
             </div>
         }
         return footerType !== "toast";
-
     }
 
 

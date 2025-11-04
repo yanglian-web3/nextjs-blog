@@ -26,6 +26,6 @@ export interface CommentItem {
 
 export interface CommentSqlQueryResult {
     data: CamelToSnakeKeys<CommentContentItem>[],
-    error: any,
+    error: unknown,
     count: number
 }

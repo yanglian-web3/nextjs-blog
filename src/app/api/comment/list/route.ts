@@ -26,7 +26,7 @@ const handleCommentData = async (list: CamelToSnakeKeys<CommentContentItem>[], a
     const pageSize = 3 // 子评论默认加载3条
     for(const current of afterHandlePostTimeList){
         const { id } = current
-        let subQuery = getSubQuery(supabase,articleId!,id!)
+        const subQuery = getSubQuery(supabase,articleId!,id!)
         const dataResult:CommentSqlQueryResult = await queryFromTo(page,pageSize,subQuery)
         const { data: subComments, error: subCommentError, count:subCount } = dataResult
         const total = subCount || 0
@@ -87,7 +87,7 @@ export async function GET(
         const to = from + pageSize - 1
 
         // 5. 构建查询，查询文章id为articleId的，并且parent_id为null的
-        let query = supabase
+        const query = supabase
             .from('comments')
             .select(selectFields, { count: 'exact' })
             .eq('article_id', articleId)

@@ -1,5 +1,9 @@
 import {NextRequest} from "next/server";
 import {CommentContentItem} from "../../../types/comment";
+import { SupabaseClient } from '@supabase/supabase-js'
+
+// 通过实际使用来推断类型
+type QueryType = ReturnType<SupabaseClient['from']>['select']
 
 export const selectFields = `
                 id,
@@ -21,7 +25,7 @@ export const selectFields = `
  * @param pageSize
  * @param query
  */
-export const queryFromTo = async (page: number, pageSize: number, query: any) => {
+export const queryFromTo = async (page: number, pageSize: number, query: QueryType) => {
     // 4. 计算分页
     const from = (page - 1) * pageSize
     const to = from + pageSize - 1
@@ -32,7 +36,7 @@ export const queryFromTo = async (page: number, pageSize: number, query: any) =>
 }
 
 
-export const getSubQuery = (supabase: any, articleId: string, parentId: string) => {
+export const getSubQuery = (supabase: SupabaseClient, articleId: string, parentId: string) => {
     // 构建查询，查询文章id为articleId的，并且评论id为parentId的
     // console.log("getSubQuery=", articleId, parentId)
     return supabase

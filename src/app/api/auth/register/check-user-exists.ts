@@ -4,7 +4,7 @@ import {supabase} from "../../../../lib/supabase";
 export  async function checkUserExists(email: string) {
     try {
         // 1. 检查 Auth 用户
-        const { data: authUsers, error: authError } = await supabase
+        const { data: authUsers } = await supabase
             .from('auth.users')
             .select('id, email, created_at')
             .eq('email', email)
@@ -13,7 +13,7 @@ export  async function checkUserExists(email: string) {
         console.log('Auth 用户状态:', authUsers ? '存在' : '不存在')
 
         // 2. 检查 user 表记录
-        const { data: userRecord, error: userError } = await supabase
+        const { data: userRecord } = await supabase
             .from('user')
             .select('id, account, auth_user_id')
             .eq('email', email)

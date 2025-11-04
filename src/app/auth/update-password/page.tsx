@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import BlogInput from "../../../components/form/blog-input";
 import IconLoading from "../../../components/icons/icon-loading";
 import {ErrorField} from "../../../types/form";
@@ -31,7 +31,6 @@ export default function UpdatePassword() {
   const [message, setMessage] = useState('')
   const [pageDisabled, setPageDisabled] = useState(false) // 禁用页面，重置链接失效时使用
   const router = useRouter()
-  const searchParams = useSearchParams()
   const [errors, setErrors] = useState<Partial<ResetFormError>>({});
   const [formData, setFormData] = useState<ResetForm>({
     confirmPassword: '',

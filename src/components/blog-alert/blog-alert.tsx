@@ -1,7 +1,6 @@
-import React from "react";
-
 "usr client"
 
+import React from "react";
 import {Dialog} from "@ark-ui/react";
 import IconWarning from "../icons/icon-warning";
 

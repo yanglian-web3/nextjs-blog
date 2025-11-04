@@ -3,6 +3,7 @@ import {BlogHomeItemType} from "../../../types/blog";
 import Link from 'next/link'
 import IconViewFill from "../../icons/icon-view-fill";
 import UserHeadImage from "../../head-user/user-head-image";
+import Image from "next/image";
 
 export default function BlogListItem({ item }: { item: BlogHomeItemType}){
     /**
@@ -30,7 +31,7 @@ export default function BlogListItem({ item }: { item: BlogHomeItemType}){
                 </div>
                 {
                     item.cover && <div className={"blog-item-cover-container w-40 h-20 ml-4 flex-shrink-0"}>
-                        <img src={item.cover} alt="cover" className="w-full h-full"/>
+                        <Image src={item.cover} alt="cover" className="w-full h-full"/>
                     </div>
                 }
             </div>

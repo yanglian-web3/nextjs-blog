@@ -1,7 +1,7 @@
 "use client"
 
 import BlogMyListItem from "./blog-my-list-item";
-import {BlogItemType, BlogStatusCountInfo} from "../../../types/blog";
+import { BlogStatusCountInfo} from "../../../types/blog";
 import {useEffect, useRef, useState} from "react";
 import Pagination from "../../pagination/pagination";
 import {PaginationOptions} from "../../../types/pagination";

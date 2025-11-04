@@ -3,11 +3,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from "@supabase/supabase-js"
 import { checkHasLogin } from "../../../../../utils/api/check-session"
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         console.log('=== 开始删除评论 ===')
 
-        const [resolvedParams] = await Promise.all([params])
+        const resolvedParams = await params
         const commentId = resolvedParams.id
         console.log('接收到的评论ID:', commentId)
 

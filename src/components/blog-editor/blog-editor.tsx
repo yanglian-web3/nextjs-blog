@@ -28,19 +28,6 @@ const user = "World";
 console.log(greet(user));
 \`\`\`
 
-### TypeScript 代码
-\`\`\`typescript
-interface User {
-  name: string;
-  age: number;
-}
-
-const user: User = {
-  name: "Alice",
-  age: 25
-};
-\`\`\`
-
 ### Python 代码
 \`\`\`python
 def fibonacci(n):
@@ -101,7 +88,7 @@ export default function BlogEditor() {
     const { setEditor } = useEditorContext()
     const [isClient, setIsClient] = useState(false)
     const [value, setValue] = useState("")
-    const [detailId, setDetailId] = useState("")
+    const [,setDetailId] = useState("")
 
 
     useEffect(() => {
@@ -178,7 +165,7 @@ export default function BlogEditor() {
                         })
                     })
                 }),
-                isActive: (type: string) => false
+                isActive: () => false
             }
             setEditor(mockEditor)
         }

@@ -5,8 +5,8 @@ import React, { createContext, useContext, useState, ReactNode } from 'react'
 
 // 定义更通用的编辑器接口
 interface EditorInstance {
-    chain: () => any
-    isActive: (type: string, attributes?: any) => boolean
+    chain: <T>() => T
+    isActive: <T,>(type: string, attributes?: T) => boolean
     // 可以根据需要添加更多方法
 }
 

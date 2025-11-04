@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
+import Image from "next/image"
 
 interface AvatarProps {
     name?: string
@@ -71,7 +72,7 @@ export default function UserHeadImage({ name = '', src, size = 'md', className =
 
     if (src) {
         return (
-            <img
+            <Image
                 src={src}
                 alt={name}
                 className={`rounded-full object-cover ${sizeClass} ${className}`}

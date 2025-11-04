@@ -17,10 +17,10 @@ const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         // 1. 解析请求数据
-        const [resolvedParams] = await Promise.all([params])
+        const resolvedParams = await params
         const { id }: BlogRequest = resolvedParams
         console.log('接收到的数据:', { id })
 
@@ -44,8 +44,6 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
                 message: '无法获取用户信息'
             })
         }
-        let resultData
-        let error
         // 更新操作
         console.log('开始更新数据...')
 
@@ -74,8 +72,8 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
             .eq('user_id', userId) // 确保只能更新自己的博客
             .select()
 
-        resultData = updateResult.data
-        error = updateResult.error
+        const resultData = updateResult.data
+        const error = updateResult.error
 
         console.log('更新结果 - data:', resultData)
         console.log('更新结果 - error:', error)

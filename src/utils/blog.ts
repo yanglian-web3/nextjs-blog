@@ -1,4 +1,4 @@
-import {AccountBlogResult, BlogDetailResult, BlogHomeItemType, BlogItemType} from "../types/blog";
+import {AccountBlogResult, BlogDetailResult, BlogHomeItemType} from "../types/blog";
 import {PaginationOptions} from "../types/pagination";
 import qs from "qs"
 import {blogFetch} from "./blog-fetch";

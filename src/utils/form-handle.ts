@@ -3,7 +3,7 @@
  */
 
 
-export const validateForm = <T, E extends Record<string, any>>(
+export const validateForm = <T, E extends Record<string, unknown>>(
     options: {
         formData: T;
         setErrors: React.Dispatch<React.SetStateAction<Partial<E>>>;

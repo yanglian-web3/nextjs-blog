@@ -13,7 +13,6 @@ type AlertType = 'warning' | 'error' | 'info'
 
 export default function BlogEditPublishButtons() {
     const router = useRouter()
-    const { userInfo } = useSelector((state: RootState) => state.user)
     const { title, content } = useSelector((state: RootState) => state.blogEdit)
     const [alertOpen, setAlertOpen] = useState(false)
     const [footer, setShowDialogFooter] = useState(true)

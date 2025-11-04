@@ -18,7 +18,7 @@ export default function AccountBlogListContent({ initList, initPage}: { initList
     const { showLoading, hideLoading } = useLoading()
     const { searchValue, searchRefreshNum } = useSelector((state: RootState) => state.blogSearch)
     const [blogList, setBlogList] = useState(initList)
-    const [_width,setBlogListTitleWidth] = useState(1200)
+    const [,setBlogListTitleWidth] = useState(1200)
     const defaultPagination = {
         current: 1,
         pageSize: 10,

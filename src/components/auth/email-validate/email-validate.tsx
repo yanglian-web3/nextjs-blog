@@ -18,7 +18,7 @@ export default function EmailValidate() {
 
                     // 获取账号信息（从 user_metadata）
                     const userAccount = userMetadata.account
-                    const username = userMetadata.name
+                    // const username = userMetadata.name
 
                     // 跳转到个人首页，可以带上用户账号
                     if (userAccount) {

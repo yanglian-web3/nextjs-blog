@@ -5,7 +5,7 @@ import {NextResponse} from "next/server";
  * 校验必填字段
  * @param fieldsValues
  */
-export const validateRequiredFields = (fieldsValues: {[k:string]: any}) => {
+export const validateRequiredFields = <T extends Record<string, unknown>>(fieldsValues: {[k:string]: T}) => {
     const noValueFields = Object.keys(fieldsValues).filter(key => fieldsValues[key] === null || fieldsValues[key] === '')
     if(noValueFields.length){
         return {
@@ -46,7 +46,7 @@ export const getErrorEmptyResponse = (page:number, pageSize: number, message: st
  * 获取500错误响应
  * @param error
  */
-export const getServeError500 = (error:any) => {
+export const getServeError500 = (error:unknown) => {
     return NextResponse.json({
         code: 500,
         message: `服务器内部错误: ${error instanceof Error ? error.message : 'Unknown error'}`

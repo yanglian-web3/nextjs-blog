@@ -42,10 +42,10 @@ const handleBlogData = async (blogs: BlogItemServeType[]) => {
 }
 export async function GET(
     request: NextRequest,
-    { params }: { params: { account: string } }
+    { params }: { params: Promise<{ account: string }> }
 ) {
     try {
-        const [resolvedParams] = await Promise.all([params])
+        const resolvedParams = await params
         const account = resolvedParams.account
         console.log('=== 开始获取作者博客列表 ===', { account })
 
@@ -62,7 +62,7 @@ export async function GET(
         console.log('request.cookies.get(\'session_token\')?.value', request.cookies.get('session_token')?.value)
 
         // 2. 首先根据 account 查找目标用户
-        const { data: targetUser, error: userError }:{data: UserInfo, error: any} = await supabase
+        const { data: targetUser, error: userError }:{data: UserInfo, error: unknown} = await supabase
             .from('user')
             .select('auth_user_id, account, name, avatar')
             .eq('account', account)

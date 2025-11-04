@@ -9,5 +9,5 @@ export interface PaginationOptions {
     pageSizeOptions?: number[]
     pageSizeOptionMode?: "down" | "up" | undefined // down 向下拉 up 向上拉
     showTotal?:(total: number, range: number[]) => string
-    [key: string]: any; // 添加字符串索引签名
+    [key: string]: unknown; // 添加字符串索引签名
 }

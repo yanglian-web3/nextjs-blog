@@ -20,6 +20,14 @@ const eslintConfig = [
       "next-env.d.ts",
     ],
   },
+  {
+    rules: {
+      'react-hooks/exhaustive-deps': 'off',
+      allowShortCircuit: true,   // 允许短路求值：a && b()
+      allowTernary: true,        // 允许三元运算符：a ? b() : c()
+      allowTaggedTemplates: true // 允许标签模板字符串
+    }
+  }
 ];
 
 export default eslintConfig;

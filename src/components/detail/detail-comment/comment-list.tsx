@@ -132,7 +132,7 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
         if(subList && subList.length){
             return <>
                 {
-                    subList.map((item, index) => {
+                    subList.map((item) => {
                         return <CommentListItem info={item}
                                                 key={item.id}
                                                 isSub={ true}
@@ -162,7 +162,7 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
         if(list && list.length){
             return <>
                 {
-                    list.map((item, index) => {
+                    list.map((item) => {
                         const {info, sub} = item
                         const { list, pagination} =  sub
                         return <>

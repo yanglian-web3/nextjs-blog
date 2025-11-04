@@ -22,7 +22,7 @@ export async function generateStaticParams() {
 
 // 生成动态元数据
 export async function generateMetadata({ params }): Promise<Metadata> {
-    const [resolvedParams] = await Promise.all([params])
+    const resolvedParams = await params
     const blogDataResult = await getBlogDetail(resolvedParams.id)
     const { detail, author } = blogDataResult
     const { title, content, createdAt, summary, cover } = detail
@@ -57,7 +57,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
 }
 
 export default async function BlogDetail({params}) {
-    const [resolvedParams] = await Promise.all([params])
+    const resolvedParams = await params
     console.log("resolvedParams=",resolvedParams)
     const blogDataResult = await getBlogDetail(resolvedParams.id)
     const { detail, countInfo, author} = blogDataResult

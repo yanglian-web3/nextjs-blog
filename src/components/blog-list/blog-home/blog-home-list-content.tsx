@@ -42,10 +42,10 @@ export default function BlogHomeListContent({ initList}: { initList: BlogHomeIte
     }
 
     useEffect(() => {
-        console.log("useEffect searchValue=", searchValue)
-        console.log("useEffect searchRefreshNum=", searchRefreshNum)
         // 监听搜索标题值变化，重新请求数据
-        searchRefreshNum && getBlogList()
+        if(searchRefreshNum){
+            getBlogList()
+        }
     }, [searchRefreshNum])
     /**
      * 获取博客列表

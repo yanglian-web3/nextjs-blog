@@ -73,8 +73,6 @@ export async function POST(request: NextRequest) {
         }
 
         // 6.准备基础数据
-        let resultData
-        let error
 
         const insertData = {
             article_id,
@@ -98,8 +96,8 @@ export async function POST(request: NextRequest) {
             .insert(insertData)
             .select()
 
-        resultData = insertResult.data
-        error = insertResult.error
+        const resultData = insertResult.data
+        const error = insertResult.error
 
         console.log('插入结果 - data:', resultData)
         console.log('插入结果 - error:', error)

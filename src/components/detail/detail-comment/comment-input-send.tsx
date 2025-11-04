@@ -69,7 +69,9 @@ export default function CommentInputSend({parentUsername, parentUserAccount, par
                     setTimeout(() => {
                         hideAlert()
                         // 刷新列表
-                        success && success()
+                        if(success){
+                            success()
+                        }
                     }, 2000)
                 } else {
                     showAlert("保存失败，请重试", "error", "保存失败")

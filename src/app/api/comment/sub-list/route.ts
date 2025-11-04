@@ -2,11 +2,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkHasLogin } from '../../../../utils/api/check-session'
-import {CommentContentItem, CommentItem, CommentSqlQueryResult} from "../../../../types/comment";
-import {underlineToHump} from "../../../../utils/util";
-import {getParamsAndHeads, getSubQuery, queryFromTo, selectFields} from "../comment-api-util";
+import {CommentSqlQueryResult} from "../../../../types/comment";
+import {getParamsAndHeads, getSubQuery, queryFromTo} from "../comment-api-util";
 import {getServeError500, getErrorEmptyResponse, notLoginMessage, validateRequiredFields} from "../../api-utils/api-util";
-import {CamelToSnakeKeys} from "../../../../types/type-utils";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -39,7 +37,7 @@ export async function GET(
             return validateResult
         }
         // 4. 构建查询，查询文章id为articleId的，并且评论id为parentId的数据
-        let query = getSubQuery(supabase,articleId!,parentId!)
+        const query = getSubQuery(supabase,articleId!,parentId!)
         console.log("query=", query)
         const { data: comments, error: commentError, count }:CommentSqlQueryResult = await queryFromTo(page,pageSize,query)
 

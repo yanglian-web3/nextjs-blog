@@ -1,5 +1,4 @@
-import {NextRequest, NextResponse} from "next/server";
-import {cookies} from "next/headers";
+import {NextRequest} from "next/server";
 
 /**
  * 检查用户是否登录
