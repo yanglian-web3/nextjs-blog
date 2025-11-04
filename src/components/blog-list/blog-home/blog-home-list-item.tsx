@@ -11,7 +11,7 @@ export default function BlogListItem({ item }: { item: BlogHomeItemType}){
     const goDetail = () => {
         console.log("item=", item)
     }
-    return <div className="blog-list-item border-b border-gray-100 py-5">
+    return <li className="blog-list-item border-b border-gray-100 py-5">
         <Link href={`/${item.account}`} className={"user-info-container flex items-center cursor-pointer mb-2"} target="_blank" rel="noopener noreferrer">
             <UserHeadImage src={item.avatar} name={item.name} size="sm"/>
             <p className={"ml-2 text-xs text-gray-500"}>{item.name}</p>
@@ -35,5 +35,5 @@ export default function BlogListItem({ item }: { item: BlogHomeItemType}){
                 }
             </div>
         </Link>
-    </div>
+    </li>
 }

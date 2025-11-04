@@ -9,7 +9,7 @@ export default function AccountBlogListItem({ item }: { item: BlogItemType}){
     const goDetail = () => {
         console.log("item=", item)
     }
-    return <div className="blog-list-item  border-b border-gray-100 py-5">
+    return <li className="blog-list-item  border-b border-gray-100 py-5">
         <Link href={`/detail/${item.id}`} target="_blank" rel="noopener noreferrer">
             <div className="item-left flex items-center cursor-pointer" onClick={goDetail}>
                 {item.cover ? <img src={item.cover} alt="cover" className="w-30 h-15 mr-4"/> : null}
@@ -26,5 +26,5 @@ export default function AccountBlogListItem({ item }: { item: BlogItemType}){
                 </div>
             </div>
         </Link>
-    </div>
+    </li>
 }

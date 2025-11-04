@@ -11,6 +11,7 @@ import {useParams} from "next/navigation";
 import {useLoading} from "../../../context/loading-context";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../store/index";
+import Head from "next/head";
 
 export default function AccountBlogListContent({ initList, initPage}: { initList: BlogItemType[], initPage: Partial<PaginationOptions>}) {
     const params = useParams()
@@ -33,6 +34,26 @@ export default function AccountBlogListContent({ initList, initPage}: { initList
     })
 
     const blogContentContainer = useRef<HTMLDivElement | null>(null);
+
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "博客精选文章",
+        "description": "精选的技术博客文章列表",
+        "numberOfItems": blogList.length,
+        "itemListElement": blogList.map((item, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "item": {
+                "@type": "BlogPosting",
+                "headline": item.title,
+                "description": item.summary,
+                "author": item.title,
+                "url": `${process.env.NEXT_PUBLIC_SITE_URL}/detail/${item.id}`,
+                "image": item.cover
+            }
+        }))
+    }
 
     useEffect(() => {
         // console.log("useEffect searchValue=", searchValue)
@@ -80,20 +101,32 @@ export default function AccountBlogListContent({ initList, initPage}: { initList
 
     return (
         <>
+            <Head>
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+                />
+                <title>博客文章列表</title>
+            </Head>
 
+            <section aria-label="个人博客文章列表"> {/* 添加语义化section */}
             <div className="w-max-1200 relative m-auto">
                 <div className="blog-content-container overflow-auto overscroll-contain m-auto px-4 py-6" ref={blogContentContainer}>
                     {
-                        blogList.length ? blogList.map((item) => {
-                            return <AccountBlogListItem item={item} key={item.id}/>
-                        }) : <NoData/>
+                        blogList.length ?  <ol>
+                            {
+                                blogList.map((item) => {
+                                    return <AccountBlogListItem item={item} key={item.id}/>
+                                })
+                            }
+                        </ol> : <NoData/>
                     }
                 </div>
             </div>
             <div className="pagination-out-container w-max-1200 flex justify-end">
                 <Pagination  options={renderPagination} onChange={(paginationInfo:PaginationOptions) => paginationChange(paginationInfo)}/>
             </div>
-
+            </section>
         </>
     )
 }
