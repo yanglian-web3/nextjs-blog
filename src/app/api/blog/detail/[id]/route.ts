@@ -6,7 +6,8 @@ import { BlogItemServeType } from "../../../../../types/blog";
 import {UserInfo} from "../../../../../types/user";
 import {formatDateTime} from "../../../../../utils/date-format";
 import {handleCount} from "../../../../../utils/util";
-import {getServeError500, queryCommentsCount} from "../../../api-util";
+import {getServeError500, queryCommentsCount} from "../../../api-utils/api-util";
+import {triggerBlogRevalidation} from "../../../api-utils/revalidate";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -86,12 +87,17 @@ export async function GET(
             })
         }
 
+        const newViewCount = (view_count || 0) + 1
         // 5. 更新浏览量（非作者查看时）
         if (!isOwnBlog && isPublished) {
             await supabase
                 .from('blog')
-                .update({ view_count: (view_count || 0) + 1 })
+                .update({ view_count: newViewCount})
                 .eq('id', blogId)
+        }
+        if(newViewCount % 10 === 0){
+            // 每增加10次阅读重新验证一次
+            await triggerBlogRevalidation(blogId)
         }
 
         // 6. 查询评论数量

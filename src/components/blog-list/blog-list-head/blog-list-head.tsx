@@ -61,7 +61,7 @@ function BlogListHead({showSearch = true}: {showSearch?: boolean}) {
     const clearSearchTitle = () => {
         setSearchValue("")
         dispatch(updateSearchValue(""))
-        dispatch(updateSearchRefreshNum(0))
+        dispatch(updateSearchRefreshNum(searchRefreshNum + 1))
     }
     /**
      * 输入框值改变

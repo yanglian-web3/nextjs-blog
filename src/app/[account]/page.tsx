@@ -10,6 +10,9 @@ interface PageProps {
         account: string
     }
 }
+
+export const revalidate = 60*60*24 // 24小时ISR
+
 export default async function AccountBlogPage({ params}: PageProps) {
     // 等待 params 和 searchParams
     const [resolvedParams] = await Promise.all([params])

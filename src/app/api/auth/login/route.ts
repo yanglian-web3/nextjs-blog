@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from "@supabase/supabase-js"
 import { CryptoUtils } from "../../../../utils/crypto"
 import { createSession } from "../../../../lib/session"
-import {getServeError500, validateRequiredFields} from "../../api-util";
+import {getServeError500, validateRequiredFields} from "../../api-utils/api-util";
 
 interface LoginRequest {
     email: string

@@ -5,7 +5,7 @@ import { checkHasLogin } from '../../../../utils/api/check-session'
 import {CommentContentItem, CommentItem, CommentSqlQueryResult} from "../../../../types/comment";
 import {underlineToHump} from "../../../../utils/util";
 import {getParamsAndHeads, getSubQuery, queryFromTo, selectFields} from "../comment-api-util";
-import {getServeError500, getErrorEmptyResponse, notLoginMessage, validateRequiredFields} from "../../api-util";
+import {getServeError500, getErrorEmptyResponse, notLoginMessage, validateRequiredFields} from "../../api-utils/api-util";
 import {CamelToSnakeKeys} from "../../../../types/type-utils";
 
 const supabase = createClient(

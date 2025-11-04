@@ -4,10 +4,19 @@ import IconClockFill from "../../../components/icons/icon-clock-fill";
 import IconViewFill from "../../../components/icons/icon-view-fill";
 import "./detail-page.css"
 import BlogDetailBottom from "../../../components/detail/blog-detail-bottom/blog-detail-bottom";
-import {getBlogDetail} from "../../../utils/blog";
+import {getBlogDetail, getPopularBlogIds} from "../../../utils/blog";
 import BlogListHead from "../../../components/blog-list/blog-list-head/blog-list-head";
 
+export const revalidate = 60*60*1 // 1小时
 
+export async function generateStaticParams() {
+    // 预生成热门文章的静态页面
+    // 这里可以从数据库获取热门文章ID
+    const popularBlogs = await getPopularBlogIds() // 你需要实现这个函数
+    return popularBlogs.map((blog) => ({
+        id: blog.id,
+    }))
+}
 
 export default async function BlogDetail({params}) {
     const [resolvedParams] = await Promise.all([params])

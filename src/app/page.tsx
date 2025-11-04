@@ -5,7 +5,7 @@ import BlogHomeListContent from "../components/blog-list/blog-home/blog-home-lis
 import {getBlogListRandom} from "../utils/blog";
 
 
-
+export const revalidate = 300 // 5分钟ISR
 
 export default async function Home() {
     const blogList:BlogHomeItemType[] = await getBlogListRandom()

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from "@supabase/supabase-js"
 import { checkHasLogin } from "../../../../utils/api/check-session"
 import {CommentContentItem} from "../../../../types/comment";
+import {triggerBlogRevalidation} from "../../api-utils/revalidate";
 
 interface BlogRequest {
     id?: number | string
@@ -115,7 +116,8 @@ export async function POST(request: NextRequest) {
                 message: `保存失败: ${error.message}`
             })
         }
-
+       // 触发页面重新验证
+        await triggerBlogRevalidation(article_id)
         const successMessage = '保存成功'
         console.log(`${successMessage}，数据:`, resultData)
 

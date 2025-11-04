@@ -17,9 +17,10 @@ export default function BlogHomeListContent({ initList}: { initList: BlogHomeIte
     const blogContentContainer = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        // console.log("useEffect searchValue=", searchValue)
+        console.log("useEffect searchValue=", searchValue)
+        console.log("useEffect searchRefreshNum=", searchRefreshNum)
         // 监听搜索标题值变化，重新请求数据
-        getBlogList()
+        searchRefreshNum && getBlogList()
     }, [searchRefreshNum])
     /**
      * 获取博客列表
@@ -34,7 +35,7 @@ export default function BlogHomeListContent({ initList}: { initList: BlogHomeIte
     }
     useEffect(() => {
         setBlogList(initList)
-    },[])
+    },[initList])
 
     return (
         <>

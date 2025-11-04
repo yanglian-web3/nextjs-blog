@@ -1,7 +1,7 @@
 // src/app/api/auth/logout/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import {getServeError500} from "../../api-util";
+import {getServeError500} from "../../api-utils/api-util";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

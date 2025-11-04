@@ -37,8 +37,11 @@ export default function AccountBlogListContent({ initList, initPage}: { initList
     useEffect(() => {
         // console.log("useEffect searchValue=", searchValue)
         // 监听搜索标题值变化，重新请求数据
-        setRenderPagination({...defaultPagination})
-        getBlogList(defaultPagination)
+        if(searchRefreshNum){
+            setRenderPagination({...defaultPagination})
+            getBlogList(defaultPagination)
+        }
+
     }, [searchRefreshNum])
 
     /**

@@ -2,11 +2,12 @@ import {AccountBlogResult, BlogDetailResult, BlogHomeItemType, BlogItemType} fro
 import {PaginationOptions} from "../types/pagination";
 import qs from "qs"
 import {blogFetch} from "./blog-fetch";
+import {supabase} from "../lib/supabase";
 
 /**
  * 获取随机精选博客列表
  */
-export function getBlogListRandom(searchValue:string) {
+export function getBlogListRandom(searchValue:string = "") {
     return  new Promise<BlogHomeItemType[]>((resolve) => {
         blogFetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/list/random?title=${searchValue}`)
             .then(result => {
@@ -79,3 +80,28 @@ export const getBlogDetail = (id: string) => {
             })
     })
  }
+
+/**
+ * 获取需要预生成静态页面的博客id
+ */
+export async function getPopularBlogIds(): Promise<{id: string}[]> {
+    try {
+        // 从数据库获取热门博客的 ID
+        const { data, error } = await supabase
+            .from('blogs')
+            .select('id')
+            .order('view_count', { ascending: false }) // 按阅读数降序
+            .limit(20) // 预生成前20篇热门文章
+
+        if (error) {
+            console.error('Error fetching popular blog ids:', error)
+            return []
+        }
+
+        // 返回格式必须符合 generateStaticParams 的要求
+        return data.map(blog => ({ id: blog.id.toString() }))
+    } catch (error) {
+        console.error('Error in getPopularBlogIds:', error)
+        return []
+    }
+}

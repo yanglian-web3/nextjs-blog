@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import {BlogHomeItemType, BlogItemServeType} from "../../../../../types/blog";
-import {getServeError500} from "../../../api-util";
+import {getServeError500} from "../../../api-utils/api-util";
 import {handleCount} from "../../../../../utils/util";
 
 const supabase = createClient(

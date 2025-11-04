@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '../../../../lib/supabase'
 import {checkUserExists} from "./check-user-exists";
 import {CryptoUtils} from "../../../../utils/crypto";
-import {getServeError500, validateRequiredFields} from "../../api-util";
+import {getServeError500, validateRequiredFields} from "../../api-utils/api-util";
 
 
 
