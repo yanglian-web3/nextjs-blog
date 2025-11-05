@@ -22,12 +22,13 @@ export interface CommentContentItem extends CommentContentCommonItem{
     postTime: string,
     loginUserDigg: boolean,
 }
+export interface CommentSubItem {
+    list:CommentContentItem[],
+    pagination: PaginationOptions
+}
 export interface CommentItem {
     info: CommentContentItem,
-    sub: {
-        list:CommentContentItem[],
-        pagination: PaginationOptions
-    }
+    sub: CommentSubItem
 }
 
 export interface CommentSqlQueryResult {

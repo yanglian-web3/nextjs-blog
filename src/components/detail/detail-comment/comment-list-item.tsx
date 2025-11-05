@@ -18,7 +18,7 @@ interface CommentListItemProps {
 }
 
 export default function CommentListItem({ info, success, parentId, isSub = false}: CommentListItemProps){
-    const { userInfo: {auth_user_id} } = useSelector((state: RootState) => state.user)
+    const { userInfo } = useSelector((state: RootState) => state.user)
     const { id, avatar, content, username, postTime, loginUserDigg, parentUsername, userAccount, userId } = info
     const [replay, setReplay] = useState(false);
     const [alertOpen, setAlertOpen] = useState(false)
@@ -29,6 +29,7 @@ export default function CommentListItem({ info, success, parentId, isSub = false
         message: "",
         type: 'warning'
     })
+    const auth_user_id = userInfo?.auth_user_id
 
     /**
      * 获取信息顶部

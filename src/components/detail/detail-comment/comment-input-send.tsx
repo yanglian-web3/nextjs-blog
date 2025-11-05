@@ -6,7 +6,6 @@ import {RootState} from "../../../store/index";
 import { useParams } from "next/navigation";
 import {blogFetch} from "../../../utils/blog-fetch";
 import {humpToUnderline} from "../../../utils/util";
-import {CommentContentItem} from "../../../types/comment";
 import "./comment-input-send.css"
 
 interface CommentInputSendProps {
@@ -18,7 +17,8 @@ interface CommentInputSendProps {
 
 export default function CommentInputSend({parentUsername, parentUserAccount, parentId, success}: CommentInputSendProps){
     const { userInfo } = useSelector((state: RootState) => state.user)
-    const { id } = useParams()
+    const params = useParams()
+    const id = Array.isArray(params.id) ? params.id[0] : params.id // 处理数组情况
 
     const [value, setValue] = useState("");
     const { showLoading, hideLoading } = useLoading()
@@ -37,6 +37,9 @@ export default function CommentInputSend({parentUsername, parentUserAccount, par
     const sendComment = () => {
         console.log("value=", value)
         if (!validateForm()) return
+        if(!userInfo){
+            return;
+        }
         showLoading()
         const { avatar, name, account } = userInfo
         const sendData = {
@@ -53,12 +56,13 @@ export default function CommentInputSend({parentUsername, parentUserAccount, par
         blogFetch('/api/comment/send', {
             credentials: 'include',
             method: 'POST',
-            body: JSON.stringify(Object.keys(sendData).reduce((result,current) => {
-                // console.log("current=", current)
+            body: JSON.stringify(Object.keys(sendData).reduce((result, current) => {
                 console.log("humpToUnderline[current]=", humpToUnderline(current))
-                result[humpToUnderline(current)] = sendData[current]
+                // 使用类型断言
+                const key = current as keyof typeof sendData
+                result[humpToUnderline(current)] = sendData[key]
                 return result
-            }, {} as CommentContentItem))
+            }, {} as {[k:string]: string | number | null | undefined}))
         })
             .then(data => {
                 if(data.code === 200){

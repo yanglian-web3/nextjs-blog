@@ -37,7 +37,7 @@ function BlogEditHead() {
               <input placeholder="请输入文章标题"
                      value={title}
                      className="blog-head-edit-input border border-solid border-gray-200 pl-4 py-2 text-lg"
-                     onChange={(e) => setTitle(e.target.value)}/>
+                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}/>
               {
                   title.length ? <span className="clear-icon cursor-pointer absolute" onClick={() => setTitle('')}>
               <IconClear width={20} height={20} color={"#666666"}/>

@@ -9,7 +9,7 @@ import {supabase} from "../lib/supabase";
  */
 export function getBlogListRandom(searchValue:string = "") {
     return  new Promise<BlogHomeItemType[]>((resolve) => {
-        blogFetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/list/random?title=${searchValue}`)
+        blogFetch<BlogHomeItemType[]>(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/list/random?title=${searchValue}`)
             .then(result => {
                 const { code ,data, message} = result
                 if(code !== 200){
@@ -38,9 +38,9 @@ export function getBlogListByAccount(options: {
 }) {
     const {account, pagination, sessionToken,searchParams = {}} = options
     const {current, pageSize} = pagination
-    return  new Promise<AccountBlogResult>((resolve) => {
+    return  new Promise<Partial<AccountBlogResult>>((resolve,reject) => {
         const searchQuery = qs.stringify(searchParams)
-        blogFetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/list/page/${account}?${searchQuery}&current=${current}&pageSize=${pageSize}`, {
+        blogFetch<Partial<AccountBlogResult>>(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/list/page/${account}?${searchQuery}&current=${current}&pageSize=${pageSize}`, {
             credentials: 'include',
             headers: {
                 'session_token': sessionToken || ''
@@ -50,13 +50,13 @@ export function getBlogListByAccount(options: {
                 const { code ,data, message} = result
                 if(code !== 200){
                     console.error("获取博客列表失败:", message)
-                    resolve([])
+                    reject(message)
                 }
                 resolve(data)
             })
             .catch(err => {
                 console.error("获取博客列表失败:", err)
-                resolve([])
+                reject(err)
             })
     })
 }
@@ -66,8 +66,8 @@ export function getBlogListByAccount(options: {
  * @param id
  */
 export const getBlogDetail = (id: string) => {
-    return  new Promise<BlogDetailResult>((resolve) => {
-        blogFetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/detail/${id}`)
+    return  new Promise<Partial<BlogDetailResult>>((resolve) => {
+        blogFetch<Partial<BlogDetailResult>>(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/detail/${id}`)
             .then(result => {
                 // console.log("get_Blog_Detail result=", {...result,content: "太多了省略..."})
                 const { code ,data, message} = result

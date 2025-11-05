@@ -1,4 +1,5 @@
 import {NextRequest} from "next/server";
+import {SupabaseClient} from "@supabase/supabase-js";
 
 /**
  * 检查用户是否登录
@@ -6,7 +7,7 @@ import {NextRequest} from "next/server";
  * @param supabase
  * @param sessionToken
  */
-export const checkHasLogin = async (request: NextRequest, supabase, sessionToken?: string) => {
+export const checkHasLogin = async (request: NextRequest, supabase: SupabaseClient, sessionToken?: string) => {
     console.error("====================开始调用 checkhaslogin=========================================================================")
     // 直接从 Cookie 获取 session_token
     // const sessionToken = request.cookies.get('session_token')?.value

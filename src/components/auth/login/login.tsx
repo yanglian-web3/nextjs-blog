@@ -19,12 +19,13 @@ import {UserInfo} from "../../../types/user";
 interface LoginForm {
     email: string;
     password: string;
+    [k:string]: string
 }
 
 interface LoginFormError {
     email: ErrorField;
     password: ErrorField;
-    [k:string]: unknown
+    [k:string]: ErrorField
 }
 interface Props {
     open: boolean;

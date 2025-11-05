@@ -1,10 +1,6 @@
 import {NextRequest} from "next/server";
-import {CommentContentItem, CommentItem} from "../../../types/comment";
+import {CommentContentItem} from "../../../types/comment";
 import { SupabaseClient } from '@supabase/supabase-js'
-import {PostgrestFilterBuilder} from "@supabase/postgrest-js";
-
-// 通过实际使用来推断类型
-type QueryType = ReturnType<SupabaseClient['from']>['select']
 
 export const selectFields = `
                 id,

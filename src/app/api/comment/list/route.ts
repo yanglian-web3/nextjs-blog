@@ -2,7 +2,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkHasLogin } from '../../../../utils/api/check-session'
-import {CommentContentItem, CommentContentServerItem, CommentSqlQueryResult} from "../../../../types/comment";
+import {
+    CommentContentItem,
+    CommentContentServerItem,
+    CommentItem,
+    CommentSqlQueryResult
+} from "../../../../types/comment";
 import {multiUnderlineToHump} from "../../../../utils/util";
 import {getParamsAndHeads, getSubQuery, handlePostTime, selectFields} from "../comment-api-util";
 import {getErrorEmptyResponse, getServeError500, notLoginMessage, validateRequiredFields} from "../../api-utils/api-util";
@@ -16,11 +21,11 @@ const supabase = createClient(
  * @param list
  * @param articleId
  */
-const handleCommentData = async (list: CommentContentServerItem[], articleId:string) => {
+const handleCommentData = async (list: CommentContentServerItem[], articleId:string):Promise<CommentItem[]> => {
     // 先处理下划线转驼峰
     const handleFieldList = multiUnderlineToHump<CommentContentServerItem, CommentContentItem>(list)
     const afterHandlePostTimeList = handlePostTime(handleFieldList)
-    const handleResult = []
+    const handleResult:CommentItem[] = []
     const page = 1
     const pageSize = 3 // 子评论默认加载3条
     for(const current of afterHandlePostTimeList){

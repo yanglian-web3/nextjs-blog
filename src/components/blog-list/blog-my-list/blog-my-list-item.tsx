@@ -13,7 +13,7 @@ interface BlogMyListItemProps {
 }
 export default function BlogMyListItem({ item, publishSuccess }: BlogMyListItemProps){
     const { showLoading, hideLoading } = useLoading()
-    const { alertOpen, setAlertOpen } = useState(false)
+    const [alertOpen, setAlertOpen] = useState(false)
 
     const [alertConfig, setAlertConfig] = useState<AlertConfig>({
         title: "",

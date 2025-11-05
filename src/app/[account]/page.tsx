@@ -20,18 +20,18 @@ export default async function AccountBlogPage({ params}: PageProps) {
     const cookieStore = await cookies()
     const sessionToken = cookieStore.get('session_token')?.value
     console.log("在页面获取 sessionToken=", sessionToken)
-    const accountBlogResult:AccountBlogResult = await getBlogListByAccount({
+    const accountBlogResult:Partial<AccountBlogResult> = await getBlogListByAccount({
         account:resolvedParams.account,
         pagination: {current: 1, pageSize: 10},
         sessionToken,
         searchParams:{status: 1}
     })
-    const blogList:BlogItemType[] = accountBlogResult.list
+    const blogList:BlogItemType[] = accountBlogResult.list || []
     console.log("bloglist.length=", blogList.length)
     return (
         <div className={"page-container"}>
             <BlogListHead/>
-            <AccountBlogListContent initList={blogList} initPage={accountBlogResult.pagination}/>
+            <AccountBlogListContent initList={blogList} initPage={accountBlogResult.pagination || {}}/>
         </div>
     );
 }

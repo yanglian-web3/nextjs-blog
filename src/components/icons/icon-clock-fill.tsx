@@ -1,5 +1,5 @@
 export default function IconClockFill({ width = 30, height = 30, color = "#272636" } : { width?: number, height?: number, color?: string}){
-    return <svg t="1760937856919" className="icon" viewBox="0 0 1024 1024" version="1.1"
+    return <svg viewBox="0 0 1024 1024" version="1.1"
                 xmlns="http://www.w3.org/2000/svg" p-id="2625"  width={width} height={height}>
         <path
             d="M738.176 115.2V43.2S735.36 0 690.432 0H376.256c-44.8 0-53.568 43.2-53.568 43.2V115.2c69.248-31.232 135.04-49.216 207.744-49.216 72.704 0 138.496 17.984 207.744 49.28"

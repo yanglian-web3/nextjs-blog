@@ -6,11 +6,9 @@ import { useDispatch } from "react-redux"
 import MDEditor from '@uiw/react-md-editor'
 import { AppDispatch } from "../../store/index"
 import { updateContent, updateTitle } from "../../store/blog-edit-slice"
-import { useEditorContext } from '../../context/editor-context'
 import "./blog-editor.css"
 import {getBlogDetail} from "../../utils/blog";
 import { useSearchParams } from "next/navigation";
-import {BlogDetailResult} from "../../types/blog";
 import {useLoading} from "../../context/loading-context";
 
 // 包含多种编程语言的示例内容
@@ -81,15 +79,14 @@ public class Main {
 \`\`\`
 `
 
+
 export default function BlogEditor() {
     const dispatch = useDispatch<AppDispatch>()
     const searchParams = useSearchParams()
     const { showLoading, hideLoading } = useLoading()
-    const { setEditor } = useEditorContext()
     const [isClient, setIsClient] = useState(false)
     const [value, setValue] = useState("")
     const [,setDetailId] = useState("")
-
 
     useEffect(() => {
         setIsClient(true)
@@ -102,17 +99,18 @@ export default function BlogEditor() {
             handleChange(initialMarkdown)
         }
     }, [])
+
     /**
      * 获取详情数据
      * @param id
      */
     const getDetailData = (id:string) => {
         showLoading()
-        getBlogDetail(id).then((detailData:BlogDetailResult) => {
+        getBlogDetail(id).then((detailData) => {
             console.log("detailData=", detailData)
-            const { title, content } = detailData.detail
-            handleChange(content)
-            dispatch(updateTitle(title))
+            const { title, content } = detailData.detail || {}
+            handleChange(content || "")
+            dispatch(updateTitle(title || ""))
         }).finally(() => {
             hideLoading()
         })
@@ -126,50 +124,6 @@ export default function BlogEditor() {
         setValue(newValue)
         dispatch(updateContent(newValue))
     }
-
-    // 模拟 editor 实例
-    useEffect(() => {
-        if (isClient) {
-            const mockEditor = {
-                chain: () => ({
-                    focus: () => ({
-                        toggleBold: () => ({
-                            run: () => {
-                                const text = '**粗体文字**'
-                                setValue(prev => prev + text)
-                            }
-                        }),
-                        toggleItalic: () => ({
-                            run: () => {
-                                const text = '*斜体文字*'
-                                setValue(prev => prev + text)
-                            }
-                        }),
-                        toggleHeading: (options: { level: number }) => ({
-                            run: () => {
-                                const prefix = '#'.repeat(options.level) + ' '
-                                setValue(prev => prev + prefix)
-                            }
-                        }),
-                        toggleCodeBlock: () => ({
-                            run: () => {
-                                const text = '\n```javascript\n// 在这里写代码\n```\n'
-                                setValue(prev => prev + text)
-                            }
-                        }),
-                        toggleBulletList: () => ({
-                            run: () => {
-                                const text = '\n- 列表项\n'
-                                setValue(prev => prev + text)
-                            }
-                        })
-                    })
-                }),
-                isActive: () => false
-            }
-            setEditor(mockEditor)
-        }
-    }, [isClient, setEditor])
 
     if (!isClient) {
         return (
@@ -193,15 +147,26 @@ export default function BlogEditor() {
                     rehypePlugins: [],
                     components: {
                         // 可以自定义代码块组件
-                        code: ({ inline, children, className, ...props }) => {
-                            if (inline) {
-                                return <code {...props}>{children}</code>
+// 可以自定义代码块组件
+                        code: ({ children, className, ...props }) => {
+                            // 通过 className 判断是否是行内代码
+                            const isInline = !className?.includes('language-');
+
+                            // 创建安全的 props，只包含 HTML 属性
+                            const safeProps: React.HTMLAttributes<HTMLElement> = {
+                                style: props.style,
+                                id: props.id,
+                                // 只包含需要的 HTML 属性
+                            };
+
+                            if (isInline) {
+                                return <code {...safeProps}>{children}</code>;
                             }
                             return (
-                                <pre className={className} {...props}>
-                                    <code>{children}</code>
-                                </pre>
-                            )
+                                <pre className={className} {...safeProps}>
+            <code>{children}</code>
+        </pre>
+                            );
                         }
                     }
                 }}

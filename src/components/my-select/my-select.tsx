@@ -5,13 +5,12 @@ import MySelectList from './my-select-list';
 import { CommonSize } from '../../types/common';
 import "./my-select.css"
 
-interface MySelectProps<T> {
-    pageContainer?: HTMLElement; // 页面容器按钮
-    list: T[]; // 列表数据
-    listHeight?: number; // 列表高度
-    listMode?: MySelectListMode; // 列表渲染模式，默认向下拉
-    buttonHorizontalMode?: ButtonHorizontalMode; // 按钮是否水平居中
-    labelIsValue?: boolean; // 显示标签是否显示为值
+interface MySelectProps {
+    pageContainer?: React.RefObject<HTMLElement>;
+    list: MySelectObjectItem[];
+    listHeight?: number;
+    listMode?: MySelectListMode;
+    buttonHorizontalMode?: ButtonHorizontalMode;
     modelValue: string | number;
     width?: number | string;
     size?: CommonSize;
@@ -19,43 +18,40 @@ interface MySelectProps<T> {
         label: string;
         value: string;
     };
-    onChange?: <T>(value: string | number, item: T) => void;
+    onChange?: (value: string | number, item: MySelectObjectItem) => void; // 修复这里
     onUpdateModelValue?: (value: string | number) => void;
     onButtonClick?: () => void;
 }
 
-// 创建 Context 替代 Vue 的 inject
 const FormSizeContext = React.createContext<string>("middle");
 
-const MySelect = <T,>({
-                                               pageContainer,
-                                               list,
-                                               listHeight,
-                                               listMode,
-                                               buttonHorizontalMode,
-                                               labelIsValue,
-                                               modelValue,
-                                               width,
-                                               size,
-                                               prop,
-                                               onChange,
-                                               onUpdateModelValue,
-                                               onButtonClick
-                                           }: MySelectProps<T>) => {
+const MySelect = ({
+                          pageContainer,
+                          list,
+                          listHeight,
+                          listMode,
+                          buttonHorizontalMode,
+                          modelValue,
+                          width,
+                          size,
+                          prop,
+                          onChange,
+                          onUpdateModelValue,
+                          onButtonClick
+                      }: MySelectProps) => {
     const [selectMode, setSelectMode] = useState<MySelectListMode>();
     const [listIsShow, setListIsShow] = useState(false);
-    const [currentInfo, setCurrentInfo] = useState<T>({});
+    const [currentInfo, setCurrentInfo] = useState<MySelectObjectItem | null>(null); // 修复类型
     const [isClient, setIsClient] = useState(false);
-    const id = useMemo(() => `my-select-container-${Math.random().toString(36).split(".")[1]}`, []);
+    const id = useMemo(() => `my-select-container-${Math.random().toString(36).slice(2)}`, []);
 
     const containerRef = useRef<HTMLDivElement | null>(null);
-
-    // 模拟 Vue 的 inject
     const formSize = useContext(FormSizeContext);
-// 在 useEffect 中设置客户端标志
+
     useEffect(() => {
         setIsClient(true);
     }, []);
+
     // 计算 renderProp
     const renderProp = useMemo(() => {
         if (!prop) {
@@ -102,15 +98,15 @@ const MySelect = <T,>({
         }
 
         const foundItem = list.find(item => {
-            if (labelIsValue) {
-                return item === modelValue;
+            // 安全的属性访问
+            if (typeof item === 'object' && item !== null) {
+                return (item as Record<string, unknown>)[renderProp.value] === modelValue;
             }
-            return (item as MySelectObjectItem)[renderProp.value] === modelValue;
-        }) || "";
+            return item === modelValue;
+        }) || null;
 
         setCurrentInfo(foundItem);
-        console.log("currentInfo.value =", foundItem);
-    }, [list, modelValue, labelIsValue, renderProp.value]);
+    }, [list, modelValue, renderProp.value]);
 
     // 处理点击外部区域
     useEffect(() => {
@@ -132,23 +128,17 @@ const MySelect = <T,>({
 
     // 获取列表位置模式
     const getListPositionMode = (): MySelectListMode => {
-        console.log("listMode=", listMode)
         if (listMode) {
             return listMode;
         }
         if (!pageContainer) {
             return "down";
         }
-        console.log("pageContainer=",pageContainer)
         const positionInfo = pageContainer.current?.getBoundingClientRect();
         const pageClientHeight = document.body.clientHeight;
         const optionsHeight = (list?.length || 0) * 30;
         const optionHeight = optionsHeight + 70;
-        console.log("positionInfo=", positionInfo)
-        console.log("pageClientHeight=", pageClientHeight)
-        console.log("optionsHeight=", optionsHeight)
-        console.log("optionHeight=", optionHeight)
-        return positionInfo.bottom + optionHeight > pageClientHeight ? "up" : "down";
+        return positionInfo?.bottom && positionInfo.bottom + optionHeight > pageClientHeight ? "up" : "down";
     };
 
     // 按钮点击处理
@@ -158,12 +148,31 @@ const MySelect = <T,>({
         onButtonClick?.();
     };
 
-    // 选择选项处理
-    const chooseOption = (item: T) => {
-        const value = labelIsValue ? item : item[renderProp.value || "value"];
-        onUpdateModelValue?.(value);
-        onChange && onChange(value, item);
+    // 选择选项处理 - 修复类型问题
+    const chooseOption = (item: MySelectObjectItem) => {
+        const value = item[renderProp.value || "value"] as string | number
+        onUpdateModelValue?.(value)
+        onChange?.(value, item);
         setListIsShow(false);
+    };
+
+    // 获取当前显示的标签
+    const getCurrentLabel = (): string => {
+        if (!currentInfo) return "";
+
+
+        if (currentInfo) {
+            return String((currentInfo as Record<string, unknown>)[renderProp.label] || "");
+        }
+
+        return String(currentInfo);
+    };
+
+    // 获取当前值
+    const getCurrentValue = (): string | number => {
+        if (!currentInfo) return "";
+
+        return currentInfo[renderProp.value] as string | number
     };
 
     // 服务端渲染时返回简单的占位符
@@ -182,31 +191,34 @@ const MySelect = <T,>({
             </div>
         );
     }
-    return <div
-        id={id}
-        ref={containerRef}
-        className={`my-select-container flex justify-center items-center select-${selectSize}`}
-        style={{ width: selectWidth, height: `${heightValues[selectSize as keyof typeof heightValues]}px` }}
-        onClick={buttonClick}
-    >
+
+    return (
         <div
-            className={`select-current-label-container flex ${
-                listIsShow ? 'select-current-label-container-list-show' : ''
-            } items-center justify-${buttonHorizontalMode || 'between'}`}
+            id={id}
+            ref={containerRef}
+            className={`my-select-container flex justify-center items-center select-${selectSize}`}
+            style={{ width: selectWidth, height: `${heightValues[selectSize as keyof typeof heightValues]}px` }}
+            onClick={buttonClick}
         >
-            <span className="select-current-label">{currentInfo[renderProp.label]}</span>
+            <div
+                className={`select-current-label-container flex ${
+                    listIsShow ? 'select-current-label-container-list-show' : ''
+                } items-center justify-${buttonHorizontalMode || 'between'}`}
+            >
+                <span className="select-current-label">{getCurrentLabel()}</span>
+            </div>
+            <MySelectList
+                list={list || []}
+                listHeight={listHeight}
+                selectMode={selectMode}
+                currentValue={getCurrentValue()}
+                listIsShow={listIsShow}
+                prop={renderProp}
+                onChooseOption={chooseOption}
+                onLeave={() => setListIsShow(false)}
+            />
         </div>
-        <MySelectList
-            list={list || []}
-            listHeight={listHeight}
-            selectMode={selectMode}
-            currentValue={currentInfo[renderProp.value]}
-            listIsShow={listIsShow}
-            prop={renderProp}
-            onChooseOption={chooseOption}
-            onLeave={() => setListIsShow(false)}
-        />
-    </div>
+    );
 };
 
 export default MySelect;

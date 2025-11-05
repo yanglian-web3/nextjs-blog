@@ -31,9 +31,7 @@ export default function BlogInput({
                 className="absolute right-2 top-1/2 cursor-pointer"
                 style={{ transform: "translateY(-50%)" }}
             >
-                <IconClear width={20} height={20} color={"#666666"} onClick={() => {
-                    if (onClear) onClear();
-                }}/>
+                <IconClear width={20} height={20} color={"#666666"}/>
             </button>}
         </div>
     );

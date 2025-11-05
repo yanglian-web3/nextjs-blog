@@ -9,7 +9,6 @@ import {validateEmail} from "../../../utils/form-handle";
 import BlogAlert, {AlertConfig} from "../../blog-alert/blog-alert";
 import IconLoading from "../../icons/icon-loading";
 import {blogFetch} from "../../../utils/blog-fetch";
-import {RequestResult} from "../../../types/request";
 
 interface LoginForm {
     email: string;
@@ -20,7 +19,7 @@ interface LoginFormError {
 }
 interface Props {
     open: boolean;
-    updateOpen: () => void;
+    updateOpen: (isOpen: boolean) => void;
     onOpenLogin: () => void;
 }
 
@@ -156,7 +155,7 @@ export default function ForgetPass({ open, updateOpen, onOpenLogin }: Props) {
      * 关闭
      */
     const handleClose = () => {
-        updateOpen();
+        updateOpen(false);
         resetForm(); // 关闭时重置表单
     };
 

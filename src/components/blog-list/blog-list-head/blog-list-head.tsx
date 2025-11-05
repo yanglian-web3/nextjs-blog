@@ -1,7 +1,6 @@
 "use client"
 
 import "./blog-list-head.css"
-import PropTypes from "prop-types"
 import IconSearch from "../../icons/icon-search";
 import HeadUser from "../../head-user/head-user";
 import IconPlus from "../../icons/icon-plus";
@@ -67,14 +66,14 @@ function BlogListHead({showSearch = true}: {showSearch?: boolean}) {
      * 输入框值改变
      * @param e
      */
-    const searchValueChange = (e) => {
+    const searchValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value)
     }
     /**
      * 键盘按下
      * @param e
      */
-    const onkeydown = (e) => {
+    const onkeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if(e.key === "Enter"){
             search()
         }
@@ -120,10 +119,6 @@ function BlogListHead({showSearch = true}: {showSearch?: boolean}) {
         </div>
         <Login open={loginOpen} updateOpen={setLoginOpen}/>
     </>
-}
-
-BlogListHead.prototype = {
-    userInfo: PropTypes.object.isRequired
 }
 
 export default BlogListHead

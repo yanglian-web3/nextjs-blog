@@ -1,7 +1,7 @@
 "use client"
 
 import BlogMyListItem from "./blog-my-list-item";
-import { BlogStatusCountInfo} from "../../../types/blog";
+import {BlogItemType, BlogStatusCountInfo} from "../../../types/blog";
 import {useEffect, useRef, useState} from "react";
 import Pagination from "../../pagination/pagination";
 import {PaginationOptions} from "../../../types/pagination";
@@ -23,7 +23,7 @@ const defaultPage = {
 }
 export default function BlogMyListContent() {
     const { showLoading, hideLoading } = useLoading()
-    const [blogList, setBlogList] = useState([])
+    const [blogList, setBlogList] = useState<BlogItemType[]>([])
     const [currentStatus, setCurrentStatus] = useState(-1)
     const [blogListTitleWidth, setBlogListTitleWidth] = useState(1200)
     const [countInfo, setCountInfo] = useState<BlogStatusCountInfo>({ published: 0, draft: 0, total: 0})
@@ -59,9 +59,9 @@ export default function BlogMyListContent() {
             pagination:{current: paginationInfo.current, pageSize: paginationInfo.pageSize},
             searchParams:{status: type === -1 ? undefined : type}
         }).then((myBlogResult) => {
-            setRenderPagination(myBlogResult.pagination)
-            setBlogList(myBlogResult.list)
-            setCountInfo(myBlogResult.countInfo)
+            setRenderPagination(myBlogResult.pagination || {})
+            setBlogList(myBlogResult.list || [])
+            myBlogResult.countInfo && setCountInfo(myBlogResult.countInfo)
         }).finally(() => {
             hideLoading()
         })
@@ -71,7 +71,7 @@ export default function BlogMyListContent() {
      * 翻页改变
      * @param paginationInfo
      */
-    const paginationChange = (paginationInfo) => {
+    const paginationChange = (paginationInfo:PaginationOptions) => {
         // 翻页时，清空选中数据
         console.log("paginationChange paginationInfo=",paginationInfo)
         setRenderPagination(paginationInfo)

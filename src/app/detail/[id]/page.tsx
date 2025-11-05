@@ -8,6 +8,7 @@ import {getBlogDetail, getPopularBlogIds} from "../../../utils/blog";
 import BlogListHead from "../../../components/blog-list/blog-list-head/blog-list-head";
 import type { Metadata } from 'next'
 import Script from 'next/script'
+import {BlogDetailResult} from "../../../types/blog";
 
 interface PageParams {params:Promise<{id:string}>}
 
@@ -27,8 +28,8 @@ export async function generateMetadata({ params }:PageParams): Promise<Metadata>
     const resolvedParams = await params
     const blogDataResult = await getBlogDetail(resolvedParams.id)
     const { detail, author } = blogDataResult
-    const { title, content, createdAt, summary, cover } = detail
-    const { name } = author
+    const { title = "", content = "", createdAt = "", summary = "", cover = "" } = detail || {}
+    const { name = "" } = author || {}
 
     // 从内容中提取描述（前160字符）
     const description = summary || content.replace(/<[^>]*>/g, '').substring(0, 160) + '...'
@@ -62,7 +63,10 @@ export default async function BlogDetail({params}:PageParams) {
     const resolvedParams = await params
     console.log("resolvedParams=",resolvedParams)
     const blogDataResult = await getBlogDetail(resolvedParams.id)
-    const { detail, countInfo, author} = blogDataResult
+    const { detail, countInfo, author} = blogDataResult as BlogDetailResult
+    if(!detail || !countInfo || !author){
+        throw new Error("页面出错")
+    }
     console.log("blog_Detail_result result=", {...detail, content: "太多了省略..."})
     const {title, content, createdAt, cover, updatedAt, summary} = detail
 

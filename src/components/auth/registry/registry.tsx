@@ -8,21 +8,23 @@ import IconLoading from "../../icons/icon-loading";
 import {validateEmail, validateForm, validatePassword, validateSingleField} from "../../../utils/form-handle";
 import BlogInput from "../../form/blog-input";
 import {CryptoUtils} from "../../../utils/crypto";
-import Toast from "../../toast/toast"
+import Toast, {ToastType} from "../../toast/toast"
 import {blogFetch} from "../../../utils/blog-fetch";
 
-interface LoginForm {
+interface RegistryForm {
     name: string;
     email: string;
     account: string;
     password: string;
+    [k:string]: string
 }
 
-interface LoginFormError {
+interface RegistryFormError {
     name: ErrorField;
     email: ErrorField;
     password: ErrorField;
-    [k:string]: unknown
+    account: ErrorField;
+    [k:string]: ErrorField
 }
 interface Props {
     open: boolean;
@@ -34,16 +36,16 @@ interface Props {
 export default function Registry({ open, updateOpen, onOpenLogin }: Props) {
     const [isSubmitting, setSubmitting] = useState(false);
     const [toastOpen, setToastOpen] = useState(false);
-    const [toastType, setToastType] = useState("info")
+    const [toastType, setToastType] = useState<ToastType>("info")
     const [registerMsg, setRegisterMsg] = useState('');
-    const [errors, setErrors] = useState<Partial<LoginFormError>>({});
+    const [errors, setErrors] = useState<Partial<RegistryFormError>>({});
     const initFormData = {
         name: '',
         email: '',
         account: '',
         password: '',
     } // 初始表单数据
-    const [formData, setFormData] = useState<LoginForm>({...initFormData});
+    const [formData, setFormData] = useState<RegistryForm>({...initFormData});
 
     useEffect(() => {
         if (open) {
@@ -56,7 +58,7 @@ export default function Registry({ open, updateOpen, onOpenLogin }: Props) {
      * @param name
      * @param value
      */
-    const validateField = (name: keyof LoginForm, value: string): string | null => {
+    const validateField = (name: keyof RegistryForm, value: string): string | null => {
         switch (name) {
             case 'name':
                 if (!value.trim()) return '请输入姓名';
@@ -75,7 +77,7 @@ export default function Registry({ open, updateOpen, onOpenLogin }: Props) {
      * 处理输入变化
      * @param field
      */
-    const handleInputChange = (field: keyof LoginForm) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (field: keyof RegistryForm) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setFormData(prev => ({
             ...prev,
@@ -83,7 +85,7 @@ export default function Registry({ open, updateOpen, onOpenLogin }: Props) {
         }));
 
         // 实时验证（可选，也可以在提交时验证）
-        validateSingleField<LoginForm, LoginFormError>({
+        validateSingleField<RegistryForm, RegistryFormError>({
             name:field,
             value,
             validateField,
@@ -121,7 +123,7 @@ export default function Registry({ open, updateOpen, onOpenLogin }: Props) {
         e.preventDefault();
         console.log("提交")
         // 提交前验证
-        if (!validateForm<LoginForm, LoginFormError>({
+        if (!validateForm<RegistryForm, RegistryFormError>({
             formData,
             validateField,
             setErrors

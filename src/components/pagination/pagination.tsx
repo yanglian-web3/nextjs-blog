@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import './pagination.css'; // 改为导入转换后的CSS文件
 import { PaginationOptions } from '../../types/pagination';
-import { MySelectItem } from '../../types/my-select';
+import {MySelectObjectItem} from '../../types/my-select';
 import MySelect, { FormSizeContext } from '../my-select/my-select';
 
 interface PaginationProps {
@@ -59,7 +59,7 @@ const Pagination: React.FC<PaginationProps> = ({ options, onChange }) => {
         return renderOptions.pageSizeOptions.map(current => ({
             label: `${current}条/页`,
             value: current
-        })) as MySelectItem[];
+        })) as MySelectObjectItem[];
     }, [renderOptions.pageSizeOptions]);
 
     // 获取可见页码范围
@@ -183,7 +183,7 @@ const Pagination: React.FC<PaginationProps> = ({ options, onChange }) => {
                     <FormSizeContext.Provider value="small">
                         <MySelect list={pageOptionList}
                                   modelValue={renderOptions.pageSize}
-                                  pageContainer={paginationContainer}
+                                  pageContainer={paginationContainer as React.RefObject<HTMLElement>}
                                   onChange={(value) => handleChooseOption(Number(value))} />
                     </FormSizeContext.Provider>
 
@@ -198,7 +198,7 @@ const Pagination: React.FC<PaginationProps> = ({ options, onChange }) => {
                         type="number"
                         min="1"
                         max={pageNum.toString()}
-                        onChange={(e) => setInputValue(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
                         onBlur={handleJumperInputChange}
                         onKeyDown={(e) => e.key === 'Enter' && handleJumperInputChange()}
                     />

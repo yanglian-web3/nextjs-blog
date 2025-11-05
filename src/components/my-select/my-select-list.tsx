@@ -8,7 +8,7 @@ interface MySelectListProps {
   list: MySelectObjectItem[]; // 列表数据
   selectMode?: MySelectListMode; // 列表渲染模式，默认向下拉
   listIsShow?: boolean; // 是否显示列表
-  prop?: {
+  prop: {
     label: string;
     value: string;
   };
@@ -24,7 +24,7 @@ interface MySelectListProps {
 const FormSelectIndexContext = React.createContext<string>("1");
 const FormColorModeContext = React.createContext<string>("yellow");
 
-const MySelectList: React.FC<MySelectListProps> = ({
+const MySelectList = ({
                                                      list,
                                                      selectMode,
                                                      listIsShow,
@@ -35,7 +35,7 @@ const MySelectList: React.FC<MySelectListProps> = ({
                                                      listHeight,
                                                      onChooseOption,
                                                      onLeave
-                                                   }) => {
+                                                   }: MySelectListProps) => {
   // 模拟 Vue 的 inject
   const formSelectIndex = useContext(FormSelectIndexContext);
   const formColorMode = useContext(FormColorModeContext);
@@ -89,7 +89,7 @@ const MySelectList: React.FC<MySelectListProps> = ({
                   className={`select-item row-center ${isSelected(item) ? 'selected' : ''}`}
                   onClick={() => chooseOption(item)}
               >
-                <span className="label">{item[prop.label]}</span>
+                <span className="label">{item[prop.label] as string}</span>
               </li>
           ))}
         </ul>

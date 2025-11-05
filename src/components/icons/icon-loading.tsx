@@ -1,6 +1,6 @@
 export default function IconLoading({ width = 30, height = 30, color = "#272636" } : { width?: number, height?: number, color?: string}) {
 
-    return <svg t="1761374721135" className="rotate360" viewBox="0 0 1024 1024" version="1.1"
+    return <svg className="rotate360" viewBox="0 0 1024 1024" version="1.1"
                 xmlns="http://www.w3.org/2000/svg" p-id="3471"  width={width} height={height} fill={ color}>
       <path
           d="M512 337.322667a26.666667 26.666667 0 0 1-26.666667-26.666667V197.333333a26.666667 26.666667 0 1 1 53.333334 0v113.322667c0 14.762667-11.946667 26.666667-26.666667 26.666667z"

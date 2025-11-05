@@ -75,8 +75,8 @@ export default function AccountBlogListContent({ initList, initPage}: { initList
             pagination:{current: paginationInfo.current, pageSize: paginationInfo.pageSize},
             searchParams:{status: 1, title: searchValue }
         }).then((myBlogResult) => {
-            setRenderPagination(myBlogResult.pagination)
-            setBlogList(myBlogResult.list)
+            setRenderPagination(myBlogResult.pagination || {})
+            setBlogList(myBlogResult.list || [])
         }).finally(() => {
             hideLoading()
         })
@@ -86,7 +86,7 @@ export default function AccountBlogListContent({ initList, initPage}: { initList
      * 翻页改变
      * @param paginationInfo
      */
-    const paginationChange = (paginationInfo) => {
+    const paginationChange = (paginationInfo:PaginationOptions) => {
         // 翻页时，清空选中数据
         console.log("paginationChange paginationInfo=",paginationInfo)
         setRenderPagination(paginationInfo)

@@ -3,6 +3,5 @@ export type ButtonHorizontalMode = "center" | "start" | "between" | "end"
 export type MySelectObjectItem = {
     label: string,
     value: string | number,
-    [k:string]: unknown
+    [k:string]: string | number
 }
-export type MySelectItem = string | number | MySelectObjectItem

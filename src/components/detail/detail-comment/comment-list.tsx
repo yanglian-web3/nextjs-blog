@@ -1,4 +1,4 @@
-import {CommentContentItem, CommentItem} from "../../../types/comment";
+import {CommentContentItem, CommentItem, CommentSubItem} from "../../../types/comment";
 import React, {useEffect, useState} from "react";
 import CommentListItem from "./comment-list-item";
 import {useParams} from "next/navigation";
@@ -56,9 +56,9 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
     /**
      * 获取评论列表数据
      */
-    const getCommentList = (page:number) => {
+    const getCommentList = (page:number):Promise<{list: CommentItem[], pagination: PaginationOptions}> => {
         return new Promise((resolve,reject) => {
-            blogFetch(`/api/comment/list?articleId=${id}&current=${page}&pageSize=10`)
+            blogFetch<{list: CommentItem[], pagination: PaginationOptions}>(`/api/comment/list?articleId=${id}&current=${page}&pageSize=10`)
                 .then((result) => {
                     const { code, data } = result
                     if (code === 200) {
@@ -82,7 +82,7 @@ export default function CommentList({refreshNum}: {refreshNum: number}) {
     const getMoreSubList = (parentId:string, originSubList: CommentContentItem[], page:number) => {
         const newPage = originSubList.length < 10 ? 1 : page + 1
         setSubListMoreLoading(true)
-        blogFetch(`/api/comment/sub-list?articleId=${id}&parentId=${parentId}&current=${newPage}`)
+        blogFetch<CommentSubItem>(`/api/comment/sub-list?articleId=${id}&parentId=${parentId}&current=${newPage}`)
             .then((result) => {
                 const { code, data } = result
                 if (code === 200) {

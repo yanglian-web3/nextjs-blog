@@ -37,8 +37,9 @@ export default function SlideDrawer({
         }, 300); // 与 CSS 动画持续时间一致
     };
 
-    const handleBackdropClick = (e: Event) => {
-        if (e.target.classList.contains('drawer-backdrop')) {
+    const handleBackdropClick = (e:React.MouseEvent<HTMLDivElement>) => {
+        // 使用 MouseEvent 和安全的类型检查
+        if (e.target instanceof Element && e.target.classList.contains('drawer-backdrop')) {
             handleClose();
         }
     };

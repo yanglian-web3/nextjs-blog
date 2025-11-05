@@ -1,13 +1,11 @@
 /**
  * 验证整个表单
  */
-
-
-export const validateForm = <T, E extends Record<string, unknown>>(
+export const validateForm = <T extends Record<string, string>, E extends Record<string, unknown>>(
     options: {
         formData: T;
         setErrors: React.Dispatch<React.SetStateAction<Partial<E>>>;
-        validateField: (name: keyof T, value: T[keyof T]) => string | null;
+        validateField: (name: keyof T, value: string) => string | null;
     }
 ): boolean => {
     const { formData, setErrors, validateField } = options;
@@ -18,15 +16,15 @@ export const validateForm = <T, E extends Record<string, unknown>>(
     (Object.keys(formData) as Array<keyof T>).forEach(key => {
         const error = validateField(key, formData[key]);
         if (error) {
-            newErrors[key] = { message: error } as E[keyof E];
+            newErrors[key as keyof E] = { message: error } as E[keyof E];
             isValid = false;
         }
     });
+
     console.log("new Errors=", newErrors)
     setErrors(newErrors);
     return isValid;
 };
-
 /**
  * 单个字段验证
  * @param options

@@ -14,12 +14,13 @@ import {CryptoUtils} from "../../../utils/crypto";
 interface ResetForm {
   confirmPassword: string;
   password: string;
+  [k:string]: string
 }
 
 interface ResetFormError {
   confirmPassword: ErrorField;
   password: ErrorField;
-  [k:string]: unknown
+  [k:string]: ErrorField
 }
 
 const supabase = createClient(
