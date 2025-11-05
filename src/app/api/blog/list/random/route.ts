@@ -1,7 +1,10 @@
 // src/app/api/blog/featured/route.ts (随机版本)
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-import {BlogHomeItemType, BlogItemServeType} from "../../../../../types/blog";
+import {createClient, PostgrestError} from '@supabase/supabase-js'
+import {
+    BlogHomeItemServeType,
+    BlogHomeItemType,
+} from "../../../../../types/blog";
 import {getServeError500} from "../../../api-utils/api-util";
 import {handleCount} from "../../../../../utils/util";
 
@@ -28,7 +31,7 @@ export async function GET(request: NextRequest) {
             query = query.ilike('title', `%${searchTitle.trim()}%`)
             console.log('添加标题模糊查询:', searchTitle.trim())
         }
-        const { data: allBlogs, error: countError } = await query
+        const { data: allBlogIds, error: countError }: { data: { id:string }[] | null, error: PostgrestError | null} = await query
 
         if (countError) {
             console.error('获取博客ID列表错误:', countError)
@@ -38,7 +41,7 @@ export async function GET(request: NextRequest) {
             })
         }
 
-        if (!allBlogs || allBlogs.length === 0) {
+        if (!allBlogIds || allBlogIds.length === 0) {
             return NextResponse.json({
                 code: 200,
                 message: '暂无博客数据',
@@ -47,10 +50,10 @@ export async function GET(request: NextRequest) {
         }
 
         // 2. 随机选择5个ID
-        const randomIds = allBlogs
+        const randomIds = allBlogIds
             .sort(() => Math.random() - 0.5)
             .slice(0, 5)
-            .map((blog:BlogHomeItemType) => blog.id)
+            .map((blog) => blog.id)
 
         console.log('随机选择的博客ID:', randomIds)
 
@@ -74,7 +77,7 @@ export async function GET(request: NextRequest) {
                 )
             `)
             .in('id', randomIds)
-            .eq('status', 1)
+            .eq('status', 1) as { data: BlogHomeItemServeType[] | null, error: PostgrestError | null}
 
         if (blogError) {
             console.error('数据库查询错误:', blogError)
@@ -85,8 +88,9 @@ export async function GET(request: NextRequest) {
         }
 
         // 4. 处理数据格式
-        const formattedBlogs = (blogs || []).map((blog:BlogItemServeType) => {
+        const formattedBlogs = (blogs || []).map((blog:BlogHomeItemServeType) => {
             const { user, content, created_at, update_at, id, title, cover, view_count} =  blog
+            console.log("formattedBlogs user=", user)
             const contentText = content.replace(/<[^>]*>/g, '')
             const summary = contentText.length > 500
                 ? contentText.substring(0, 500)
@@ -111,7 +115,7 @@ export async function GET(request: NextRequest) {
                 account: user?.account,
                 name: user?.name,
                 avatar: user?.avatar,
-            }
+            } as BlogHomeItemType
         })
 
         // console.log('博客数据:', formattedBlogs)

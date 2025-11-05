@@ -1,9 +1,9 @@
 // src/app/api/blog/list/page/[account]/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import {createClient, PostgrestError} from '@supabase/supabase-js'
 import { checkHasLogin } from '../../../../../../utils/api/check-session'
 import {UserInfo} from "../../../../../../types/user";
-import {BlogItemServeType, BlogItemType} from "../../../../../../types/blog";
+import { BlogItemServeSqlType, BlogItemType} from "../../../../../../types/blog";
 import {formatDateTime} from "../../../../../../utils/date-format";
 import {getServeError500, queryCommentsCount} from "../../../../api-utils/api-util";
 import {handleCount} from "../../../../../../utils/util";
@@ -14,7 +14,7 @@ const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-const handleBlogData = async (blogs: BlogItemServeType[]) => {
+const handleBlogData = async (blogs: BlogItemServeSqlType[]) => {
     const formattedBlogs: BlogItemType[] = []
     for(const blog of  blogs){
         const { created_at, id, update_at, status, content, cover, title, view_count } = blog
@@ -62,7 +62,7 @@ export async function GET(
         console.log('request.cookies.get(\'session_token\')?.value', request.cookies.get('session_token')?.value)
 
         // 2. 首先根据 account 查找目标用户
-        const { data: targetUser, error: userError }:{data: UserInfo, error: unknown} = await supabase
+        const { data: targetUser, error: userError }:{data: UserInfo | null, error: PostgrestError | null} = await supabase
             .from('user')
             .select('auth_user_id, account, name, avatar')
             .eq('account', account)
@@ -149,7 +149,7 @@ export async function GET(
         // const { data: blogs, error: blogError, count } = await query
         //     .order('update_at', { ascending: false })
         //     .range(from, to)
-        const { data: blogs, error: blogError, count } = blogResult
+        const { data: blogs, error: blogError, count }: { data: BlogItemServeSqlType[] | null, error: PostgrestError | null, count: number | null} = blogResult
         const { count: published } = publishedCountResult
         const author = {
             account: targetUser.account,
@@ -181,7 +181,7 @@ export async function GET(
 
 
         // 11. 处理数据格式
-        const formattedBlogs = await handleBlogData(blogs)
+        const formattedBlogs = await handleBlogData(blogs || [])
 
         // 8. 分页信息
         const total = count || 0
@@ -212,7 +212,7 @@ export async function GET(
                 countInfo: {
                     published,
                     total,
-                    draft: NP.minus(total, published)
+                    draft: NP.minus(total, published || 0)
                 }
             }
         })

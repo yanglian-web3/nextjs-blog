@@ -6,9 +6,10 @@ import IconPlus from "../../icons/icon-plus";
 import { ErrorField } from "../../../types/form";
 import BlogInput from "../../form/blog-input";
 import {validateEmail} from "../../../utils/form-handle";
-import BlogAlert from "../../blog-alert/blog-alert";
+import BlogAlert, {AlertConfig} from "../../blog-alert/blog-alert";
 import IconLoading from "../../icons/icon-loading";
 import {blogFetch} from "../../../utils/blog-fetch";
+import {RequestResult} from "../../../types/request";
 
 interface LoginForm {
     email: string;
@@ -30,7 +31,7 @@ export default function ForgetPass({ open, updateOpen, onOpenLogin }: Props) {
         email: '',
     });
     const [alertOpen, setAlertOpen] = useState(false)
-    const [alertConfig, setAlertConfig] = useState({
+    const [alertConfig, setAlertConfig] = useState<AlertConfig>({
         title: "",
         message: "",
         type: 'warning'

@@ -1,20 +1,26 @@
 import {PaginationOptions} from "./pagination";
 import {CamelToSnakeKeys} from "./type-utils";
+import {PostgrestError} from "@supabase/supabase-js";
 
-export interface CommentContentItem{
+export interface CommentContentCommonItem{
     articleId: string,
     avatar: string,
     id: string,
     content: string,
-    postTime: string,
     username: string,
     parentUsername?: string,
     parentUserAccount?: string,
     parentId?:string,
     userAccount: string,
-    loginUserDigg: boolean,
     createdAt: string,
     userId: string,
+    // 添加索引签名
+    [key: string]: unknown;
+}
+export type CommentContentServerItem  = CamelToSnakeKeys<CommentContentCommonItem>
+export interface CommentContentItem extends CommentContentCommonItem{
+    postTime: string,
+    loginUserDigg: boolean,
 }
 export interface CommentItem {
     info: CommentContentItem,
@@ -25,7 +31,7 @@ export interface CommentItem {
 }
 
 export interface CommentSqlQueryResult {
-    data: CamelToSnakeKeys<CommentContentItem>[],
-    error: unknown,
-    count: number
+    data: CommentContentServerItem[] | null,
+    error: PostgrestError | null,
+    count: number | null
 }

@@ -1,6 +1,6 @@
 // src/app/api/blog/detail/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import {createClient, PostgrestError} from '@supabase/supabase-js'
 import { checkHasLogin } from '../../../../../utils/api/check-session'
 import { BlogItemServeType } from "../../../../../types/blog";
 import {UserInfo} from "../../../../../types/user";
@@ -32,7 +32,7 @@ export async function GET(
         console.log('会话状态:', { isLoggedIn, currentUserId: session?.user_id })
 
         // 2. 查询博客基本信息
-        const { data: blog, error: blogError }:{data: BlogItemServeType, error: unknown} = await supabase
+        const { data: blog, error: blogError }:{data: BlogItemServeType | null, error: PostgrestError | null} = await supabase
             .from('blog')
             .select(`
                 id,
@@ -59,7 +59,7 @@ export async function GET(
         const { id, title, content, cover, status, created_at, update_at, user_id, view_count } = blog
 
         // 3. 查询作者信息
-        const { data: author, error: authorError }: { data: UserInfo, error: unknown} = await supabase
+        const { data: author, error: authorError }: { data: UserInfo | null, error: PostgrestError | null} = await supabase
             .from('user')
             .select('auth_user_id, account, name, avatar')
             .eq('auth_user_id', blog.user_id)

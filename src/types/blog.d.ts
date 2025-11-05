@@ -4,39 +4,52 @@ export interface BlogItemCommonType {
     id: number;
     title: string;
     content: string;
-    cover: string,
+    cover: string | null;
     status: number;
-    viewCount: string;
-    commentCount: string;
-    summary: string;
 }
 export interface BlogItemType extends BlogItemCommonType{
+    summary: string;
     createdAt: string;
     updatedAt: string;
     account: string;
     auth_user_id?: string;
+    viewCount: string;
+    commentCount: string;
 }
-
-export interface BlogItemServeType extends BlogItemCommonType{
+export interface BlogItemServeSqlType extends BlogItemCommonType{
     created_at: string;
     update_at: string;
+    user_id: string
+    view_count: number;
+}
+export interface BlogItemServeType extends BlogItemServeSqlType{
     comment_count: number;
     view_count: number;
-    user_id: string
-}
-export interface BlogCountInfo {
-    commentCount: number;
-    readCount: number
 }
 
-export interface BlogHomeItemType extends BlogItemCommonType {
+export interface BlogHomeItemServeType extends BlogItemServeSqlType{
+    view_count: number;
+    user: {
+        account: string;
+        name: string;
+        avatar: string | null
+    }
+}
+
+
+
+export interface BlogHomeItemType {
+    id: number;
+    title: string;
+    summary: string;
+    cover: string | null;
     editTime: string;
+    viewCount: string;
     publish: string;
     url: string;
     account: string;
     name: string;
     avatar: string;
-    blogUrl: string;
 }
 interface BlogStatusCountInfo {
     published: number,

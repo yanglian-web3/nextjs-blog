@@ -2,11 +2,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkHasLogin } from '../../../../utils/api/check-session'
-import {CommentContentItem, CommentSqlQueryResult} from "../../../../types/comment";
+import {CommentContentItem, CommentContentServerItem, CommentSqlQueryResult} from "../../../../types/comment";
 import {multiUnderlineToHump} from "../../../../utils/util";
-import {getParamsAndHeads, getSubQuery, handlePostTime, queryFromTo, selectFields} from "../comment-api-util";
+import {getParamsAndHeads, getSubQuery, handlePostTime, selectFields} from "../comment-api-util";
 import {getErrorEmptyResponse, getServeError500, notLoginMessage, validateRequiredFields} from "../../api-utils/api-util";
-import {CamelToSnakeKeys} from "../../../../types/type-utils";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -17,21 +16,26 @@ const supabase = createClient(
  * @param list
  * @param articleId
  */
-const handleCommentData = async (list: CamelToSnakeKeys<CommentContentItem>[], articleId) => {
+const handleCommentData = async (list: CommentContentServerItem[], articleId:string) => {
     // 先处理下划线转驼峰
-    const handleFieldList = multiUnderlineToHump<CamelToSnakeKeys<CommentContentItem>, CommentContentItem>(list)
+    const handleFieldList = multiUnderlineToHump<CommentContentServerItem, CommentContentItem>(list)
     const afterHandlePostTimeList = handlePostTime(handleFieldList)
     const handleResult = []
     const page = 1
     const pageSize = 3 // 子评论默认加载3条
     for(const current of afterHandlePostTimeList){
         const { id } = current
-        const subQuery = getSubQuery(supabase,articleId!,id!)
-        const dataResult:CommentSqlQueryResult = await queryFromTo(page,pageSize,subQuery)
+        const subQuery = getSubQuery(supabase,articleId,id!)
+        // 4. 计算分页
+        const from = (page - 1) * pageSize
+        const to = from + pageSize - 1
+        const dataResult:CommentSqlQueryResult = await subQuery
+            .order('created_at', { ascending: false })
+            .range(from, to)
         const { data: subComments, error: subCommentError, count:subCount } = dataResult
         const total = subCount || 0
         const totalPages = Math.ceil(total / pageSize)
-        const subList = subCommentError || !subComments ? [] : multiUnderlineToHump<CamelToSnakeKeys<CommentContentItem>, CommentContentItem>(subComments)
+        const subList = subCommentError || !subComments ? [] : multiUnderlineToHump<CommentContentServerItem, CommentContentItem>(subComments)
         const afterHandlePostTimeSubList = handlePostTime(subList)
         handleResult.push({
             info: current,
@@ -66,7 +70,7 @@ export async function GET(
     try {
 
         // 1. 获取查询参数
-        const { page, pageSize, articleId, sessionToken } = await getParamsAndHeads(request)
+        const { page, pageSize, articleId, sessionToken } = getParamsAndHeads(request)
         console.log('查询参数:', { page, pageSize })
         console.log('request.cookies.get(\'session_token\')?.value', request.cookies.get('session_token')?.value)
 
@@ -108,7 +112,7 @@ export async function GET(
         const total = count || 0
         const totalPages = Math.ceil(total / pageSize)
 
-        const dataList = await handleCommentData(comments, articleId)
+        const dataList = await handleCommentData(comments || [], articleId)
 
         return NextResponse.json({
             code: 200,

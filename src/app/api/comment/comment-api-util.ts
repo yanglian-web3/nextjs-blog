@@ -1,6 +1,7 @@
 import {NextRequest} from "next/server";
-import {CommentContentItem} from "../../../types/comment";
+import {CommentContentItem, CommentItem} from "../../../types/comment";
 import { SupabaseClient } from '@supabase/supabase-js'
+import {PostgrestFilterBuilder} from "@supabase/postgrest-js";
 
 // 通过实际使用来推断类型
 type QueryType = ReturnType<SupabaseClient['from']>['select']
@@ -18,22 +19,6 @@ export const selectFields = `
                 parent_username,
                 created_at
             `
-
-/**
- * 分页查询封装
- * @param page
- * @param pageSize
- * @param query
- */
-export const queryFromTo = async (page: number, pageSize: number, query: QueryType) => {
-    // 4. 计算分页
-    const from = (page - 1) * pageSize
-    const to = from + pageSize - 1
-    // 6. 并行查询：获取列表
-    return await query
-        .order('created_at', { ascending: false })
-        .range(from, to)
-}
 
 
 export const getSubQuery = (supabase: SupabaseClient, articleId: string, parentId: string) => {
@@ -53,7 +38,7 @@ export const getParamsAndHeads = (request: NextRequest) => {
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('current') || '1')
     const pageSize = parseInt(searchParams.get('pageSize') || '10')
-    const articleId = searchParams.get('articleId')
+    const articleId = searchParams.get('articleId') || ""
     const parentId = searchParams.get('parentId')
     const requestHeaders = request.headers
     const sessionToken = requestHeaders.get('session_token') || request.cookies.get('session_token')?.value

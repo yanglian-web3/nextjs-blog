@@ -9,6 +9,8 @@ import BlogListHead from "../../../components/blog-list/blog-list-head/blog-list
 import type { Metadata } from 'next'
 import Script from 'next/script'
 
+interface PageParams {params:Promise<{id:string}>}
+
 export const revalidate = 60*60*1 // 1小时
 
 export async function generateStaticParams() {
@@ -21,7 +23,7 @@ export async function generateStaticParams() {
 }
 
 // 生成动态元数据
-export async function generateMetadata({ params }): Promise<Metadata> {
+export async function generateMetadata({ params }:PageParams): Promise<Metadata> {
     const resolvedParams = await params
     const blogDataResult = await getBlogDetail(resolvedParams.id)
     const { detail, author } = blogDataResult
@@ -56,7 +58,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
     }
 }
 
-export default async function BlogDetail({params}) {
+export default async function BlogDetail({params}:PageParams) {
     const resolvedParams = await params
     console.log("resolvedParams=",resolvedParams)
     const blogDataResult = await getBlogDetail(resolvedParams.id)
@@ -128,7 +130,7 @@ export default async function BlogDetail({params}) {
                 <div className="blog-detail-preview-and-bottom-container flex justify-center">
                     <BlogDetailPreview value={content}/>
                     {/*为了对齐，放在preview组件里面，放在外面可能会因浏览器其他插件影响，导致底部和中间不对齐*/}
-                    <BlogDetailBottom commentCount={countInfo?.commentCount || 0} author={author}/>
+                    <BlogDetailBottom commentCount={countInfo?.commentCount || "0"} author={author}/>
                 </div>
             </article>
         </main>

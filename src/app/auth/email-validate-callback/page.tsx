@@ -14,7 +14,9 @@ export default function EmailValidateCallback() {
             async (event, session) => {
                 console.log('Auth event:', event)
                 console.log('Session:', session)
-
+                if(!session){
+                    return
+                }
                 switch (event) {
                     case 'SIGNED_IN':
                         setStatus('邮箱验证成功！正在跳转...')

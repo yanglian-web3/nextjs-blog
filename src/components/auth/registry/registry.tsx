@@ -22,6 +22,7 @@ interface LoginFormError {
     name: ErrorField;
     email: ErrorField;
     password: ErrorField;
+    [k:string]: unknown
 }
 interface Props {
     open: boolean;
@@ -82,7 +83,7 @@ export default function Registry({ open, updateOpen, onOpenLogin }: Props) {
         }));
 
         // 实时验证（可选，也可以在提交时验证）
-        validateSingleField<LoginForm>({
+        validateSingleField<LoginForm, LoginFormError>({
             name:field,
             value,
             validateField,

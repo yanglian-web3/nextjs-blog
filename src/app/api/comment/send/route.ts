@@ -2,15 +2,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from "@supabase/supabase-js"
 import { checkHasLogin } from "../../../../utils/api/check-session"
-import {CommentContentItem} from "../../../../types/comment";
 import {triggerBlogRevalidation} from "../../api-utils/revalidate";
 
-interface BlogRequest {
-    id?: number | string
-    title: string
-    content: string
-    cover?: string
-    status?: string
+interface BlogCommentSendRequest {
+    user_account: string;
+    article_id: number;
+    avatar?: string;
+    parentId?: string;
+    content: string;
+    username: string;
+    parent_username?: string;
+    parent_user_account?: string;
+    parent_id?: string;
 }
 
 const supabase = createClient(
@@ -23,7 +26,7 @@ export async function POST(request: NextRequest) {
         console.log('=== 开始创建/更新评论 ===')
 
         // 1. 解析请求数据
-        const { user_account, article_id, avatar, parentId, content, username, parent_username, parent_user_account, parent_id }: BlogRequest = await request.json() as CommentContentItem
+        const { user_account, article_id, avatar, parentId, content, username, parent_username, parent_user_account, parent_id }: BlogCommentSendRequest = await request.json()
         console.log('接收到的数据:', {  user_account, article_id, avatar, parentId, content, username, parent_username, parent_user_account, parent_id })
 
         // 2. 检查登录状态

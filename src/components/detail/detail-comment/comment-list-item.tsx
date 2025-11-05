@@ -5,7 +5,7 @@ import CommentInputSend from "./comment-input-send";
 import React, {useState} from "react";
 import UserHeadImage from "../../head-user/user-head-image";
 import { useSelector } from "react-redux";
-import BlogAlert from "../../blog-alert/blog-alert";
+import BlogAlert, {AlertConfig} from "../../blog-alert/blog-alert";
 import {blogFetch} from "../../../utils/blog-fetch";
 import IconLoading from "../../icons/icon-loading";
 import {RootState} from "../../../store/index";
@@ -24,7 +24,7 @@ export default function CommentListItem({ info, success, parentId, isSub = false
     const [alertOpen, setAlertOpen] = useState(false)
     const [footerType, setFooterType] = useState<"confirm" | "toast">("confirm") // 弹窗类型，confirm或者toast
     const [confirmLoading, setConfirmLoading] = useState(false); // 确认删除加载中
-    const [alertConfig, setAlertConfig] = useState({
+    const [alertConfig, setAlertConfig] = useState<AlertConfig>({
         title: "",
         message: "",
         type: 'warning'

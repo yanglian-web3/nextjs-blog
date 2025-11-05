@@ -4,14 +4,6 @@ import { createClient } from "@supabase/supabase-js"
 import { checkHasLogin } from "../../../../../utils/api/check-session"
 import {getServeError500, notLoginMessage} from "../../../api-utils/api-util";
 
-interface BlogRequest {
-    id?: number | string
-    title: string
-    content: string
-    cover?: string
-    status?: string
-}
-
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -21,7 +13,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     try {
         // 1. 解析请求数据
         const resolvedParams = await params
-        const { id }: BlogRequest = resolvedParams
+        const { id } = resolvedParams
         console.log('接收到的数据:', { id })
 
         // 2. 检查登录状态

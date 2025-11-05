@@ -7,7 +7,7 @@ import { RootState } from "../../store/index"
 import {useLoading} from "../../context/loading-context";
 import {useRouter} from "next/navigation";
 import {blogFetch} from "../../utils/blog-fetch";
-import BlogAlert from "../blog-alert/blog-alert";
+import BlogAlert, {AlertConfig} from "../blog-alert/blog-alert";
 
 type AlertType = 'warning' | 'error' | 'info'
 
@@ -16,7 +16,7 @@ export default function BlogEditPublishButtons() {
     const { title, content } = useSelector((state: RootState) => state.blogEdit)
     const [alertOpen, setAlertOpen] = useState(false)
     const [footer, setShowDialogFooter] = useState(true)
-    const [alertConfig, setAlertConfig] = useState({
+    const [alertConfig, setAlertConfig] = useState<AlertConfig>({
         title: "",
         message: "",
         type: 'warning' as AlertType

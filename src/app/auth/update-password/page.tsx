@@ -19,6 +19,7 @@ interface ResetForm {
 interface ResetFormError {
   confirmPassword: ErrorField;
   password: ErrorField;
+  [k:string]: unknown
 }
 
 const supabase = createClient(
@@ -75,7 +76,7 @@ export default function UpdatePassword() {
       [field]: value
     }));
     // 实时验证（可选，也可以在提交时验证）
-    validateSingleField<ResetForm>({
+    validateSingleField<ResetForm,ResetFormError>({
       name:field,
       value,
       validateField,

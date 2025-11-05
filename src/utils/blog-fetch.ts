@@ -1,9 +1,11 @@
+import {RequestResult} from "../types/request";
+
 /**
  * 封装fetch处理 - Promise版本
  * @param url
  * @param options
  */
-export function blogFetch(url: string, options = {}) {
+export function blogFetch<T>(url: string, options = {}):Promise<RequestResult<T>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await fetch(url, options);

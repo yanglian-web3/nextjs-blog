@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkHasLogin } from '../../../../utils/api/check-session'
 import {CommentSqlQueryResult} from "../../../../types/comment";
-import {getParamsAndHeads, getSubQuery, queryFromTo} from "../comment-api-util";
+import {getParamsAndHeads, getSubQuery} from "../comment-api-util";
 import {getServeError500, getErrorEmptyResponse, notLoginMessage, validateRequiredFields} from "../../api-utils/api-util";
 
 const supabase = createClient(
@@ -22,7 +22,7 @@ export async function GET(
 ) {
     try {
         // 1. 获取查询参数
-        const { page, pageSize, articleId, parentId, sessionToken } = await getParamsAndHeads(request)
+        const { page, pageSize, articleId, parentId, sessionToken } = getParamsAndHeads(request)
         console.log('查询参数:', { page, pageSize, articleId, parentId })
         console.log('request.cookies.get(\'session_token\')?.value', request.cookies.get('session_token')?.value)
         // 2. 检查当前登录状态和用户身份
@@ -39,14 +39,19 @@ export async function GET(
         // 4. 构建查询，查询文章id为articleId的，并且评论id为parentId的数据
         const query = getSubQuery(supabase,articleId!,parentId!)
         console.log("query=", query)
-        const { data: comments, error: commentError, count }:CommentSqlQueryResult = await queryFromTo(page,pageSize,query)
+        // 5. 计算分页
+        const from = (page - 1) * pageSize
+        const to = from + pageSize - 1
+        const { data: comments, error: commentError, count }:CommentSqlQueryResult = await await query
+            .order('created_at', { ascending: false })
+            .range(from, to)
 
         if (commentError) {
             console.error('数据库查询错误:', commentError)
             return getErrorEmptyResponse(page, pageSize,"获取评论列表成功")
         }
 
-        // 7. 分页信息
+        // 6. 分页信息
         const total = count || 0
         const totalPages = Math.ceil(total / pageSize)
 

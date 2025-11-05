@@ -7,13 +7,14 @@ import { ErrorField } from "../../../types/form";
 import BlogInput from "../../form/blog-input";
 import {validateEmail, validateForm, validatePassword, validateSingleField} from "../../../utils/form-handle";
 import {CryptoUtils} from "../../../utils/crypto";
-import Toast from "../../toast/toast";
+import Toast, {ToastType} from "../../toast/toast";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../store/index";
 import { updateUserInfo } from "../../../store/user-slice";
 import Registry from "../registry/registry";
 import ForgetPass from "../forget-pass/forget-pass";
 import {blogFetch} from "../../../utils/blog-fetch";
+import {UserInfo} from "../../../types/user";
 
 interface LoginForm {
     email: string;
@@ -23,6 +24,7 @@ interface LoginForm {
 interface LoginFormError {
     email: ErrorField;
     password: ErrorField;
+    [k:string]: unknown
 }
 interface Props {
     open: boolean;
@@ -36,7 +38,7 @@ export default function Login({ open, updateOpen }: Props) {
     const [isSubmitting, setSubmitting] = useState(false);
     const [toastOpen, setToastOpen] = useState(false);
     const [registerMsg, setRegisterMsg] = useState('');
-    const [toastType, setToastType] = useState("info")
+    const [toastType, setToastType] = useState<ToastType>("info")
     const [errors, setErrors] = useState<Partial<LoginFormError>>({});
     const [formData, setFormData] = useState<LoginForm>({
         email: '',
@@ -79,7 +81,7 @@ export default function Login({ open, updateOpen }: Props) {
         }));
 
         // 实时验证（可选，也可以在提交时验证）
-        validateSingleField<LoginForm>({
+        validateSingleField<LoginForm, LoginFormError>({
             name:field,
             value,
             validateField,
@@ -105,7 +107,7 @@ export default function Login({ open, updateOpen }: Props) {
 
         setSubmitting(true);
         console.log('提交登录数据:', formData);
-        blogFetch("/api/auth/login",{
+        blogFetch<UserInfo>("/api/auth/login",{
             method: 'POST',
             body: JSON.stringify({
                 ...formData,

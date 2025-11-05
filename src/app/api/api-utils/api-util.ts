@@ -1,11 +1,12 @@
 import {NextResponse} from "next/server";
+import {SupabaseClient} from "@supabase/supabase-js";
 
 
 /**
  * 校验必填字段
  * @param fieldsValues
  */
-export const validateRequiredFields = <T extends Record<string, unknown>>(fieldsValues: {[k:string]: T}) => {
+export const validateRequiredFields = (fieldsValues: {[k:string]: string | null | number}) => {
     const noValueFields = Object.keys(fieldsValues).filter(key => fieldsValues[key] === null || fieldsValues[key] === '')
     if(noValueFields.length){
         return {
@@ -65,10 +66,10 @@ export const notLoginMessage = NextResponse.json({
  * @param supabase
  * @param articleId
  */
-export const queryCommentsCount = async (supabase,articleId: number):Promise<string> => {
+export const queryCommentsCount = async (supabase:SupabaseClient,articleId: number):Promise<number> => {
     const { count } = await supabase
         .from('comments')
         .select('id', { count: 'exact' })
         .eq('article_id', articleId)
-    return count
+    return count || 0
 }

@@ -4,12 +4,12 @@ import { Dialog } from "@ark-ui/react";
 import { useEffect, useState } from "react";
 import IconPlus from "../icons/icon-plus";
 
-
+export type ToastType = "success" | "error" | "info"
 
 interface Props {
     open: boolean;
     msg: string;
-    type: "success" | "error" | "info"
+    type: ToastType
     onClose: () => void;
 }
 
