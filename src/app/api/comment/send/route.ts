@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from "@supabase/supabase-js"
 import { checkHasLogin } from "../../../../utils/api/check-session"
-import {triggerBlogRevalidation} from "../../api-utils/revalidate";
+import {triggerBlogRevalidation} from "../../../../utils/api/revalidate";
 
 interface BlogCommentSendRequest {
     user_account: string;

@@ -6,8 +6,8 @@ import { BlogItemServeType } from "../../../../../types/blog";
 import {UserInfo} from "../../../../../types/user";
 import {formatDateTime} from "../../../../../utils/date-format";
 import {handleCount} from "../../../../../utils/util";
-import {getServeError500, queryCommentsCount} from "../../../api-utils/api-util";
-import {triggerBlogRevalidation} from "../../../api-utils/revalidate";
+import {getServeError500, queryCommentsCount} from "../../../../../utils/api/api-util";
+import {triggerBlogRevalidation} from "../../../../../utils/api/revalidate";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

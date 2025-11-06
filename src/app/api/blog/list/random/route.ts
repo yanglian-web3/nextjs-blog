@@ -5,7 +5,7 @@ import {
     BlogHomeItemServeType,
     BlogHomeItemType,
 } from "../../../../../types/blog";
-import {getServeError500} from "../../../api-utils/api-util";
+import {getServeError500} from "../../../../../utils/api/api-util";
 import {handleCount} from "../../../../../utils/util";
 
 const supabase = createClient(

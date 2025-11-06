@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import {checkHasLogin} from "../../../../utils/api/check-session";
-import {getServeError500} from "../../api-utils/api-util";
+import {getServeError500} from "../../../../utils/api/api-util";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

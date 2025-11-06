@@ -9,8 +9,8 @@ import {
     CommentSqlQueryResult
 } from "../../../../types/comment";
 import {multiUnderlineToHump} from "../../../../utils/util";
-import {getParamsAndHeads, getSubQuery, handlePostTime, selectFields} from "../comment-api-util";
-import {getErrorEmptyResponse, getServeError500, notLoginMessage, validateRequiredFields} from "../../api-utils/api-util";
+import {getParamsAndHeads, getSubQuery, handlePostTime, selectFields} from "../../../../utils/api/comment-api-util";
+import {getErrorEmptyResponse, getServeError500, notLoginMessage, validateRequiredFields} from "../../../../utils/api/api-util";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

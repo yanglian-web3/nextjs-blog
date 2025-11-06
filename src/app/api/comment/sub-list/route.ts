@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkHasLogin } from '../../../../utils/api/check-session'
 import {CommentSqlQueryResult} from "../../../../types/comment";
-import {getParamsAndHeads, getSubQuery} from "../comment-api-util";
-import {getServeError500, getErrorEmptyResponse, notLoginMessage, validateRequiredFields} from "../../api-utils/api-util";
+import {getParamsAndHeads, getSubQuery} from "../../../../utils/api/comment-api-util";
+import {getServeError500, getErrorEmptyResponse, notLoginMessage, validateRequiredFields} from "../../../../utils/api/api-util";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

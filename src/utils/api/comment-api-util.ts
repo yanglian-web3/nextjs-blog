@@ -1,5 +1,5 @@
 import {NextRequest} from "next/server";
-import {CommentContentItem} from "../../../types/comment";
+import {CommentContentItem} from "../../types/comment";
 import { SupabaseClient } from '@supabase/supabase-js'
 
 export const selectFields = `
