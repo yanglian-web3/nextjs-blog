@@ -1,3 +1,4 @@
+// app/[account]/page.tsx
 import BlogListHead from "../../components/blog-list/blog-list-head/blog-list-head";
 import "./account-home-page.css"
 import {AccountBlogResult, BlogItemType} from "../../types/blog";
@@ -11,7 +12,6 @@ interface PageProps {
     }>
 }
 
-export const revalidate = 60*60*24 // 24小时ISR
 
 export default async function AccountBlogPage({ params}: PageProps) {
     // 等待 params 和 searchParams

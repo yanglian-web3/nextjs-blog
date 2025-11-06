@@ -1,3 +1,4 @@
+// app/detail/[id]/page.tsx
 
 import BlogDetailPreview from "../../../components/detail/blog-detail-preview/blog-detail-preview";
 import IconClockFill from "../../../components/icons/icon-clock-fill";
@@ -11,8 +12,6 @@ import Script from 'next/script'
 import {BlogDetailResult} from "../../../types/blog";
 
 interface PageParams {params:Promise<{id:string}>}
-
-export const revalidate = 60*60*1 // 1小时
 
 export async function generateStaticParams() {
     // 预生成热门文章的静态页面
