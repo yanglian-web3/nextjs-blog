@@ -67,7 +67,7 @@ export function getBlogListByAccount(options: {
  */
 export const getBlogDetail = (id: string) => {
     return  new Promise<Partial<BlogDetailResult>>((resolve) => {
-        console.error("getBlogDetail process.env=",process.env)
+        // console.error("getBlogDetail process.env=",process.env)
         console.error("getBlogDetail process.env.NEXT_PUBLIC_APP_URL=",process.env.NEXT_PUBLIC_APP_URL)
         blogFetch<Partial<BlogDetailResult>>(`${process.env.NEXT_PUBLIC_APP_URL}/api/blog/detail/${id}`)
             .then(result => {
