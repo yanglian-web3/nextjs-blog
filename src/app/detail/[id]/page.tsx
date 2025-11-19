@@ -17,6 +17,9 @@ export async function generateStaticParams() {
     // 预生成热门文章的静态页面
     // 这里可以从数据库获取热门文章ID
     const popularBlogs = await getPopularBlogIds() // 你需要实现这个函数
+    console.log("generateStaticParams ", popularBlogs.map((blog) => ({
+        id: blog.id,
+    })))
     return popularBlogs.map((blog) => ({
         id: blog.id,
     }))
