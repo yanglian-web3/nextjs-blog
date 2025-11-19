@@ -88,7 +88,7 @@ export async function getPopularBlogIds(): Promise<{id: string}[]> {
     try {
         // 从数据库获取热门博客的 ID
         const { data, error } = await supabase
-            .from('blogs')
+            .from('blog')
             .select('id')
             .order('view_count', { ascending: false }) // 按阅读数降序
             .limit(20) // 预生成前20篇热门文章
