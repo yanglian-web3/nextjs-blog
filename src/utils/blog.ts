@@ -93,6 +93,7 @@ export async function getPopularBlogIds(): Promise<{id: string}[]> {
         const { data, error } = await supabase
             .from('blog')
             .select('id')
+            .eq('status', 1)
             .order('view_count', { ascending: false }) // 按阅读数降序
             .limit(20) // 预生成前20篇热门文章
 
