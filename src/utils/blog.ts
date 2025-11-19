@@ -13,14 +13,14 @@ export function getBlogListRandom(searchValue:string = "") {
             .then(result => {
                 const { code ,data, message} = result
                 if(code !== 200){
-                    console.error("获取博客列表失败:", message)
+                    console.error("获取博客列表失败 getBlogListRandom:", message)
                     resolve([])
                     return
                 }
                 resolve(data)
             })
             .catch(err => {
-                console.error("获取博客列表失败:", err)
+                console.error("获取博客列表失败 getBlogListRandom cath:", err)
                 resolve([])
             })
     })
@@ -49,13 +49,13 @@ export function getBlogListByAccount(options: {
             .then(result => {
                 const { code ,data, message} = result
                 if(code !== 200){
-                    console.error("获取博客列表失败:", message)
+                    console.error("获取博客列表失败 getBlogListByAccount:", message)
                     reject(message)
                 }
                 resolve(data)
             })
             .catch(err => {
-                console.error("获取博客列表失败:", err)
+                console.error("获取博客列表失败 getBlogListByAccount catch:", err)
                 reject(err)
             })
     })
